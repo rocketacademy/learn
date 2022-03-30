@@ -1,5 +1,11 @@
 # Django #
 __pycache__
 
+# Pytest #
+htmlcov
+.pytest_cache
+.coverage
+.coveragerc
+
 # Pipenv #
 Pipfile.lock

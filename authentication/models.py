@@ -8,8 +8,8 @@ class UserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
+            first_name=first_name.upper(),
+            last_name=last_name.upper(),
         )
         user.set_password(password)
         user.save()

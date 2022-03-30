@@ -5,8 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
+djangorestframework = "*"
 
 [dev-packages]
+pytest = "*"
+pytest-django = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.10"
