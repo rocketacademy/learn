@@ -37,6 +37,18 @@ class TestLoginView(APITestCase):
         self.assertTrue(status.is_redirect(response.status_code))
         assert 'staff/coding_basics/' in response.url
 
+    def test_form_rendered_again_if_password_incorrect(self):
+        user_email = 'user@domain.com'
+        user_password = 'password1234!'
+        incorrect_password = 'incorrectpassword'
+        User = get_user_model()
+        User.objects.create_user(user_email, 'FirstName', 'LastName', user_password)
+
+        response = Client().post('/staff/login/', {'email': user_email, 'password': incorrect_password})
+
+        self.assertTrue(status.is_success(response.status_code))
+        self.assertTemplateUsed(response, 'login.html')
+
 class TestCodingBasicsView(APITestCase):
     def test_anonymous_user_redirected_to_login(self):
         request = RequestFactory().get('/coding_basics/')
