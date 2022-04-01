@@ -59,7 +59,7 @@ class TestCodingBasicsView(APITestCase):
         self.assertTrue(status.is_redirect(response.status_code))
         assert 'staff/login/?next=/coding_basics/' in response.url
 
-    def test_logged_in_user(self):
+    def test_logged_in_user_can_access(self):
         logged_in_user = mixer.blend('authentication.User')
         request = RequestFactory().get('/coding_basics/')
         request.user = logged_in_user
