@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from .forms import LoginForm
 
 def index(request):
-    return redirect(login_view)
+    return redirect(coding_basics_view)
 
 def login_view(request):
     if request.method == 'GET':

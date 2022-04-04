@@ -15,7 +15,7 @@ class TestIndexView(APITestCase):
         response = views.index(request)
 
         self.assertTrue(status.is_redirect(response.status_code))
-        assert 'staff/login/' in response.url
+        assert 'staff/coding_basics/' in response.url
 
 class TestLoginView(APITestCase):
     def test_anonymous_user_sees_login_form(self):
