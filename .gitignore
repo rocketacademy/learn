@@ -13,3 +13,6 @@ Pipfile.lock
 # Processed CSS #
 custom.css
 custom.css.map
+
+# Environment variables #
+.env

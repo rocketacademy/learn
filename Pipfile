@@ -10,6 +10,7 @@ mixer = "*"
 django-sass-processor = "*"
 libsass = "*"
 psycopg2 = "*"
+django-environ = "*"
 
 [dev-packages]
 pytest = "*"
