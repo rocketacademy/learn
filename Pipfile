@@ -9,13 +9,12 @@ djangorestframework = "*"
 mixer = "*"
 psycopg2-binary = "*"
 django-sass-processor = "*"
+libsass = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
-libsass = "*"
-django-compressor = "*"
 
 [requires]
 python_version = "3.10"
