@@ -13,9 +13,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # GENERAL
 # ------------------------------------------------------------------------------
 
-DEBUG = env('DEBUG')
-SECRET_KEY = env('SECRET_KEY')
-ALLOWED_HOSTS = []
+DEBUG = env('DJANGO_DEBUG')
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+ALLOWED_HOSTS = env('DJANGO_ALLOWED_HOSTS')
 
 # INTERNATIONALISATION
 # ------------------------------------------------------------------------------
