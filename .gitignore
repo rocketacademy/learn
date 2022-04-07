@@ -10,9 +10,8 @@ htmlcov
 # Pipenv #
 Pipfile.lock
 
-# Processed CSS #
-custom.css
-custom.css.map
+# Processed static #
+static/
 
 # Environment variables #
 .env

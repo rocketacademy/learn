@@ -13,9 +13,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # GENERAL
 # ------------------------------------------------------------------------------
 
-DEBUG = env('DJANGO_DEBUG')
+DEBUG = env.bool('DJANGO_DEBUG')
 SECRET_KEY = env('DJANGO_SECRET_KEY')
-ALLOWED_HOSTS = env('DJANGO_ALLOWED_HOSTS')
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
 # INTERNATIONALISATION
 # ------------------------------------------------------------------------------
@@ -51,26 +51,19 @@ WSGI_APPLICATION = 'learn.wsgi.application'
 # APPLICATIONS
 # ------------------------------------------------------------------------------
 
-DJANGO_APPS = [
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
-]
-
-THIRD_PARTY_APPS = [
-    'sass_processor',
-    'rest_framework'
-]
-
-LEARN_APPS = [
+    'whitenoise.runserver_nostatic',
+    'django.contrib.staticfiles',
+    'compressor',
+    'rest_framework',
     'authentication',
     'staff'
 ]
-
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LEARN_APPS
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -103,6 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -113,16 +107,30 @@ MIDDLEWARE = [
 
 # STATIC
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
+# https://docs.djangoproject.com/en/4.0/ref/settings/#settings-staticfiles
 # ------------------------------------------------------------------------------
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staff/static')
-SASS_PROCESSOR_ROOT = STATIC_ROOT
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "staticfiles"), 
+]
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'sass_processor.finders.CssFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# COMPRESS
+# https://django-compressor.readthedocs.io/en/stable/quickstart.html
+# ------------------------------------------------------------------------------
+STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
+COMPRESS_PRECOMPILERS = [('text/x-scss', 'django_libsass.SassCompiler')]
+COMPRESS_CACHEABLE_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"))
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = env.bool('COMPRESS_OFFLINE')
+COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
+COMPRESS_URL = STATIC_URL
 
 # SASS
 # ------------------------------------------------------------------------------

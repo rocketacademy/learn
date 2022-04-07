@@ -7,10 +7,10 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 mixer = "*"
-django-sass-processor = "*"
-libsass = "*"
 psycopg2 = "*"
 django-environ = "*"
+whitenoise = "*"
+django-libsass = "*"
 
 [dev-packages]
 pytest = "*"
