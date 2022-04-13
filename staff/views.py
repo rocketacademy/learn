@@ -36,6 +36,18 @@ def login_view(request):
 def coding_basics_view(request):
     return HttpResponse('Coding Basics!')
 
+@login_required(login_url='/staff/login/')
+def admin_batches_view(request):
+    return render(request,
+        'coding_basics/admin/all-batches.html',
+    )
+
+@login_required(login_url='/staff/login/')
+def admin_section_leaders_view(request):
+    return render(request,
+        'coding_basics/admin/section-leaders.html',
+    )
+
 # To-do: Move to BatchViewSet when ready
 @login_required(login_url='/staff/login/')
 def batch_overview_view(request):

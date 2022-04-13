@@ -1,0 +1,40 @@
+{% extends 'coding_basics/admin/base.html' %}
+{% block admin_content %}
+<div class="d-flex flex-row justify-content-between px-4">
+    <h5>Overview</h5>
+    <button type="button" class="btn btn-outline-primary btn-sm px-4">+ Create Batch</button>
+</div>
+<div class="d-flex flex-row justify-content-start p-4">
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Batch</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Course Days</th>
+            <th scope="col">No. of Sections</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">No. of Enrollments</th>
+            <th scope="col">No. on Waitlist</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>16</td>
+            <td>25 Jun 2022</td>
+            <td>21 Jul 2022</td>
+            <td>
+                <div>Monday 7pm - 9pm</div>
+                <div>Saturday 1pm - 3pm</div>
+            </td>
+            <td>6</td>
+            <td>48</td>
+            <td>106</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+{% endblock %}
