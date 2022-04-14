@@ -22,7 +22,6 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          {% block navbar %}
           <ul class="navbar-nav ms-auto text-end">
             <li class="nav-item active">
               {% if not request.user.is_authenticated %}
@@ -30,7 +29,6 @@
               {% endif %}
             </li>
           </ul>
-          {% endblock %}
         </div>
       </div>
     </nav>
