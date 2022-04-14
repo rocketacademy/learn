@@ -57,3 +57,15 @@ class BatchSchedule(models.Model):
     course_day = models.CharField(max_length=4, choices=COURSE_DAY_CHOICES)
     start_time = models.TimeField()
     end_time = models.TimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(auto_now=True)
+
+class Section(models.Model):
+    batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
+    number = models.PositiveIntegerField()
+    capacity = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    
