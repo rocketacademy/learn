@@ -11,7 +11,7 @@ htmlcov
 Pipfile.lock
 
 # Processed static #
-static/
+/static
 
 # Environment variables #
 .env

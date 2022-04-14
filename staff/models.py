@@ -59,7 +59,7 @@ class BatchSchedule(models.Model):
     end_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
 
 class Section(models.Model):
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
