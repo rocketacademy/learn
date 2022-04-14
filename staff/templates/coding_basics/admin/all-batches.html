@@ -1,8 +1,35 @@
 {% extends 'coding_basics/admin/base.html' %}
 {% block admin_content %}
+{% load crispy_forms_tags %}
 <div class="d-flex flex-row justify-content-between px-4">
     <h5>Overview</h5>
-    <button type="button" class="btn btn-outline-primary btn-sm px-4">+ Create Batch</button>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        + Create Batch
+    </button>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create Batch</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="add-batch-form" action="{% url 'admin_batches_view' %}" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="modal-buttons-container">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button class="submit btn btn-primary">Add Batch</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
 </div>
 <div class="d-flex flex-row justify-content-start p-4">
 <table class="table table-hover">
@@ -15,9 +42,6 @@
             <th scope="col">No. of Sections</th>
             <th scope="col">Capacity</th>
             <th scope="col">No. of Enrollments</th>
-            <th scope="col">No. on Waitlist</th>
-
-
         </tr>
     </thead>
     <tbody>
@@ -32,9 +56,9 @@
             <td>6</td>
             <td>48</td>
             <td>106</td>
-            <td>0</td>
         </tr>
     </tbody>
 </table>
 </div>
+
 {% endblock %}

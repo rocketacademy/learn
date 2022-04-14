@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from .models import Batch, BatchSchedule
+from .forms import AddBatchForm
 
 from .forms import LoginForm
 
@@ -38,9 +40,28 @@ def coding_basics_view(request):
 
 @login_required(login_url='/staff/login/')
 def admin_batches_view(request):
+    batches = Batch.objects.all()
+
+    if request.method == "GET":
+        add_batch_form = AddBatchForm()
+    else:
+        add_batch_form = AddBatchForm(request.POST)
+        print(request.POST)
+        batch_schedule_1 = request.POST.get('batch_schedule_1')
+        print('batcch_schedule_1', batch_schedule_1)
+        
+        if add_batch_form.is_valid():
+            new_batch = add_batch_form.save()
+            print(new_batch)
+
+    context = {"batches": batches, "form": add_batch_form}
+
     return render(request,
         'coding_basics/admin/all-batches.html',
+        context
     )
+
+
 
 @login_required(login_url='/staff/login/')
 def admin_section_leaders_view(request):

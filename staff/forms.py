@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from .models import Batch
 
 User = get_user_model()
 
@@ -35,3 +36,18 @@ class LoginForm(forms.Form):
             )
         
         return email
+
+
+class AddBatchForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(forms.ModelForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = Batch
+        fields = '__all__'
+        widgets = {"start_date": forms.DateInput(attrs={"type": "date"})}
+        widgets = {"end_date": forms.DateInput(attrs={"type": "date"})}
+
+
+    batch_schedule_1 = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    batch_schedule_2 = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))

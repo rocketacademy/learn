@@ -62,7 +62,9 @@ INSTALLED_APPS = [
     'compressor',
     'rest_framework',
     'authentication',
-    'staff'
+    'staff',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 # AUTHENTICATION
@@ -151,6 +153,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.static'
             ],
         },
     },
