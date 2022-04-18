@@ -17,7 +17,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="add-batch-form" action="{% url 'admin_batches_view' %}" method="POST">
+                    <form class="add-batch-form" action="{% url 'batches_view' %}" method="POST">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <div class="modal-buttons-container">

@@ -1,14 +1,14 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
-from .models import Batch, BatchSchedule
+from .models import Batch, Section
 from .forms import AddBatchForm
 
 from .forms import LoginForm
 
 def index(request):
-    return HttpResponseRedirect('/staff/coding_basics/')
+    return HttpResponseRedirect('/staff/coding-basics/batches/')
 
 def login_view(request):
     if request.method == 'GET':
@@ -31,15 +31,10 @@ def login_view(request):
             return render(request, 'login.html', {'form': form})
 
         login(request, user)
-        return HttpResponseRedirect('/staff/coding_basics/')
-
-# To-do: Move to CourseViewSet when ready
-@login_required(login_url='/staff/login/')
-def coding_basics_view(request):
-    return HttpResponse('Coding Basics!')
+        return HttpResponseRedirect('/staff/coding-basics/batches/')
 
 @login_required(login_url='/staff/login/')
-def admin_batches_view(request):
+def batches_view(request):
     batches = Batch.objects.all()
 
     if request.method == "GET":
@@ -61,29 +56,72 @@ def admin_batches_view(request):
         context
     )
 
-
-
 @login_required(login_url='/staff/login/')
-def admin_section_leaders_view(request):
-    return render(request,
-        'coding_basics/admin/section-leaders.html',
-    )
+def batch_view(request, batch_id):
+    batch_queryset = Batch.objects.filter(pk=batch_id)
 
-# To-do: Move to BatchViewSet when ready
-@login_required(login_url='/staff/login/')
-def batch_overview_view(request):
+    if not batch_queryset.exists():
+        return HttpResponseNotFound
+
     return render(request,
         'coding_basics/batch/overview.html',
+        {
+            'batch': batch_queryset.last(),
+            'current_tab': 'overview'
+        }
     )
 
 @login_required(login_url='/staff/login/')
-def batch_students_view(request):
+def students_view(request, batch_id):
+    batch_queryset = Batch.objects.filter(pk=batch_id)
+
+    if not batch_queryset.exists():
+        return HttpResponseNotFound
+
     return render(request,
         'coding_basics/batch/students.html',
+        {
+            'batch': batch_queryset.last(),
+            'current_tab': 'students'
+        }
     )
 
 @login_required(login_url='/staff/login/')
-def batch_sections_view(request):
+def sections_view(request, batch_id):
+    batch_queryset = Batch.objects.filter(pk=batch_id)
+    sections_queryset = Section.objects.filter(batch__pk=batch_id)
+
+    if not batch_queryset.exists() or not sections_queryset.exists():
+        return HttpResponseNotFound
+
     return render(request,
         'coding_basics/batch/sections.html',
+        {
+            'batch': batch_queryset.last(),
+            'sections': sections_queryset,
+            'current_tab': 'sections'
+        }
+    )
+
+@login_required(login_url='/staff/login/')
+def section_view(request, batch_id, section_id):
+    batch_queryset = Batch.objects.filter(pk=batch_id)
+    sections_queryset = Section.objects.filter(pk=section_id)
+
+    if not batch_queryset.exists() or not sections_queryset.exists():
+        return HttpResponseNotFound
+
+    return render(request,
+        'coding_basics/section/overview.html',
+        {
+            'batch': batch_queryset.last(),
+            'section': sections_queryset.last(),
+            'current_tab': 'overview'
+        }
+    )
+
+@login_required(login_url='/staff/login/')
+def section_leaders_view(request):
+    return render(request,
+        'coding_basics/admin/section-leaders.html',
     )
