@@ -24,7 +24,7 @@ class TestLoginView(APITestCase):
         response = Client().post('/staff/login/', {'email': user_email, 'password': user_password})
 
         self.assertTrue(status.is_redirect(response.status_code))
-        assert 'staff/coding_basics/' in response.url
+        assert 'staff/coding-basics/' in response.url
 
     def test_form_rendered_again_if_password_incorrect(self):
         user_email = 'user@domain.com'

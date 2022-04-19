@@ -13,4 +13,4 @@ class TestIndexView(APITestCase):
         response = index(request)
 
         self.assertTrue(status.is_redirect(response.status_code))
-        assert 'staff/coding_basics/' in response.url
+        assert 'staff/coding-basics/batches/' in response.url
