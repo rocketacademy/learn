@@ -1,5 +1,4 @@
 from django.urls import path
-
 from .views import batch_view, sections_view, section_view, students_view, index, login_view, batches_view, section_leaders_view
 
 urlpatterns = [

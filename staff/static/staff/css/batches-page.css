@@ -1,0 +1,34 @@
+.batch-number-col {
+  padding-top: 20px;
+  padding-bottom: 30px;
+}
+.batch-number-col-title {
+  font-weight: 600;
+}
+
+.course-day-title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.course-day-container {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.modal-bottom-row {
+  padding-bottom: 30px;
+}
+
+.course-schedule-content-row {
+  margin-bottom: 10px;
+}
+
+.delete-button-container {
+  display: flex;
+  align-items: flex-end;
+}
+
+.course-schedule-delete {
+  width: 80%;
+}

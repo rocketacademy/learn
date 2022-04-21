@@ -7,7 +7,7 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         + Create Batch
     </button>
-    
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -17,48 +17,195 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="add-batch-form" action="{% url 'batches_view' %}" method="POST">
+                    <div class="row modal-top-row">
+                        <div class="col-6 batch-number-col">
+                            <div class="batch-number-col-title">
+                                Batch Number
+                            </div>
+                            <div class="batch-number-col-content">
+                                {{ next_batch_number }}
+                            </div>
+                        </div>
+                    </div>
+                    <form class="row g-3" method="POST" action="/staff/coding-basics/batches/">
                         {% csrf_token %}
-                        {{ form|crispy }}
-                        <div class="modal-buttons-container">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="submit btn btn-primary">Add Batch</button>
+                        <input type="hidden" name="course" value="{{ course.id }}" />
+                        <input type="hidden" name="number" value="{{ next_batch_number }}" />
+                        <div class="col-md-6">
+                            {{ form.start_date|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.end_date|as_crispy_field }}
+                        </div>
+
+                        <div class="course-day-container">
+                            <div class="course-day-title-container">
+                                <div class="course-day-title">
+                                    Course Day(s)
+                                </div>
+                                <div class="btn btn-primary add-course-day-button">
+                                    +
+                                </div>
+                            </div>
+                            <div class="row course-schedule-content-row" id="course-schedule-content-1">
+                                <div class="col-md-4">
+                                    <label for="course-day-1" class="form-label">Day</label>
+                                    <select class="form-select" name="course-day-time-1" required>
+                                        <option selected disabled value="">Choose Day</option>
+                                        <option value="MON">MON</option>
+                                        <option value="TUES">TUES</option>
+                                        <option value="WED">WED</option>
+                                        <option value="THUR">THUR</option>
+                                        <option value="FRI">FRI</option>
+                                        <option value="SAT">SAT</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="course-day-time-1" class="form-label">Start Time</label>
+                                    <input type="time" class="form-control" name="course-day-time-1" min="09:00"
+                                        max="21:00" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="course-day-time-1" class="form-label">End Time</label>
+                                    <input type="time" class="form-control" name="course-day-time-1" min="09:00"
+                                        max="21:00" required>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 modal-bottom-row">
+                            {{ form.sections|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 modal-bottom-row">
+                            {{ form.capacity|as_crispy_field }}
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary" type="submit">Create Batch</button>
                         </div>
                     </form>
                 </div>
-                
+
             </div>
         </div>
     </div>
 </div>
 <div class="d-flex flex-row justify-content-start p-4">
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th scope="col">Batch</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Course Days</th>
-            <th scope="col">No. of Sections</th>
-            <th scope="col">Capacity</th>
-            <th scope="col">No. of Enrollments</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>16</td>
-            <td>25 Jun 2022</td>
-            <td>21 Jul 2022</td>
-            <td>
-                <div>Monday 7pm - 9pm</div>
-                <div>Saturday 1pm - 3pm</div>
-            </td>
-            <td>6</td>
-            <td>48</td>
-            <td>106</td>
-        </tr>
-    </tbody>
-</table>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Batch</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Course Days</th>
+                <th scope="col">No. of Sections</th>
+                <th scope="col">Capacity</th>
+                <th scope="col">No. of Enrollments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for batch in batches %}
+            <tr>
+                <td>{{ batch.number }}</td>
+                <td>{{ batch.start_date }}</td>
+                <td>{{ batch.end_date }}</td>
+                {% for day_times in batch_schedules %}
+                {% if day_times.batch_id == batch.id %}
+                <td>
+                    <div>{{ day_times.course_day }},</div>
+                    <div>{{ day_times.start_time }} - {{ day_times.end_time }}</div>
+                </td>
+                {% endif %}
+                {% endfor %}
+                <td>{{ batch.sections }}</td>
+                <td>{{ batch.capacity }}</td>
+                <td>{{ batch.users.count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+<script>
 
+    const courseScheduleContainerRow = document.querySelector('.course-day-container');
+    const addBatchButton = document.querySelector('.add-course-day-button');
+    addBatchButton.addEventListener('click', () => {
+        const courseDayArray = document.querySelectorAll('.course-schedule-content-row');
+        const courseDayCount = courseDayArray.length;
+
+        const dayArray = ['MON', 'TUES', 'WED', 'THURS', 'FRI', 'SAT'];
+
+
+        const addDayTimeRow = document.createElement('div');
+        addDayTimeRow.classList.add('row', 'course-schedule-content-row');
+        addDayTimeRow.setAttribute('id', `course-schedule-content-${courseDayCount + 1}`)
+        courseScheduleContainerRow.appendChild(addDayTimeRow);
+
+        const courseDayCol = document.createElement('div');
+        courseDayCol.classList.add('col-md-4');
+        addDayTimeRow.appendChild(courseDayCol);
+
+        const daySelect = document.createElement('select');
+        daySelect.classList.add('form-select');
+        daySelect.setAttribute('name', `course-day-time-${courseDayCount + 1}`);
+        courseDayCol.appendChild(daySelect)
+
+        disabledDayOption = document.createElement('option');
+        disabledDayOption.setAttribute('value', "");
+        disabledDayOption.setAttribute('disabled', true);
+        disabledDayOption.setAttribute('selected', true);
+        disabledDayOption.innerText = 'Choose Day';
+        daySelect.appendChild(disabledDayOption);
+
+        dayArray.forEach(day => {
+            const dayOption = document.createElement('option');
+            dayOption.setAttribute('value', day);
+            dayOption.innerText = day;
+            daySelect.appendChild(dayOption);
+        })
+
+        const courseStartTimeCol = document.createElement('div');
+        courseStartTimeCol.classList.add('col-md-3');
+        addDayTimeRow.appendChild(courseStartTimeCol);
+
+        const startTimeInput = document.createElement('input');
+        startTimeInput.classList.add('form-control');
+        startTimeInput.setAttribute('type', 'time');
+        startTimeInput.setAttribute('name', `course-day-time-${courseDayCount + 1}`);
+        startTimeInput.setAttribute('min', '09:00');
+        startTimeInput.setAttribute('max', '21:00');
+        startTimeInput.setAttribute('required', true);
+        courseStartTimeCol.appendChild(startTimeInput);
+
+        const courseEndTimeCol = document.createElement('div');
+        courseEndTimeCol.classList.add('col-md-3');
+        addDayTimeRow.appendChild(courseEndTimeCol);
+
+        const endTimeInput = document.createElement('input');
+        endTimeInput.classList.add('form-control');
+        endTimeInput.setAttribute('type', 'time');
+        endTimeInput.setAttribute('name', `course-day-time-${courseDayCount + 1}`);
+        endTimeInput.setAttribute('min', '09:00');
+        endTimeInput.setAttribute('max', '21:00');
+        endTimeInput.setAttribute('required', true);
+        courseEndTimeCol.appendChild(endTimeInput);
+
+        const deleteCourseDayCol = document.createElement('div');
+        deleteCourseDayCol.classList.add('col-md-2');
+        const deleteCourseDayButton = document.createElement('input');
+        deleteCourseDayButton.classList.add('course-schedule-delete', 'btn', 'btn-outline-primary');
+        deleteCourseDayButton.setAttribute('id', `course-schedule-content-${courseDayCount + 1}`);
+        deleteCourseDayButton.setAttribute('value', '-');
+        deleteCourseDayButton.addEventListener('click', () => {
+            const courseDayToDelete = document.getElementById(`course-schedule-content-${courseDayCount + 1}`);
+            courseDayToDelete.remove();
+        })
+        deleteCourseDayCol.appendChild(deleteCourseDayButton);
+        addDayTimeRow.appendChild(deleteCourseDayCol);
+    })
+</script>
 {% endblock %}

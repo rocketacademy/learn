@@ -2,10 +2,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
-from .models import Batch, Section
+from .models import Batch, Section, Course, BatchSchedule
 from .forms import AddBatchForm
-
 from .forms import LoginForm
+import datetime
 
 def index(request):
     return HttpResponseRedirect('/staff/coding-basics/batches/')
@@ -35,26 +35,47 @@ def login_view(request):
 
 @login_required(login_url='/staff/login/')
 def batches_view(request):
-    batches = Batch.objects.all()
+    course = Course.objects.get(name="CODING_BASICS")
+    batches = Batch.objects.all().order_by("-number")
+    latest_batch_number = 0
+    batch_schedules = BatchSchedule.objects.all()
+
+    batch_list = list(batches)
+    if len(batch_list) > 0:
+        latest_batch_number = batch_list[0].number
 
     if request.method == "GET":
         add_batch_form = AddBatchForm()
     else:
         add_batch_form = AddBatchForm(request.POST)
-        print(request.POST)
-        batch_schedule_1 = request.POST.get('batch_schedule_1')
-        print('batcch_schedule_1', batch_schedule_1)
         
         if add_batch_form.is_valid():
             new_batch = add_batch_form.save()
-            print(new_batch)
 
-    context = {"batches": batches, "form": add_batch_form}
+            batchInfoDict = dict(request.POST)
 
-    return render(request,
-        'coding_basics/admin/all-batches.html',
-        context
-    )
+            # iterate through create batch info
+            for key in batchInfoDict:
+                # look for course day times
+                if "course-day-time" in key:
+                    # make entry into BatchSchedules table
+                    batch_schedule_entry = BatchSchedule.objects.create(
+                        batch=new_batch,
+                        course_day=batchInfoDict[key][0].upper(),
+                        start_time=datetime.datetime.strptime(batchInfoDict[key][1], "%H:%M"),
+                        end_time=datetime.datetime.strptime(batchInfoDict[key][2], "%H:%M"),
+                    )
+                   
+
+    context = {
+        "batches": batches,
+        "course": course,
+        "form": add_batch_form,
+        "next_batch_number": latest_batch_number + 1,
+        "batch_schedules": batch_schedules,
+    }
+
+    return render(request, "coding_basics/admin/all-batches.html", context)
 
 @login_required(login_url='/staff/login/')
 def batch_view(request, batch_id):
