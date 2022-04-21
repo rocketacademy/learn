@@ -17,7 +17,7 @@ def existing_user():
     User = get_user_model()
     existing_user = User.objects.create_user(email='user@domain.com', first_name='FirstName', last_name='LastName', password='password1234!')
 
-    return existing_user
+    yield existing_user
 
 @pytest.fixture()
 def batch():
@@ -25,20 +25,16 @@ def batch():
     COURSE_DURATION = 35
 
     start_date = datetime.date.today()
-    end_date = start_date + datetime.timedelta(COURSE_DURATION)
-    capacity = 90
-    sections = 5
-
     course = Course.objects.create(name=COURSE_NAME)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
-        end_date=end_date,
-        capacity=capacity,
-        sections=sections
+        end_date=start_date + datetime.timedelta(COURSE_DURATION),
+        capacity=90,
+        sections=5
     )
 
-    return batch
+    yield batch
 
 def test_batch_list_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/coding-basics/batches/')

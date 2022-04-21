@@ -8,6 +8,7 @@
     <button type="button" class="btn btn-primary btn-sm px-4">Download .csv for Zoom</button>
 </div>
 <div class="p-4">
+    {% if sections.exists %}
     <table class="table table-hover">
         <thead>
             <tr>
@@ -26,5 +27,8 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <div>There aren't any sections yet</div>
+    {% endif %}
 </div>
 {% endblock %}

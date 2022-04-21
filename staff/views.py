@@ -91,8 +91,8 @@ def sections_view(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
     sections_queryset = Section.objects.filter(batch__pk=batch_id)
 
-    if not batch_queryset.exists() or not sections_queryset.exists():
-        return HttpResponseNotFound
+    if not batch_queryset.exists():
+        return HttpResponseNotFound('Error: Batch does not exist')
 
     return render(request,
         'coding_basics/batch/sections.html',
@@ -109,7 +109,7 @@ def section_view(request, batch_id, section_id):
     sections_queryset = Section.objects.filter(pk=section_id)
 
     if not batch_queryset.exists() or not sections_queryset.exists():
-        return HttpResponseNotFound
+        return HttpResponseNotFound('Error: Batch or section does not exist')
 
     return render(request,
         'coding_basics/section/overview.html',
