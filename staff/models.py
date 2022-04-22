@@ -2,6 +2,7 @@ from django.db import models
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
+
 class Course(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
@@ -13,6 +14,7 @@ class Course(SafeDeleteModel):
     name = models.CharField(max_length=255, choices=NAME_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class Batch(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
@@ -27,9 +29,10 @@ class Batch(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        latest_batch = Batch.objects.filter(course__id=self.course_id).order_by('number').last()
+        batches_queryset = Batch.objects.filter(course__id=self.course_id)
+        latest_batch = batches_queryset.order_by('number').last()
 
-        if latest_batch == None:
+        if latest_batch is None:
             self.number = 1
         else:
             self.number = latest_batch.number + 1
@@ -38,6 +41,7 @@ class Batch(SafeDeleteModel):
             raise ValueError('Batch end date should be after start date')
 
         return super().save(*args, **kwargs)
+
 
 class BatchSchedule(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
@@ -67,6 +71,7 @@ class BatchSchedule(SafeDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 class Section(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
@@ -75,5 +80,3 @@ class Section(SafeDeleteModel):
     capacity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    
