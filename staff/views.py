@@ -76,7 +76,7 @@ def students_view(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
 
     if not batch_queryset.exists():
-        return HttpResponseNotFound
+        return HttpResponseNotFound('Error: Batch does not exist')
 
     return render(request,
         'coding_basics/batch/students.html',
