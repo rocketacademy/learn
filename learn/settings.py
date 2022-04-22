@@ -39,6 +39,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# https://github.com/makinacorpus/django-safedelete
+SAFE_DELETE_FIELD_NAME = 'deleted_at'
+
 # URLS
 # ------------------------------------------------------------------------------
 
@@ -60,11 +63,12 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'compressor',
-    'rest_framework',
-    'authentication',
-    'staff',
     'crispy_forms',
     'crispy_bootstrap5',
+    'rest_framework',
+    'safedelete',
+    'authentication',
+    'staff',
 ]
 
 # AUTHENTICATION
