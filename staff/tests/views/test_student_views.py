@@ -7,7 +7,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views import student_list
+from staff.views.student import student_list
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -15,7 +15,12 @@ client = Client()
 @pytest.fixture()
 def logged_in_existing_user():
     User = get_user_model()
-    existing_user = User.objects.create_user(email='user@domain.com', first_name='FirstName', last_name='LastName', password='password1234!')
+    existing_user = User.objects.create_user(
+        email='user@domain.com',
+        first_name='FirstName',
+        last_name='LastName',
+        password='password1234!'
+    )
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
     yield logged_in_existing_user
@@ -50,11 +55,4 @@ def test_student_list_logged_in_user_can_access(batch, logged_in_existing_user):
     response = client.get(reverse('student_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coding_basics/batch/students.html' in (template.name for template in response.templates)
-
-def test_student_list_http_not_found_if_batch_invalid(logged_in_existing_user):
-    invalid_batch_id = 1
-
-    response = client.get(reverse('student_list', kwargs={'batch_id': invalid_batch_id}))
-
-    assert response.status_code == HttpResponseNotFound.status_code
+    assert 'coding_basics/student/list.html' in (template.name for template in response.templates)

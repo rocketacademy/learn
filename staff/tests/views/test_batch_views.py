@@ -7,7 +7,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views import batch_list
+from staff.views.batch import batch_detail, batch_list
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -15,7 +15,12 @@ client = Client()
 @pytest.fixture()
 def existing_user():
     User = get_user_model()
-    existing_user = User.objects.create_user(email='user@domain.com', first_name='FirstName', last_name='LastName', password='password1234!')
+    existing_user = User.objects.create_user(
+        email='user@domain.com',
+        first_name='FirstName',
+        last_name='LastName',
+        password='password1234!'
+    )
 
     yield existing_user
 
@@ -59,12 +64,4 @@ def test_batch_detail_template_rendered_if_batch_exists(batch, existing_user):
     response = client.get(reverse('batch_detail', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coding_basics/batch/overview.html' in (template.name for template in response.templates)
-
-def test_batch_detail_http_not_found_raised_if_batch_invalid(existing_user):
-    invalid_batch_id = 1
-
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
-    response = client.get(reverse('batch_detail', kwargs={'batch_id': invalid_batch_id}))
-
-    assert response.status_code == HttpResponseNotFound.status_code
+    assert 'coding_basics/batch/detail.html' in (template.name for template in response.templates)

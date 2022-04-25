@@ -10,7 +10,7 @@ class TestLoginForm:
 
         outcome = form.is_valid()
 
-        assert outcome == False, 'Should be invalid if no data provided'
+        assert outcome is False, 'Should be invalid if no data provided'
 
     def test_form_without_password_is_invalid(self):
         user_email = 'someemail@domain.com'
@@ -28,7 +28,7 @@ class TestLoginForm:
 
         outcome = form.is_valid()
 
-        assert outcome == False, 'Should be invalid if password not provided'
+        assert outcome is False, 'Should be invalid if password not provided'
         assert 'password' in form.errors, 'Should have password field error'
 
     def test_form_with_inputs_is_valid(self):
@@ -47,4 +47,4 @@ class TestLoginForm:
 
         outcome = form.is_valid()
 
-        assert outcome == True, 'Should be valid if both inputs provided'
+        assert outcome is True, 'Should be valid if both inputs provided'

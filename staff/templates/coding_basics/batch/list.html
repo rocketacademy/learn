@@ -1,26 +1,26 @@
-{% extends 'coding_basics/admin/base.html' %}
-{% block admin_content %}
+{% extends 'coding_basics/base.html' %}
+{% block overview_content %}
 {% load crispy_forms_tags %}
 <div class="d-flex flex-row justify-content-between px-4">
     <h5>Overview</h5>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        + Create Batch
+    <button type="button" class="btn btn-outline-primary btn-sm px-4" data-bs-toggle="modal" data-bs-target="#create-batch-modal">
+        + Create batch
     </button>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="create-batch-modal" tabindex="-1" aria-labelledby="create-batch-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create Batch</h5>
+                    <h5 class="modal-title" id="create-batch-modal-label">Create batch</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row modal-top-row">
                         <div class="col-6 batch-number-col">
                             <div class="batch-number-col-title">
-                                Batch Number
+                                Batch number
                             </div>
                             <div class="batch-number-col-content">
                                 {{ next_batch_number }}
@@ -41,7 +41,7 @@
                         <div class="course-day-container">
                             <div class="course-day-title-container">
                                 <div class="course-day-title">
-                                    Course Day(s)
+                                    Course day(s)
                                 </div>
                                 <div class="btn btn-primary add-course-day-button">
                                     +
@@ -52,21 +52,22 @@
                                     <label for="course-day-1" class="form-label">Day</label>
                                     <select class="form-select" name="course-day-time-1" required>
                                         <option selected disabled value="">Choose Day</option>
-                                        <option value="MON">MON</option>
-                                        <option value="TUES">TUES</option>
-                                        <option value="WED">WED</option>
-                                        <option value="THUR">THUR</option>
-                                        <option value="FRI">FRI</option>
-                                        <option value="SAT">SAT</option>
+                                        <option value="MON">Monday</option>
+                                        <option value="TUES">Tuesday</option>
+                                        <option value="WED">Wednesday</option>
+                                        <option value="THUR">Thursday</option>
+                                        <option value="FRI">Friday</option>
+                                        <option value="SAT">Saturday</option>
+                                        <option value="SUN">Sunday</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="course-day-time-1" class="form-label">Start Time</label>
+                                    <label for="course-day-time-1" class="form-label">Start time</label>
                                     <input type="time" class="form-control" name="course-day-time-1" min="09:00"
                                         max="21:00" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="course-day-time-1" class="form-label">End Time</label>
+                                    <label for="course-day-time-1" class="form-label">End time</label>
                                     <input type="time" class="form-control" name="course-day-time-1" min="09:00"
                                         max="21:00" required>
                                 </div>
@@ -80,12 +81,10 @@
                         <div class="col-md-6 modal-bottom-row">
                             {{ form.capacity|as_crispy_field }}
                         </div>
-                        <div class="col-6">
+                        <div class="d-flex flex-row justify-content-between px-2">
                             <button type="button" class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-primary" type="submit">Create Batch</button>
+                            <button class="btn btn-primary" type="submit">Create batch</button>
                         </div>
                     </form>
                 </div>
@@ -99,25 +98,25 @@
         <thead>
             <tr>
                 <th scope="col">Batch</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">Course Days</th>
-                <th scope="col">No. of Sections</th>
+                <th scope="col">Start date</th>
+                <th scope="col">End date</th>
+                <th scope="col">Course days</th>
+                <th scope="col">No. of sections</th>
                 <th scope="col">Capacity</th>
-                <th scope="col">No. of Enrollments</th>
+                <th scope="col">No. of enrollments</th>
             </tr>
         </thead>
         <tbody>
             {% for batch in batches %}
-            <tr>
+            <tr class="clickable-row" data-url="{% url 'batch_detail' batch_id=batch.id %}" role="button"> 
                 <td>{{ batch.number }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>
-                {% for day_times in batch_schedules %}
-                {% if day_times.batch_id == batch.id %}
+                {% for batch_schedule in batch_schedules %}
+                {% if batch_schedule.batch_id == batch.id %}
                 <td>
-                    <div>{{ day_times.course_day }},</div>
-                    <div>{{ day_times.start_time }} - {{ day_times.end_time }}</div>
+                    <div>{{ batch_schedule.course_day }},</div>
+                    <div>{{ batch_schedule.start_time|time:'fA' }} - {{ batch_schedule.end_time|time:'fA' }}</div>
                 </td>
                 {% endif %}
                 {% endfor %}

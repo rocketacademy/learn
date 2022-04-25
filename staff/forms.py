@@ -8,52 +8,52 @@ from crispy_forms.layout import Layout, Submit, Row, Column
 User = get_user_model()
 
 
-class LoginForm(forms.Form):
-    email = forms.EmailField(
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control mt-5',
-                'id': 'login-form-email',
-                'placeholder': 'Email'
-            }
-        ),
-        label=''
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                'class': 'form-control',
-                'id': 'login-form-password',
-                'placeholder': 'Password'
-            }
-        ),
-        label=''
-    )
+# class LoginForm(forms.Form):
+#     email = forms.EmailField(
+#         widget=forms.TextInput(
+#             attrs={
+#                 'class': 'form-control mt-5',
+#                 'id': 'login-form-email',
+#                 'placeholder': 'Email'
+#             }
+#         ),
+#         label=''
+#     )
+#     password = forms.CharField(
+#         widget=forms.PasswordInput(
+#             attrs={
+#                 'class': 'form-control',
+#                 'id': 'login-form-password',
+#                 'placeholder': 'Password'
+#             }
+#         ),
+#         label=''
+#     )
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email').lower()
-        queryset = User.objects.filter(email=email)
-        if not queryset.exists():
-            raise forms.ValidationError(
-                ('This email is not registered on Learn'),
-                code='unregistered_email',
-            )
+#     def clean_email(self):
+#         email = self.cleaned_data.get('email').lower()
+#         queryset = User.objects.filter(email=email)
+#         if not queryset.exists():
+#             raise forms.ValidationError(
+#                 ('This email is not registered on Learn'),
+#                 code='unregistered_email',
+#             )
 
-        return email
+#         return email
 
 
-class AddBatchForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(forms.ModelForm, self).__init__(*args, **kwargs)
+# class CreateBatchForm(forms.ModelForm):
+#     def __init__(self, *args, **kwargs):
+#         super(forms.ModelForm, self).__init__(*args, **kwargs)
 
-    class Meta:
-        model = Batch
-        fields = ["course", "start_date", "end_date", "sections", "capacity"]
-        widgets = {
-            "course": forms.TextInput(attrs={"type": "hidden", "value": "CODING_BASICS"}),
-            "start_date": forms.DateInput(attrs={"type": "date"}),
-            "end_date": forms.DateInput(attrs={"type": "date"}),
-            }
+#     class Meta:
+#         model = Batch
+#         fields = ["course", "start_date", "end_date", "sections", "capacity"]
+#         widgets = {
+#             "course": forms.TextInput(attrs={"type": "hidden", "value": "CODING_BASICS"}),
+#             "start_date": forms.DateInput(attrs={"type": "date"}),
+#             "end_date": forms.DateInput(attrs={"type": "date"}),
+#         }
 
     # def clean_start_date(self):
     #     start_date = self.cleaned_data.get('start_date')
@@ -76,11 +76,9 @@ class AddBatchForm(forms.ModelForm):
 
     #     formatted_start_date = datetime.datetime.strptime(str(start_date), "%Y-%m-%d").date()
 
-
     #     if formatted_start_date > formatted_end_date:
     #         raise forms.ValidationError(
     #             'Start date cannot be after end date'
     #         )
-        
-    #     return end_date
 
+    #     return end_date
