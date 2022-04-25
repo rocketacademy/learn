@@ -40,7 +40,7 @@ def login_view(request):
 
 
 @login_required(login_url='/staff/login/')
-def batches_view(request):
+def batch_list(request):
     course = Course.objects.get(name="CODING_BASICS")
     batches = Batch.objects.all().order_by("-number")
     latest_batch_number = 0
@@ -85,7 +85,7 @@ def batches_view(request):
 
 
 @login_required(login_url='/staff/login/')
-def batch_view(request, batch_id):
+def batch_detail(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
 
     if not batch_queryset.exists():
@@ -102,7 +102,7 @@ def batch_view(request, batch_id):
 
 
 @login_required(login_url='/staff/login/')
-def students_view(request, batch_id):
+def student_list(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
 
     if not batch_queryset.exists():
@@ -119,7 +119,7 @@ def students_view(request, batch_id):
 
 
 @login_required(login_url='/staff/login/')
-def sections_view(request, batch_id):
+def section_list(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
     sections_queryset = Section.objects.filter(batch__pk=batch_id)
 
@@ -138,7 +138,7 @@ def sections_view(request, batch_id):
 
 
 @login_required(login_url='/staff/login/')
-def section_view(request, batch_id, section_id):
+def section_detail(request, batch_id, section_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
     sections_queryset = Section.objects.filter(pk=section_id)
 
@@ -157,7 +157,7 @@ def section_view(request, batch_id, section_id):
 
 
 @login_required(login_url='/staff/login/')
-def section_leaders_view(request):
+def section_leader_list(request):
     return render(
         request,
         'coding_basics/admin/section-leaders.html',

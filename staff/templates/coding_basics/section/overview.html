@@ -9,7 +9,7 @@
         <nav>
             <ul class="navbar-nav sidebar">
                 <li>
-                    <a href="{% url 'section_view' batch_id=batch.id section_id=section.id %}" class="nav-link {% if current_tab == 'overview' %}sidebar-link-active border-start border-primary{% endif %}">Overview</a>
+                    <a href="{% url 'section_detail' batch_id=batch.id section_id=section.id %}" class="nav-link {% if current_tab == 'overview' %}sidebar-link-active border-start border-primary{% endif %}">Overview</a>
                 </li>
             </ul>
         </nav>

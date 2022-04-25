@@ -19,7 +19,7 @@
         </thead>
         <tbody>
             {% for section in sections %}
-            <tr class="clickable-row" data-url="{% url 'section_view' batch_id=batch.id section_id=section.id %}" role="button">
+            <tr class="clickable-row" data-url="{% url 'section_detail' batch_id=batch.id section_id=section.id %}" role="button">
                 <td>{{ section.number }}</td>
                 <td>{{ section.capacity }}</td>
                 <td>Placeholder till we enroll students</td>

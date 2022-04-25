@@ -7,7 +7,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course, Section
-from staff.views import sections_view
+from staff.views import section_list
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -61,7 +61,7 @@ def test_section_list_anonymous_user_redirected_to_login(sections):
     request = RequestFactory().get(f"/coding-basics/batches/{batch.id}/sections/")
     request.user = AnonymousUser()
 
-    response = sections_view(request)
+    response = section_list(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/coding-basics/batches/{batch.id}/sections/" in response.url
@@ -69,7 +69,7 @@ def test_section_list_anonymous_user_redirected_to_login(sections):
 def test_section_list_logged_in_user_can_access(sections, logged_in_existing_user):
     batch = sections.first().batch
 
-    response = client.get(reverse('sections_view', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('section_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'coding_basics/batch/sections.html' in (template.name for template in response.templates)
@@ -77,7 +77,7 @@ def test_section_list_logged_in_user_can_access(sections, logged_in_existing_use
 def test_section_list_http_not_found_if_batch_invalid(logged_in_existing_user):
     invalid_batch_id = 1
 
-    response = client.get(reverse('sections_view', kwargs={'batch_id': invalid_batch_id}))
+    response = client.get(reverse('section_list', kwargs={'batch_id': invalid_batch_id}))
 
     assert response.status_code == HttpResponseNotFound.status_code
 
@@ -85,7 +85,7 @@ def test_section_detail_template_rendered_if_batch_and_sections_exists(sections,
     section_one = sections.first()
     batch = section_one.batch
 
-    response = client.get(reverse('section_view', kwargs={'batch_id': batch.id, 'section_id': section_one.id}))
+    response = client.get(reverse('section_detail', kwargs={'batch_id': batch.id, 'section_id': section_one.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'coding_basics/section/overview.html' in (template.name for template in response.templates)
@@ -94,13 +94,13 @@ def test_section_detail_http_not_found_raised_if_batch_invalid(sections, logged_
     invalid_batch_id = 0
     section_one = sections.first()
 
-    response = client.get(reverse('section_view', kwargs={'batch_id': invalid_batch_id, 'section_id': section_one.id}))
+    response = client.get(reverse('section_detail', kwargs={'batch_id': invalid_batch_id, 'section_id': section_one.id}))
 
     assert response.status_code == HttpResponseNotFound.status_code
 
 def test_section_detail_http_not_found_raised_if_section_invalid(batch, logged_in_existing_user):
     invalid_section_id = 0
 
-    response = client.get(reverse('section_view', kwargs={'batch_id': batch.id, 'section_id': invalid_section_id}))
+    response = client.get(reverse('section_detail', kwargs={'batch_id': batch.id, 'section_id': invalid_section_id}))
 
     assert response.status_code == HttpResponseNotFound.status_code

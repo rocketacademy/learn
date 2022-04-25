@@ -7,7 +7,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views import students_view
+from staff.views import student_list
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -41,13 +41,13 @@ def test_student_list_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/coding-basics/batches/{batch.id}/students/")
     request.user = AnonymousUser()
 
-    response = students_view(request)
+    response = student_list(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/coding-basics/batches/{batch.id}/students/" in response.url
 
 def test_student_list_logged_in_user_can_access(batch, logged_in_existing_user):
-    response = client.get(reverse('students_view', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('student_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'coding_basics/batch/students.html' in (template.name for template in response.templates)
@@ -55,6 +55,6 @@ def test_student_list_logged_in_user_can_access(batch, logged_in_existing_user):
 def test_student_list_http_not_found_if_batch_invalid(logged_in_existing_user):
     invalid_batch_id = 1
 
-    response = client.get(reverse('students_view', kwargs={'batch_id': invalid_batch_id}))
+    response = client.get(reverse('student_list', kwargs={'batch_id': invalid_batch_id}))
 
     assert response.status_code == HttpResponseNotFound.status_code
