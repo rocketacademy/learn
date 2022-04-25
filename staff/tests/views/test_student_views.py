@@ -7,17 +7,18 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views import batches_view
+from staff.views import students_view
 
 pytestmark = pytest.mark.django_db
 client = Client()
 
 @pytest.fixture()
-def existing_user():
+def logged_in_existing_user():
     User = get_user_model()
     existing_user = User.objects.create_user(email='user@domain.com', first_name='FirstName', last_name='LastName', password='password1234!')
+    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    yield existing_user
+    yield logged_in_existing_user
 
 @pytest.fixture()
 def batch():
@@ -36,35 +37,24 @@ def batch():
 
     yield batch
 
-def test_batch_list_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/coding-basics/batches/')
+def test_student_list_anonymous_user_redirected_to_login(batch):
+    request = RequestFactory().get(f"/coding-basics/batches/{batch.id}/students/")
     request.user = AnonymousUser()
 
-    response = batches_view(request)
+    response = students_view(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/coding-basics/batches/' in response.url
+    assert f"staff/login/?next=/coding-basics/batches/{batch.id}/students/" in response.url
 
-def test_batch_list_logged_in_user_can_access(existing_user):
-    request = RequestFactory().get('/coding-basics/batches/')
-    request.user = existing_user
-
-    response = batches_view(request)
+def test_student_list_logged_in_user_can_access(batch, logged_in_existing_user):
+    response = client.get(reverse('students_view', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
+    assert 'coding_basics/batch/students.html' in (template.name for template in response.templates)
 
-def test_batch_detail_template_rendered_if_batch_exists(batch, existing_user):
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
-
-    response = client.get(reverse('batch_view', kwargs={'batch_id': batch.id}))
-
-    assert response.status_code == HttpResponse.status_code
-    assert 'coding_basics/batch/overview.html' in (template.name for template in response.templates)
-
-def test_batch_detail_http_not_found_raised_if_batch_invalid(existing_user):
+def test_student_list_http_not_found_if_batch_invalid(logged_in_existing_user):
     invalid_batch_id = 1
 
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
-    response = client.get(reverse('batch_view', kwargs={'batch_id': invalid_batch_id}))
+    response = client.get(reverse('students_view', kwargs={'batch_id': invalid_batch_id}))
 
     assert response.status_code == HttpResponseNotFound.status_code

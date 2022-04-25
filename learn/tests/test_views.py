@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase
 
 from .. import views
 
+
 class TestHomeView(APITestCase):
     def test_redirect_to_batches(self):
         request = RequestFactory().get('')

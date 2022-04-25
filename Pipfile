@@ -14,12 +14,14 @@ django-libsass = "*"
 django-crispy-forms = "*"
 crispy-bootstrap5 = "*"
 environ = "*"
+django-safedelete = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
 psycopg2-binary = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.10"

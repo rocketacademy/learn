@@ -7,13 +7,15 @@ from .forms import AddBatchForm
 from .forms import LoginForm
 import datetime
 
+
 def index(request):
     return HttpResponseRedirect('/staff/coding-basics/batches/')
+
 
 def login_view(request):
     if request.method == 'GET':
         form = LoginForm(None)
-        
+
         return render(request, 'login.html', {'form': form})
     elif request.method == 'POST':
         form = LoginForm(request.POST)
@@ -25,13 +27,17 @@ def login_view(request):
         password = form.cleaned_data.get('password')
 
         user = authenticate(request, email=email, password=password)
-        if user == None:
-            form.add_error('password', 'The password you entered was incorrect')
+        if user is None:
+            form.add_error(
+                'password',
+                'The password you entered was incorrect'
+            )
 
             return render(request, 'login.html', {'form': form})
 
         login(request, user)
         return HttpResponseRedirect('/staff/coding-basics/batches/')
+
 
 @login_required(login_url='/staff/login/')
 def batches_view(request):
@@ -77,14 +83,16 @@ def batches_view(request):
 
     return render(request, "coding_basics/admin/all-batches.html", context)
 
+
 @login_required(login_url='/staff/login/')
 def batch_view(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
 
     if not batch_queryset.exists():
-        return HttpResponseNotFound
+        return HttpResponseNotFound('Error: Batch does not exist')
 
-    return render(request,
+    return render(
+        request,
         'coding_basics/batch/overview.html',
         {
             'batch': batch_queryset.last(),
@@ -92,14 +100,16 @@ def batch_view(request, batch_id):
         }
     )
 
+
 @login_required(login_url='/staff/login/')
 def students_view(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
 
     if not batch_queryset.exists():
-        return HttpResponseNotFound
+        return HttpResponseNotFound('Error: Batch does not exist')
 
-    return render(request,
+    return render(
+        request,
         'coding_basics/batch/students.html',
         {
             'batch': batch_queryset.last(),
@@ -107,15 +117,17 @@ def students_view(request, batch_id):
         }
     )
 
+
 @login_required(login_url='/staff/login/')
 def sections_view(request, batch_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
     sections_queryset = Section.objects.filter(batch__pk=batch_id)
 
-    if not batch_queryset.exists() or not sections_queryset.exists():
-        return HttpResponseNotFound
+    if not batch_queryset.exists():
+        return HttpResponseNotFound('Error: Batch does not exist')
 
-    return render(request,
+    return render(
+        request,
         'coding_basics/batch/sections.html',
         {
             'batch': batch_queryset.last(),
@@ -124,15 +136,17 @@ def sections_view(request, batch_id):
         }
     )
 
+
 @login_required(login_url='/staff/login/')
 def section_view(request, batch_id, section_id):
     batch_queryset = Batch.objects.filter(pk=batch_id)
     sections_queryset = Section.objects.filter(pk=section_id)
 
     if not batch_queryset.exists() or not sections_queryset.exists():
-        return HttpResponseNotFound
+        return HttpResponseNotFound('Error: Batch or section does not exist')
 
-    return render(request,
+    return render(
+        request,
         'coding_basics/section/overview.html',
         {
             'batch': batch_queryset.last(),
@@ -141,8 +155,10 @@ def section_view(request, batch_id, section_id):
         }
     )
 
+
 @login_required(login_url='/staff/login/')
 def section_leaders_view(request):
-    return render(request,
+    return render(
+        request,
         'coding_basics/admin/section-leaders.html',
     )

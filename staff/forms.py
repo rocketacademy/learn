@@ -7,6 +7,7 @@ from crispy_forms.layout import Layout, Submit, Row, Column
 
 User = get_user_model()
 
+
 class LoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.TextInput(
@@ -37,7 +38,7 @@ class LoginForm(forms.Form):
                 ('This email is not registered on Learn'),
                 code='unregistered_email',
             )
-        
+
         return email
 
 
@@ -82,5 +83,4 @@ class AddBatchForm(forms.ModelForm):
     #         )
         
     #     return end_date
-
 

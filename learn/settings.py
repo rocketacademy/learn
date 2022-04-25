@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import environ
 import os
 
@@ -39,6 +37,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# https://github.com/makinacorpus/django-safedelete
+SAFE_DELETE_FIELD_NAME = 'deleted_at'
+
 # URLS
 # ------------------------------------------------------------------------------
 
@@ -60,11 +61,12 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'compressor',
-    'rest_framework',
-    'authentication',
-    'staff',
     'crispy_forms',
     'crispy_bootstrap5',
+    'rest_framework',
+    'safedelete',
+    'authentication',
+    'staff',
 ]
 
 # AUTHENTICATION
@@ -115,7 +117,7 @@ MIDDLEWARE = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "staticfiles"), 
+    os.path.join(BASE_DIR, "staticfiles"),
 ]
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',

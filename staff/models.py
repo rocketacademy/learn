@@ -1,8 +1,12 @@
 from django.db import models
+from safedelete import SOFT_DELETE_CASCADE
+from safedelete.models import SafeDeleteModel
 
-class Course(models.Model):
+
+class Course(SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE_CASCADE
+
     CODING_BASICS = 'CODING_BASICS'
-
     NAME_CHOICES = [
         (CODING_BASICS, 'Coding Basics')
     ]
@@ -11,7 +15,10 @@ class Course(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Batch(models.Model):
+
+class Batch(SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE_CASCADE
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     number = models.PositiveIntegerField()
     start_date = models.DateField()
@@ -22,9 +29,10 @@ class Batch(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        latest_batch = Batch.objects.filter(course__id=self.course_id).order_by('number').last()
+        batches_queryset = Batch.objects.filter(course__id=self.course_id)
+        latest_batch = batches_queryset.order_by('number').last()
 
-        if latest_batch == None:
+        if latest_batch is None:
             self.number = 1
         else:
             self.number = latest_batch.number + 1
@@ -34,7 +42,10 @@ class Batch(models.Model):
 
         return super().save(*args, **kwargs)
 
-class BatchSchedule(models.Model):
+
+class BatchSchedule(SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE_CASCADE
+
     MONDAY = 'MON'
     TUESDAY = 'TUES'
     WEDNESDAY = 'WED'
@@ -59,13 +70,13 @@ class BatchSchedule(models.Model):
     end_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
-class Section(models.Model):
+
+class Section(SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE_CASCADE
+
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
     number = models.PositiveIntegerField()
     capacity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    
