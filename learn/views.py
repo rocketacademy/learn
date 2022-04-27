@@ -1,4 +1,5 @@
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+
 
 def home(request):
-    return redirect('/staff/login/')
+    return HttpResponseRedirect('/staff/basics/batches/')

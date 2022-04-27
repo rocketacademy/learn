@@ -9,3 +9,9 @@ htmlcov
 
 # Pipenv #
 Pipfile.lock
+
+# Processed static #
+/static
+
+# Environment variables #
+.env

@@ -1,9 +1,13 @@
 from django.urls import path
 
-from .views import coding_basics_view, index, login_view
+from staff.views import batch, index, login, section, student
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('login/', login_view, name='login_view'),
-    path('coding_basics/', coding_basics_view, name='coding_basics_view')
+    path('', index.index, name='index'),
+    path('login/', login.staff_login, name='staff_login'),
+    path('basics/batches/', batch.batch_list, name='batch_list'),
+    path('basics/batches/<int:batch_id>/', batch.batch_detail, name='batch_detail'),
+    path('basics/batches/<int:batch_id>/students/', student.student_list, name='student_list'),
+    path('basics/batches/<int:batch_id>/sections/', section.section_list, name='section_list'),
+    path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.section_detail, name='section_detail'),
 ]

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row py-2 border-bottom">
+    <h3>Coding Basics</h3>
+</div>
+<div class="row">
+    <div class="col-2 pt-4">
+        <nav>
+            <ul class="navbar-nav sidebar">
+                <li>
+                    <a href="{% url 'batch_list' %}"
+                        class="nav-link {% if current_tab == 'batches'%}sidebar-link-active border-start border-primary{% endif %}">Batches</a>
+                </li>             
+            </ul>
+        </nav>
+    </div>
+    <div class="col-10 pt-4 border-start">
+        {% block overview_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

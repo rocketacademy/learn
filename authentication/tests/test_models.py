@@ -20,31 +20,31 @@ class TestUserManager:
                 last_name=last_name,
                 password=password
             )
-        
-        assert str(exception_info.value) == 'User must have an email address.', 'Should raise ValueError with message if email was not provided'
+
+        assert str(exception_info.value) == 'User must have an email address.'
 
 class TestUser:
-    def test_model(self):
-        user_object = User.objects.create_user(
+    def test_modeL_create(self):
+        user = User.objects.create_user(
             email=email,
             first_name=first_name,
             last_name=last_name,
             password=password
         )
 
-        assert user_object.email == email, 'Should save email when creating instance of User'
-        assert user_object.first_name == first_name.upper(), 'Should save first name in uppercase when creating instance of User'
-        assert user_object.last_name == last_name.upper(), 'Should save last name in uppercase when creating instance of User'
-        assert user_object.password is not None, 'Should save password when creating instance of User'
+        assert user.email == email
+        assert user.first_name == first_name.upper()
+        assert user.last_name == last_name.upper()
+        assert user.password is not None
 
     def test_full_name(self):
-        user_object = User.objects.create_user(
+        user = User.objects.create_user(
             email=email,
             first_name=first_name,
             last_name=last_name,
             password=password
         )
 
-        full_name = user_object.full_name()
+        full_name = user.full_name()
 
-        assert full_name == f'{first_name.upper()} {last_name.upper()}', 'Should return concatenated first and last names in uppercase'
+        assert full_name == f'{first_name.upper()} {last_name.upper()}'

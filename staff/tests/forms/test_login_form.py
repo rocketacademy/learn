@@ -1,16 +1,16 @@
-import pytest
 from django.contrib.auth import get_user_model
-from .. import forms
+import pytest
+from staff.forms import LoginForm
 
 pytestmark = pytest.mark.django_db
 
 class TestLoginForm:
     def test_empty_form_is_invalid(self):
-        form = forms.LoginForm(data={})
+        form = LoginForm(data={})
 
         outcome = form.is_valid()
 
-        assert outcome == False, 'Should be invalid if no data provided'
+        assert outcome is False, 'Should be invalid if no data provided'
 
     def test_form_without_password_is_invalid(self):
         user_email = 'someemail@domain.com'
@@ -19,7 +19,7 @@ class TestLoginForm:
         User = get_user_model()
         User.objects.create_user(user_email, 'FirstName', 'LastName', user_password)
 
-        form = forms.LoginForm(
+        form = LoginForm(
             data={
                 'email': 'someemail@domain.com',
                 'password': ''
@@ -28,7 +28,7 @@ class TestLoginForm:
 
         outcome = form.is_valid()
 
-        assert outcome == False, 'Should be invalid if password not provided'
+        assert outcome is False, 'Should be invalid if password not provided'
         assert 'password' in form.errors, 'Should have password field error'
 
     def test_form_with_inputs_is_valid(self):
@@ -38,7 +38,7 @@ class TestLoginForm:
         User = get_user_model()
         User.objects.create_user(user_email, 'FirstName', 'LastName', user_password)
 
-        form = forms.LoginForm(
+        form = LoginForm(
             data={
                 'email': user_email,
                 'password': user_password
@@ -47,4 +47,4 @@ class TestLoginForm:
 
         outcome = form.is_valid()
 
-        assert outcome == True, 'Should be valid if both inputs provided'
+        assert outcome is True, 'Should be valid if both inputs provided'
