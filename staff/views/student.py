@@ -10,7 +10,7 @@ def student_list(request, batch_id):
 
     return render(
         request,
-        'coding_basics/student/list.html',
+        'basics/student/list.html',
         {
             'batch': batch,
             'current_tab': 'students'

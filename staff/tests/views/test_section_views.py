@@ -63,13 +63,13 @@ def sections(batch):
 
 def test_section_list_anonymous_user_redirected_to_login(sections):
     batch = sections.first().batch
-    request = RequestFactory().get(f"/coding-basics/batches/{batch.id}/sections/")
+    request = RequestFactory().get(f"/basics/batches/{batch.id}/sections/")
     request.user = AnonymousUser()
 
     response = section_list(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/coding-basics/batches/{batch.id}/sections/" in response.url
+    assert f"staff/login/?next=/basics/batches/{batch.id}/sections/" in response.url
 
 def test_section_list_logged_in_user_can_access(sections, logged_in_existing_user):
     batch = sections.first().batch
@@ -77,7 +77,7 @@ def test_section_list_logged_in_user_can_access(sections, logged_in_existing_use
     response = client.get(reverse('section_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coding_basics/section/list.html' in (template.name for template in response.templates)
+    assert 'basics/section/list.html' in (template.name for template in response.templates)
 
 def test_section_detail_template_rendered_if_batch_and_sections_exists(sections, logged_in_existing_user):
     section_one = sections.first()
@@ -86,4 +86,4 @@ def test_section_detail_template_rendered_if_batch_and_sections_exists(sections,
     response = client.get(reverse('section_detail', kwargs={'batch_id': batch.id, 'section_id': section_one.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coding_basics/section/overview.html' in (template.name for template in response.templates)
+    assert 'basics/section/overview.html' in (template.name for template in response.templates)

@@ -25,22 +25,18 @@ def batch_list(request):
 
         if create_batch_form.is_valid():
             new_batch = create_batch_form.save()
-
             batch_info_dict = dict(request.POST)
 
-            # iterate through create batch info
             for key in batch_info_dict:
-                # look for course day times
                 if 'course-day-time' in key:
-                    # make entry into BatchSchedules table
-                    batch_schedule_entry = BatchSchedule.objects.create(
+                    BatchSchedule.objects.create(
                         batch=new_batch,
                         course_day=batch_info_dict[key][0].upper(),
                         start_time=datetime.datetime.strptime(batch_info_dict[key][1], '%H:%M'),
                         end_time=datetime.datetime.strptime(batch_info_dict[key][2], '%H:%M'),
                     )
 
-            return HttpResponseRedirect('/staff/coding-basics/batches/')
+            return HttpResponseRedirect('/staff/basics/batches/')
 
     context = {
         'course': course,
@@ -50,7 +46,7 @@ def batch_list(request):
         'form': create_batch_form,
     }
 
-    return render(request, 'coding_basics/batch/list.html', context)
+    return render(request, 'basics/batch/list.html', context)
 
 
 @login_required(login_url='/staff/login/')
@@ -59,7 +55,7 @@ def batch_detail(request, batch_id):
 
     return render(
         request,
-        'coding_basics/batch/detail.html',
+        'basics/batch/detail.html',
         {
             'batch': batch,
             'current_tab': 'overview'

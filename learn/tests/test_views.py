@@ -12,4 +12,4 @@ class TestHomeView(APITestCase):
         response = views.home(request)
 
         self.assertTrue(status.is_redirect(response.status_code))
-        assert '/staff/coding-basics/batches/' in response.url
+        assert '/staff/basics/batches/' in response.url

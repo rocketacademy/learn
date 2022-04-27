@@ -29,4 +29,4 @@ def staff_login(request):
             return render(request, 'login.html', {'form': form})
 
         login(request, user)
-        return HttpResponseRedirect('/staff/coding-basics/batches/')
+        return HttpResponseRedirect('/staff/basics/batches/')

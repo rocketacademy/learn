@@ -7,9 +7,9 @@ class BatchSchedule(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
     MONDAY = 'MON'
-    TUESDAY = 'TUES'
+    TUESDAY = 'TUE'
     WEDNESDAY = 'WED'
-    THURSDAY = 'THUR'
+    THURSDAY = 'THU'
     FRIDAY = 'FRI'
     SATURDAY = 'SAT'
     SUNDAY = 'SUN'

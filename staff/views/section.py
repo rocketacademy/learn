@@ -12,7 +12,7 @@ def section_list(request, batch_id):
 
     return render(
         request,
-        'coding_basics/section/list.html',
+        'basics/section/list.html',
         {
             'batch': batch,
             'sections': sections_queryset,
@@ -31,7 +31,7 @@ def section_detail(request, batch_id, section_id):
 
     return render(
         request,
-        'coding_basics/section/overview.html',
+        'basics/section/overview.html',
         {
             'batch': batch,
             'section': section,

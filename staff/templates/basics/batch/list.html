@@ -1,4 +1,4 @@
-{% extends 'coding_basics/base.html' %}
+{% extends 'basics/base.html' %}
 {% block overview_content %}
 {% load crispy_forms_tags %}
 <div class="d-flex flex-row justify-content-between px-4">
@@ -27,7 +27,7 @@
                             </div>
                         </div>
                     </div>
-                    <form class="row g-3" method="POST" action="/staff/coding-basics/batches/">
+                    <form class="row g-3" method="POST" action="/staff/basics/batches/">
                         {% csrf_token %}
                         <input type="hidden" name="course" value="{{ course.id }}" />
                         <input type="hidden" name="number" value="{{ next_batch_number }}" />

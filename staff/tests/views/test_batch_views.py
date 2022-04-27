@@ -42,16 +42,16 @@ def batch():
     yield batch
 
 def test_batch_list_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/coding-basics/batches/')
+    request = RequestFactory().get('/basics/batches/')
     request.user = AnonymousUser()
 
     response = batch_list(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/coding-basics/batches/' in response.url
+    assert 'staff/login/?next=/basics/batches/' in response.url
 
 def test_batch_list_logged_in_user_can_access(batch, existing_user):
-    request = RequestFactory().get('/coding-basics/batches/')
+    request = RequestFactory().get('/basics/batches/')
     request.user = existing_user
 
     response = batch_list(request)
@@ -64,4 +64,4 @@ def test_batch_detail_template_rendered_if_batch_exists(batch, existing_user):
     response = client.get(reverse('batch_detail', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coding_basics/batch/detail.html' in (template.name for template in response.templates)
+    assert 'basics/batch/detail.html' in (template.name for template in response.templates)
