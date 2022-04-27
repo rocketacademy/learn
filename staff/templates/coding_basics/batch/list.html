@@ -112,14 +112,14 @@
                 <td>{{ batch.number }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>
-                {% for batch_schedule in batch_schedules %}
-                {% if batch_schedule.batch_id == batch.id %}
                 <td>
+                    {% for batch_schedule in batch_schedules %}
+                    {% if batch_schedule.batch_id == batch.id %}
                     <div>{{ batch_schedule.course_day }},</div>
                     <div>{{ batch_schedule.start_time|time:'fA' }} - {{ batch_schedule.end_time|time:'fA' }}</div>
+                    {% endif %}
+                    {% endfor %}
                 </td>
-                {% endif %}
-                {% endfor %}
                 <td>{{ batch.sections }}</td>
                 <td>{{ batch.capacity }}</td>
                 <td>{{ batch.users.count }}</td>
