@@ -1,11 +1,12 @@
 import datetime
+from django.conf import settings
 import pytest
 
 from staff.models import Batch, Course
 
 pytestmark = pytest.mark.django_db
 
-COURSE_NAME = 'CODING_BASICS'
+COURSE_NAME = settings.CODING_BASICS
 COURSE_DURATION = 35
 
 start_date = datetime.date.today()

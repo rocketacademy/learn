@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -9,7 +10,7 @@ from staff.forms import CreateBatchForm
 
 @login_required(login_url='/staff/login/')
 def batch_list(request):
-    course = Course.objects.get(name='CODING_BASICS')
+    course = Course.objects.get(name=settings.CODING_BASICS)
     batch_queryset = Batch.objects.all().order_by('-number')
     latest_batch_number = 0
     batch_schedules = BatchSchedule.objects.all()

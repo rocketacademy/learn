@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.contrib.auth.models import AnonymousUser
@@ -27,7 +28,7 @@ def logged_in_existing_user():
 
 @pytest.fixture()
 def batch():
-    COURSE_NAME = 'CODING_BASICS'
+    COURSE_NAME = settings.CODING_BASICS
     COURSE_DURATION = 35
 
     start_date = datetime.date.today()

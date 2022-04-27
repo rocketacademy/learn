@@ -1,4 +1,6 @@
 from django import forms
+from django.conf import settings
+
 from ..models import Batch
 
 
@@ -10,7 +12,7 @@ class CreateBatchForm(forms.ModelForm):
         model = Batch
         fields = ['course', 'start_date', 'end_date', 'sections', 'capacity']
         widgets = {
-            'course': forms.TextInput(attrs={'type': 'hidden', 'value': 'CODING_BASICS'}),
+            'course': forms.TextInput(attrs={'type': 'hidden', 'value': settings.CODING_BASICS}),
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
         }

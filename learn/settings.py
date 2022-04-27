@@ -171,5 +171,13 @@ REST_FRAMEWORK = {
     ]
 }
 
+# DJANGO CRIPSY FORMS
+# https://django-crispy-forms.readthedocs.io/en/latest/install.html
+# ------------------------------------------------------------------------------
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# GLOBAL CONSTANTS
+# ------------------------------------------------------------------------------
+
+CODING_BASICS = 'CODING_BASICS'
