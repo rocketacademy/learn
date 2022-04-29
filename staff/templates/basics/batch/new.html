@@ -1,0 +1,39 @@
+{% extends 'basics/base.html' %}
+{% load crispy_forms_tags %}
+{% block overview_content %}
+<div class="d-flex flex-row px-4">
+    <h4>Create new batch</h4>
+</div>
+<div class="p-4">
+    <form action="/staff/basics/batches/new/" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>Batch number</h6>
+                {{ next_batch_number }}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.start_date|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.end_date|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.sections|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.section_capacity|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="d-flex flex-row py-5">
+            <a type="link" href="/" role="button" class="btn btn-outline-secondary">Cancel</a>
+            <button class="btn btn-primary mx-2" type="submit">Create batch</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

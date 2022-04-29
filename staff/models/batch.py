@@ -8,10 +8,10 @@ class Batch(SafeDeleteModel):
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     number = models.PositiveIntegerField()
-    start_date = models.DateField()
-    end_date = models.DateField()
-    capacity = models.PositiveIntegerField()
-    sections = models.PositiveIntegerField()
+    start_date = models.DateField(blank=False)
+    end_date = models.DateField(blank=False)
+    capacity = models.PositiveIntegerField(blank=False)
+    sections = models.PositiveIntegerField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
