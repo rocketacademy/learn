@@ -15,6 +15,7 @@ django-crispy-forms = "*"
 crispy-bootstrap5 = "*"
 environ = "*"
 django-safedelete = "*"
+django-polymorphic = "*"
 
 [dev-packages]
 pytest = "*"
