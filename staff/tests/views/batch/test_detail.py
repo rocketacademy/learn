@@ -1,5 +1,5 @@
 import datetime
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -8,7 +8,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views.batch import batch_detail, batch_list
+from staff.views.batch import batch_detail
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -42,24 +42,24 @@ def batch():
 
     yield batch
 
-def test_batch_list_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/basics/batches/')
+def test_anonymous_user_redirected_to_login(batch):
+    request = RequestFactory().get(f"/basics/batches/{batch.id}/")
     request.user = AnonymousUser()
 
-    response = batch_list(request)
+    response = batch_detail(request, batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/basics/batches/' in response.url
+    assert f"staff/login/?next=/basics/batches/{batch.id}/" in response.url
 
-def test_batch_list_logged_in_user_can_access(batch, existing_user):
-    request = RequestFactory().get('/basics/batches/')
+def test_logged_in_user_can_access(batch, existing_user):
+    request = RequestFactory().get(f"/basics/batches/{batch.id}/")
     request.user = existing_user
 
-    response = batch_list(request)
+    response = batch_detail(request, batch.id)
 
     assert response.status_code == HttpResponse.status_code
 
-def test_batch_detail_template_rendered_if_batch_exists(batch, existing_user):
+def test_template_rendered_if_batch_exists(batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
     response = client.get(reverse('batch_detail', kwargs={'batch_id': batch.id}))

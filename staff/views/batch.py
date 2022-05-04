@@ -1,12 +1,11 @@
-import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.forms import formset_factory
 
-from staff.forms import BatchForm
-from staff.models import Batch, Course, Section
+from staff.forms import BatchForm, BatchScheduleFormSet
+from staff.models import Batch, BatchSchedule, Course, Section
 
 
 @login_required(login_url='/staff/login/')
@@ -22,15 +21,18 @@ def batch_list(request):
             }
         )
 
+@login_required(login_url='/staff/login/')
 def batch_new(request):
-    if request.method == 'GET':
-        latest_batch_number = Batch.objects.latest('number').number
-        batch_form = BatchForm(None)
+    latest_batch_number = Batch.objects.aggregate(Max('number'))
 
-        if latest_batch_number:
-            next_batch_number = latest_batch_number + 1
-        else:
-            next_batch_number = 1
+    if latest_batch_number['number__max']:
+        next_batch_number = latest_batch_number['number__max'] + 1
+    else:
+        next_batch_number = 1
+
+    if request.method == 'GET':
+        batch_form = BatchForm(None)
+        batch_schedule_formset = BatchScheduleFormSet(prefix='batch-schedule')
 
         return render(
             request,
@@ -38,42 +40,50 @@ def batch_new(request):
             {
                 'next_batch_number': next_batch_number,
                 'batch_form': batch_form,
+                'batch_schedule_formset': batch_schedule_formset
             }
         )
     elif request.method == 'POST':
         batch_form = BatchForm(request.POST)
+        batch_schedule_formset = BatchScheduleFormSet(request.POST, prefix='batch-schedule')
 
-        if not batch_form.is_valid():
-            return render(
-                request,
-                'basics/batch/new.html',
-                {
-                    'batch_form': batch_form,
-                }
+        if batch_form.is_valid() and batch_schedule_formset.is_valid():
+            sections = batch_form.cleaned_data.get('sections')
+            section_capacity = batch_form.cleaned_data.get('section_capacity')
+            total_batch_schedule_forms = int(request.POST['batch-schedule-TOTAL_FORMS'])
+
+            batch = Batch.objects.create(
+                course=Course.objects.get(name=settings.CODING_BASICS),
+                capacity=sections * section_capacity,
+                start_date=batch_form.cleaned_data.get('start_date'),
+                end_date=batch_form.cleaned_data.get('end_date'),
+                sections=sections
             )
+            for number in range(1, sections + 1):
+                Section.objects.create(
+                    batch=batch,
+                    number=number,
+                    capacity=section_capacity
+                )
+            for index in range(total_batch_schedule_forms):
+                BatchSchedule.objects.create(
+                    batch=batch,
+                    day=request.POST[f"batch-schedule-{index}-day"],
+                    start_time=request.POST[f"batch-schedule-{index}-start_time"],
+                    end_time=request.POST[f"batch-schedule-{index}-end_time"]
+                )
 
-        course = Course.objects.get(name=settings.CODING_BASICS)
-        start_date = request.POST['start_date']
-        end_date = request.POST['end_date']
-        sections = int(request.POST['sections'])
-        section_capacity = int(request.POST['section_capacity'])
-        batch_capacity = sections * section_capacity
+            return HttpResponseRedirect('/staff/basics/batches/')
 
-        batch = Batch.objects.create(
-            course=course,
-            capacity=batch_capacity,
-            start_date=start_date,
-            end_date=end_date,
-            sections=sections
+        return render(
+            request,
+            'basics/batch/new.html',
+            {
+                'next_batch_number': next_batch_number,
+                'batch_form': batch_form,
+                'batch_schedule_formset': batch_schedule_formset
+            }
         )
-        for number in range(1, sections + 1):
-            Section.objects.create(
-                batch=batch,
-                number=number,
-                capacity=section_capacity
-            )
-        return HttpResponseRedirect('/staff/basics/batches/')
-
 
 @login_required(login_url='/staff/login/')
 def batch_detail(request, batch_id):
