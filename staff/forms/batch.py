@@ -1,17 +1,25 @@
 import datetime
 from django import forms
 
+from staff.models import Batch
 
-class BatchForm(forms.Form):
-    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    sections = forms.IntegerField(widget=forms.NumberInput(), label='No. of sections')
-    section_capacity = forms.IntegerField(widget=forms.NumberInput())
+class BatchForm(forms.ModelForm):
+    class Meta:
+        model = Batch
+        fields = [
+            'start_date',
+            'end_date',
+            'sections'
+        ]
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'sections': forms.NumberInput()
+        }
 
     def clean(self):
-        cleaned_data = super().clean()
-        start_date = cleaned_data.get('start_date')
-        end_date = cleaned_data.get('end_date')
+        start_date = self.cleaned_data.get('start_date')
+        end_date = self.cleaned_data.get('end_date')
 
         if start_date and end_date and start_date >= end_date:
             message = forms.ValidationError(('Start date must be before end date'), code='invalid_date')
@@ -41,14 +49,3 @@ class BatchForm(forms.Form):
             )
 
         return sections
-
-    def clean_section_capacity(self):
-        section_capacity = self.cleaned_data.get('section_capacity')
-
-        if not section_capacity > 0:
-            raise forms.ValidationError(
-                ('Capacity per section should be more than one'),
-                code='invalid_section_capacity',
-            )
-
-        return section_capacity

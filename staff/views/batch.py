@@ -4,7 +4,7 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from staff.forms import BatchForm, BatchScheduleFormSet
+from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
 from staff.models import Batch, BatchSchedule, Course, Section
 
 
@@ -32,6 +32,7 @@ def new(request):
 
     if request.method == 'GET':
         batch_form = BatchForm(None)
+        section_form = SectionForm(None)
         batch_schedule_formset = BatchScheduleFormSet(prefix='batch-schedule')
 
         return render(
@@ -40,16 +41,18 @@ def new(request):
             {
                 'next_batch_number': next_batch_number,
                 'batch_form': batch_form,
+                'section_form': section_form,
                 'batch_schedule_formset': batch_schedule_formset
             }
         )
     elif request.method == 'POST':
         batch_form = BatchForm(request.POST)
+        section_form = SectionForm(request.POST)
         batch_schedule_formset = BatchScheduleFormSet(request.POST, prefix='batch-schedule')
 
-        if batch_form.is_valid() and batch_schedule_formset.is_valid():
+        if batch_form.is_valid() and section_form.is_valid() and batch_schedule_formset.is_valid():
             sections = batch_form.cleaned_data.get('sections')
-            section_capacity = batch_form.cleaned_data.get('section_capacity')
+            section_capacity = section_form.cleaned_data.get('capacity')
             total_batch_schedule_forms = int(request.POST['batch-schedule-TOTAL_FORMS'])
 
             batch = Batch.objects.create(
@@ -81,6 +84,7 @@ def new(request):
             {
                 'next_batch_number': next_batch_number,
                 'batch_form': batch_form,
+                'section_form': section_form,
                 'batch_schedule_formset': batch_schedule_formset
             }
         )

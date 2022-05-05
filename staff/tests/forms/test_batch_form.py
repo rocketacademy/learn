@@ -57,15 +57,3 @@ class TestBatchForm:
 
         assert outcome is False
         assert 'Each batch should have at least one section' in batch_form.errors['sections']
-
-    def test_form_section_capacity_should_be_at_least_one(self):
-        batch_form = BatchForm(
-            data={
-                'section_capacity': 0,
-            }
-        )
-
-        outcome = batch_form.is_valid()
-
-        assert outcome is False
-        assert 'Capacity per section should be more than one' in batch_form.errors['section_capacity']

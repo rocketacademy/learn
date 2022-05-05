@@ -52,7 +52,7 @@ def test_valid_form_creates_records(existing_user):
         'start_date': '2022-01-01',
         'end_date': '2022-02-01',
         'sections': number_of_sections,
-        'section_capacity': section_capacity,
+        'capacity': section_capacity,
         'batch-schedule-TOTAL_FORMS': number_of_batch_schedules,
         'batch-schedule-INITIAL_FORMS': '0',
         'batch-schedule-MIN_NUM_FORMS': '0',

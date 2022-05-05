@@ -1,7 +1,7 @@
 from django.urls import reverse
 import pytest
 
-from staff.forms import BatchScheduleFormSet, batch, batch_schedule
+from staff.forms import BatchScheduleFormSet
 
 pytestmark = pytest.mark.django_db
 
