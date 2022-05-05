@@ -8,7 +8,7 @@ from freezegun import freeze_time
 import pytest
 
 from staff.models import Batch, BatchSchedule, Course, Section
-from staff.views.batch import batch_new
+from staff.views.batch import new
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -29,7 +29,7 @@ def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/basics/batches/new/')
     request.user = AnonymousUser()
 
-    response = batch_new(request)
+    response = new(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert 'staff/login/?next=/basics/batches/' in response.url
@@ -38,7 +38,7 @@ def test_logged_in_user_can_access(existing_user):
     request = RequestFactory().get('/basics/batches/new/')
     request.user = existing_user
 
-    response = batch_new(request)
+    response = new(request)
 
     assert response.status_code == HttpResponse.status_code
 

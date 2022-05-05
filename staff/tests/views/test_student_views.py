@@ -8,7 +8,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views.student import student_list
+from staff.views.student import list
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -47,7 +47,7 @@ def test_student_list_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/students/")
     request.user = AnonymousUser()
 
-    response = student_list(request)
+    response = list(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/basics/batches/{batch.id}/students/" in response.url

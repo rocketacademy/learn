@@ -5,7 +5,7 @@ from staff.models import Batch
 
 
 @login_required(login_url='/staff/login/')
-def student_list(request, batch_id):
+def list(request, batch_id):
     batch = Batch.objects.get(pk=batch_id)
 
     return render(

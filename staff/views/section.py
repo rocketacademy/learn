@@ -6,7 +6,7 @@ from staff.models import Batch, Section
 
 
 @login_required(login_url='/staff/login/')
-def section_list(request, batch_id):
+def list(request, batch_id):
     batch = Batch.objects.get(pk=batch_id)
     sections_queryset = Section.objects.filter(batch__pk=batch_id)
 
@@ -22,7 +22,7 @@ def section_list(request, batch_id):
 
 
 @login_required(login_url='/staff/login/')
-def section_detail(request, batch_id, section_id):
+def detail(request, batch_id, section_id):
     batch = Batch.objects.get(pk=batch_id)
     section = Section.objects.get(pk=section_id)
 

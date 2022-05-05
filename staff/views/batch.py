@@ -9,7 +9,7 @@ from staff.models import Batch, BatchSchedule, Course, Section
 
 
 @login_required(login_url='/staff/login/')
-def batch_list(request):
+def list(request):
     if request.method == 'GET':
         batch_queryset = Batch.objects.all().order_by('-number')
 
@@ -22,7 +22,7 @@ def batch_list(request):
         )
 
 @login_required(login_url='/staff/login/')
-def batch_new(request):
+def new(request):
     latest_batch_number = Batch.objects.aggregate(Max('number'))
 
     if latest_batch_number['number__max']:
@@ -86,7 +86,7 @@ def batch_new(request):
         )
 
 @login_required(login_url='/staff/login/')
-def batch_detail(request, batch_id):
+def detail(request, batch_id):
     batch = Batch.objects.get(pk=batch_id)
 
     return render(
