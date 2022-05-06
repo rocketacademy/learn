@@ -8,14 +8,14 @@ from staff.models import Batch, Section
 @login_required(login_url='/staff/login/')
 def list(request, batch_id):
     batch = Batch.objects.get(pk=batch_id)
-    sections_queryset = Section.objects.filter(batch__pk=batch_id)
+    section_queryset = Section.objects.filter(batch__pk=batch_id).order_by('number')
 
     return render(
         request,
         'basics/section/list.html',
         {
             'batch': batch,
-            'sections': sections_queryset,
+            'sections': section_queryset,
             'current_tab': 'sections'
         }
     )

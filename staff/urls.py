@@ -8,6 +8,7 @@ urlpatterns = [
     path('basics/batches/', batch.list, name='batch_list'),
     path('basics/batches/new/', batch.new, name='batch_new'),
     path('basics/batches/<int:batch_id>/', batch.detail, name='batch_detail'),
+    path('basics/batches/<int:batch_id>/edit/', batch.edit, name='batch_edit'),
     path('basics/batches/<int:batch_id>/students/', student.list, name='student_list'),
     path('basics/batches/<int:batch_id>/sections/', section.list, name='section_list'),
     path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.detail, name='section_detail'),
