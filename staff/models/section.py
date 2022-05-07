@@ -11,3 +11,9 @@ class Section(SafeDeleteModel):
     capacity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @classmethod
+    def next_number(self, batch_id):
+        if self.objects.count() == 0:
+            return 1
+        return self.objects.filter(batch__id=batch_id).aggregate(models.Max('number'))['number__max'] + 1

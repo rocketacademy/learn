@@ -24,12 +24,8 @@ def list(request):
 
 @login_required(login_url='/staff/login/')
 def new(request):
-    largest_batch_number = Batch.objects.aggregate(Max('number'))['number__max']
-
-    if largest_batch_number:
-        next_batch_number = largest_batch_number + 1
-    else:
-        next_batch_number = 1
+    course_id = Course.objects.get(name=settings.CODING_BASICS).id
+    next_batch_number = Batch.next_number(course_id)
 
     if request.method == 'GET':
         batch_form = BatchForm(None)
@@ -167,8 +163,7 @@ def edit(request, batch_id):
             batch.capacity = sections * section_capacity
             batch.save()
 
-            largest_section_number = section_queryset.aggregate(Max('number'))['number__max']
-            next_section_number = largest_section_number + 1
+            next_section_number = Section.next_number(batch_id)
             for number in range(next_section_number, sections + 1):
                 Section.objects.create(
                     batch=batch,
