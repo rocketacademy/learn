@@ -16,8 +16,8 @@ class Batch(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        batches_queryset = Batch.objects.filter(course__id=self.course_id)
-        latest_batch = batches_queryset.order_by('number').last()
+        batch_queryset = Batch.objects.filter(course__id=self.course_id)
+        latest_batch = batch_queryset.order_by('number').last()
 
         if latest_batch is None:
             self.number = 1

@@ -57,9 +57,9 @@ def sections(batch):
         capacity=SECTION_CAPACITY
     )
 
-    sections_queryset = Section.objects.filter(batch__id=batch.id)
+    section_queryset = Section.objects.filter(batch__id=batch.id)
 
-    yield sections_queryset
+    yield section_queryset
 
 def test_section_list_anonymous_user_redirected_to_login(sections):
     batch = sections.first().batch

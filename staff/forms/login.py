@@ -28,8 +28,8 @@ class LoginForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('email').lower()
-        queryset = User.objects.filter(email=email)
-        if not queryset.exists():
+        user_queryset = User.objects.filter(email=email)
+        if not user_queryset.exists():
             raise forms.ValidationError(
                 ('This email is not registered on Learn'),
                 code='unregistered_email',
