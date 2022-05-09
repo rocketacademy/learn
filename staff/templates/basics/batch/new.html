@@ -43,22 +43,24 @@
             </div>
         </div>
         {{ batch_schedule_formset.management_form }}
-        <div class="row py-2" id="batch-schedule-formset-container">
+        <div class="batch-schedule-formset-container">
             {% for batch_schedule_form in batch_schedule_formset %}
-            <div class="row">
-                <div class="col-md-3 col-lg-3">
-                    {{ batch_schedule_form.day|as_crispy_field }}
-                </div>
-                <div class="col-md-3 col-lg-3">
-                    {{ batch_schedule_form.start_time|as_crispy_field }}
-                </div>
-                <div class="col-md-3 col-lg-3">
-                    {{ batch_schedule_form.end_time|as_crispy_field }}
-                </div>
-                <div class="remove-row-container col-md-3 col-lg-3">
-                    {% if batch_schedule_form.instance.pk %}
-                        {{ batch_schedule_form.DELETE }}
-                    {% endif %}
+            <div class="batch-schedule-formset">
+                <div class="row my-3">
+                    <div class="col-md-3 col-lg-3">
+                        {{ batch_schedule_form.day|as_crispy_field }}
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        {{ batch_schedule_form.start_time|as_crispy_field }}
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        {{ batch_schedule_form.end_time|as_crispy_field }}
+                    </div>
+                    <div class="remove-row-container col-md-3 col-lg-3">
+                        {% if batch_schedule_form.instance.pk %}
+                            {{ batch_schedule_form.DELETE }}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -73,13 +75,18 @@
 <script src="{% static 'js/jquery.formset.js' %}"></script>
 <script type="text/javascript">
     $(function() {
-        $('#batch-schedule-formset-container').formset({
+        $('.batch-schedule-formset').formset({
             prefix: '{{ batch_schedule_formset.prefix }}',
             addText: '+',
             deleteText: 'Remove',
             deleteContainerClass: 'remove-row-container',
         });
-        $('.add-row').addClass('btn btn-primary btn-small my-3');
+
+        const firstDeleteRowLink = document.querySelectorAll('.batch-schedule-formset-container .batch-schedule-formset.dynamic-form .remove-row-container')[0];
+        const addRowButton = $('.add-row');
+
+        firstDeleteRowLink.style.display = "none";
+        addRowButton.addClass('btn btn-primary btn-small my-3');
     })
 </script>
 {% endblock %}

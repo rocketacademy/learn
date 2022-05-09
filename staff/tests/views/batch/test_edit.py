@@ -9,6 +9,7 @@ from freezegun import freeze_time
 import pytest
 
 from staff.models import Batch, Course, Section
+from staff.models.batch_schedule import BatchSchedule
 from staff.views.batch import edit
 
 pytestmark = pytest.mark.django_db
@@ -53,6 +54,17 @@ def section(batch):
 
     yield section
 
+@pytest.fixture()
+def batch_schedule(batch):
+    batch_schedule = BatchSchedule.objects.create(
+        batch=batch,
+        day='MON',
+        start_time='00:00:00',
+        end_time='02:00:00',
+    )
+
+    yield batch_schedule
+
 def test_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/edit/")
     request.user = AnonymousUser()
@@ -78,13 +90,20 @@ def test_template_rendered_if_batch_exists(batch, section, existing_user):
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_template_rendered_again_if_sections_incorrectly_reduced(batch, section, existing_user):
+def test_template_rendered_again_if_sections_incorrectly_reduced(batch, section, batch_schedule, existing_user):
     incorrectly_reduced_number_of_sections = 0
     payload = {
         'start_date': '2022-01-01',
         'end_date': '2022-02-01',
         'sections': incorrectly_reduced_number_of_sections,
-        'capacity': section.capacity
+        'capacity': section.capacity,
+        'batch-schedule-TOTAL_FORMS': ['1'],
+        'batch-schedule-INITIAL_FORMS': ['1'],
+        'batch-schedule-MIN_NUM_FORMS': ['0'],
+        'batch-schedule-MAX_NUM_FORMS': ['7'],
+        'batch-schedule-0-day': ['MON'],
+        'batch-schedule-0-start_time': ['00:00:00'],
+        'batch-schedule-0-end_time': ['02:00:00'],
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
@@ -99,13 +118,20 @@ def test_template_rendered_again_if_sections_incorrectly_reduced(batch, section,
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch, section, existing_user):
+def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch, section, batch_schedule, existing_user):
     incorrectly_reduced_section_capacity = section.capacity - 1
     payload = {
         'start_date': '2022-01-01',
         'end_date': '2022-02-01',
         'sections': Section.objects.all().count(),
-        'capacity': incorrectly_reduced_section_capacity
+        'capacity': incorrectly_reduced_section_capacity,
+        'batch-schedule-TOTAL_FORMS': ['1'],
+        'batch-schedule-INITIAL_FORMS': ['1'],
+        'batch-schedule-MIN_NUM_FORMS': ['0'],
+        'batch-schedule-MAX_NUM_FORMS': ['7'],
+        'batch-schedule-0-day': ['MON'],
+        'batch-schedule-0-start_time': ['00:00:00'],
+        'batch-schedule-0-end_time': ['02:00:00'],
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
@@ -120,16 +146,33 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch, 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_valid_form_updates_and_creates_records(batch, section, existing_user):
+def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, existing_user):
     new_start_date = batch.start_date + datetime.timedelta(1)
     new_end_date = batch.end_date + datetime.timedelta(1)
-    number_of_sections = Section.objects.all().count() + 1
+
+    new_sections_count = Section.objects.all().count() + 1
     section_capacity = section.capacity + 1
+
+    new_batch_schedules_count = BatchSchedule.objects.all().count() + 1
+    new_batch_schedule_day = 'TUE'
+    new_batch_schedule_start_time = datetime.time(12, 0)
+    new_batch_schedule_end_time = datetime.time(14, 0)
+
     payload = {
         'start_date': new_start_date,
         'end_date': new_end_date,
-        'sections': number_of_sections,
+        'sections': new_sections_count,
         'capacity': section_capacity,
+        'batch-schedule-TOTAL_FORMS': [f"{new_batch_schedules_count}"],
+        'batch-schedule-INITIAL_FORMS': ['1'],
+        'batch-schedule-MIN_NUM_FORMS': ['0'],
+        'batch-schedule-MAX_NUM_FORMS': ['7'],
+        'batch-schedule-0-day': ['MON'],
+        'batch-schedule-0-start_time': ['00:00:00'],
+        'batch-schedule-0-end_time': ['02:00:00'],
+        'batch-schedule-1-day': [new_batch_schedule_day],
+        'batch-schedule-1-start_time': [new_batch_schedule_start_time],
+        'batch-schedule-1-end_time': [new_batch_schedule_end_time]
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
@@ -147,9 +190,16 @@ def test_valid_form_updates_and_creates_records(batch, section, existing_user):
     batch = Batch.objects.first()
     assert batch.start_date == new_start_date
     assert batch.end_date == new_end_date
-    assert batch.sections == number_of_sections
-    assert batch.capacity == number_of_sections * section_capacity
+    assert batch.sections == new_sections_count
+    assert batch.capacity == new_sections_count * section_capacity
 
     section_queryset = Section.objects.all()
-    assert section_queryset.count() == number_of_sections
+    assert section_queryset.count() == new_sections_count
     assert section_queryset.first().capacity == section_capacity
+
+    batchschedule_queryset = BatchSchedule.objects.all()
+    new_batch_schedule = batchschedule_queryset.last()
+    assert batchschedule_queryset.count() == new_batch_schedules_count
+    assert new_batch_schedule.day == new_batch_schedule_day
+    assert new_batch_schedule.start_time == new_batch_schedule_start_time
+    assert new_batch_schedule.end_time == new_batch_schedule_end_time

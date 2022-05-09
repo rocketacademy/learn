@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -52,29 +52,32 @@ def new(request):
             section_capacity = section_form.cleaned_data.get('capacity')
             total_batch_schedule_forms = int(request.POST['batch-schedule-TOTAL_FORMS'])
 
-            batch = Batch.objects.create(
-                course=Course.objects.get(name=settings.CODING_BASICS),
-                capacity=sections * section_capacity,
-                start_date=batch_form.cleaned_data.get('start_date'),
-                end_date=batch_form.cleaned_data.get('end_date'),
-                sections=sections
-            )
-            for number in range(1, sections + 1):
-                Section.objects.create(
-                    batch=batch,
-                    number=number,
-                    capacity=section_capacity
-                )
-            for index in range(total_batch_schedule_forms):
-                BatchSchedule.objects.create(
-                    batch=batch,
-                    day=request.POST[f"batch-schedule-{index}-day"],
-                    start_time=request.POST[f"batch-schedule-{index}-start_time"],
-                    end_time=request.POST[f"batch-schedule-{index}-end_time"]
-                )
+            try:
+                with transaction.atomic():
+                    batch = Batch.objects.create(
+                        course=Course.objects.get(name=settings.CODING_BASICS),
+                        capacity=sections * section_capacity,
+                        start_date=batch_form.cleaned_data.get('start_date'),
+                        end_date=batch_form.cleaned_data.get('end_date'),
+                        sections=sections
+                    )
+                    for number in range(1, sections + 1):
+                        Section.objects.create(
+                            batch=batch,
+                            number=number,
+                            capacity=section_capacity
+                        )
+                    for index in range(total_batch_schedule_forms):
+                        BatchSchedule.objects.create(
+                            batch=batch,
+                            day=request.POST[f"batch-schedule-{index}-day"],
+                            start_time=request.POST[f"batch-schedule-{index}-start_time"],
+                            end_time=request.POST[f"batch-schedule-{index}-end_time"]
+                        )
 
-            return HttpResponseRedirect('/staff/basics/batches/')
-
+                    return HttpResponseRedirect('/staff/basics/batches/')
+            except IntegrityError:
+                return redirect('batch_new')
         return render(
             request,
             'basics/batch/new.html',
@@ -108,18 +111,18 @@ def edit(request, batch_id):
     batch = Batch.objects.get(pk=batch_id)
     section_queryset = Section.objects.filter(batch__id=batch_id)
     batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
-    # batch_schedules = [{
-    #     'day': schedule.day,
-    #     'start_time': schedule.start_time,
-    #     'end_time': schedule.end_time
-    # } for schedule in batchschedule_queryset]
+    batch_schedules = [{
+        'day': schedule.day,
+        'start_time': schedule.start_time,
+        'end_time': schedule.end_time
+    } for schedule in batchschedule_queryset]
 
     batch_form = BatchForm(instance=batch)
     section_form = SectionForm(instance=section_queryset.first())
-    # batch_schedule_formset = BatchScheduleFormSet(
-    #     initial=batch_schedules,
-    #     prefix='batch-schedule'
-    # )
+    batch_schedule_formset = BatchScheduleFormSet(
+        initial=batch_schedules,
+        prefix='batch-schedule'
+    )
 
     if request.method == 'GET':
         return render(
@@ -130,12 +133,16 @@ def edit(request, batch_id):
                 'batch': batch,
                 'batch_form': batch_form,
                 'section_form': section_form,
-                # 'batch_schedule_formset': batch_schedule_formset
+                'batch_schedule_formset': batch_schedule_formset
             }
         )
     elif request.method == 'POST':
         batch_form = BatchForm(request.POST)
         section_form = SectionForm(request.POST)
+        batch_schedule_formset = BatchScheduleFormSet(
+            request.POST,
+            prefix='batch-schedule'
+        )
 
         new_number_of_sections = int(request.POST['sections'])
         current_number_of_sections = section_queryset.count()
@@ -153,27 +160,48 @@ def edit(request, batch_id):
                 f"The sections in this batch should have a capacity of at least {current_section_capacity}"
             )
 
-        if batch_form.is_valid() and section_form.is_valid():
+        if batch_form.is_valid() and section_form.is_valid() and batch_schedule_formset.is_valid():
             sections = batch_form.cleaned_data.get('sections')
             section_capacity = section_form.cleaned_data.get('capacity')
+            new_batch_schedules = []
 
-            batch.start_date = batch_form.cleaned_data.get('start_date')
-            batch.end_date = batch_form.cleaned_data.get('end_date')
-            batch.sections = sections
-            batch.capacity = sections * section_capacity
-            batch.save()
+            for batch_schedule_form in batch_schedule_formset:
+                day = batch_schedule_form.cleaned_data.get('day')
+                start_time = batch_schedule_form.cleaned_data.get('start_time')
+                end_time = batch_schedule_form.cleaned_data.get('end_time')
 
-            next_section_number = Section.next_number(batch_id)
-            for number in range(next_section_number, sections + 1):
-                Section.objects.create(
-                    batch=batch,
-                    number=number,
-                    capacity=section_capacity
-                )
-            section_queryset.update(capacity=section_capacity)
+                if day and start_time and end_time:
+                    new_batch_schedules.append(
+                        BatchSchedule(
+                            batch=batch,
+                            day=day,
+                            start_time=start_time,
+                            end_time=end_time
+                        )
+                    )
+            try:
+                with transaction.atomic():
+                    batch.start_date = batch_form.cleaned_data.get('start_date')
+                    batch.end_date = batch_form.cleaned_data.get('end_date')
+                    batch.sections = sections
+                    batch.capacity = sections * section_capacity
+                    batch.save()
 
-            return redirect('batch_detail', batch_id=batch.id)
+                    next_section_number = Section.next_number(batch_id)
+                    for number in range(next_section_number, sections + 1):
+                        Section.objects.create(
+                            batch=batch,
+                            number=number,
+                            capacity=section_capacity
+                        )
+                    section_queryset.update(capacity=section_capacity)
 
+                    BatchSchedule.objects.filter(batch__id=batch.id).delete()
+                    BatchSchedule.objects.bulk_create(new_batch_schedules)
+
+                    return redirect('batch_detail', batch_id=batch.id)
+            except IntegrityError:
+                return redirect('batch_edit', batch_id=batch.id)
         return render(
             request,
             'basics/batch/edit.html',
@@ -182,5 +210,6 @@ def edit(request, batch_id):
                 'batch': batch,
                 'batch_form': batch_form,
                 'section_form': section_form,
+                'batch_schedule_formset': batch_schedule_formset
             }
         )

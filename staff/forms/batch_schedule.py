@@ -23,6 +23,10 @@ class BatchScheduleForm(ModelForm):
         self.helper.form_show_labels = False
 
 class BaseBatchScheduleFormSet(BaseFormSet):
+    def __init__(self, *args, **kwargs):
+        super(BaseBatchScheduleFormSet, self).__init__(*args, **kwargs)
+        self.forms[0].empty_permitted = False
+
     def clean(self):
         if any(self.errors):
             return
@@ -40,6 +44,7 @@ class BaseBatchScheduleFormSet(BaseFormSet):
 BatchScheduleFormSet = formset_factory(
     BatchScheduleForm,
     formset=BaseBatchScheduleFormSet,
+    extra=1,
     max_num=7,
     absolute_max=7
 )
