@@ -75,6 +75,9 @@ INSTALLED_APPS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = 'authentication.User'
 
+# https://docs.djangoproject.com/en/4.0/ref/settings/#login-url
+LOGIN_URL = '/staff/login/'
+
 # PASSWORDS
 # ------------------------------------------------------------------------------
 

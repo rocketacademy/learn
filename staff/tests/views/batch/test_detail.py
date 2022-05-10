@@ -8,7 +8,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course, Section
-from staff.views.batch import detail
+from staff.views.batch import DetailView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -56,7 +56,7 @@ def test_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/")
     request.user = AnonymousUser()
 
-    response = detail(request, batch.id)
+    response = DetailView.as_view()(request, batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/basics/batches/{batch.id}/" in response.url
@@ -65,7 +65,7 @@ def test_logged_in_user_can_access(batch, section, existing_user):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/")
     request.user = existing_user
 
-    response = detail(request, batch.id)
+    response = DetailView.as_view()(request, batch.id)
 
     assert response.status_code == HttpResponse.status_code
 
