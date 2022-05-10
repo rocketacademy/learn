@@ -10,7 +10,7 @@ class BatchAdmin(admin.ModelAdmin):
     list_display = ('course', 'number', 'start_date', 'end_date', 'capacity', 'sections')
 
 class BatchScheduleAdmin(admin.ModelAdmin):
-    list_display = ('batch', 'course_day', 'start_time', 'end_time', 'deleted_at')
+    list_display = ('batch', 'day', 'start_time', 'end_time', 'deleted_at')
 
 
 # Register your models here.

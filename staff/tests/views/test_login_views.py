@@ -4,14 +4,14 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 
-from staff.views.login import staff_login
+from staff.views.login import LoginView
 
 class TestLoginView(APITestCase):
     def test_anonymous_user_sees_login_form(self):
         request = RequestFactory().get('/login/')
         request.user = AnonymousUser()
 
-        response = staff_login(request)
+        response = LoginView.as_view()(request)
 
         self.assertTrue(status.is_success(response.status_code))
 

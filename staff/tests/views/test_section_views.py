@@ -7,7 +7,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course, Section
-from staff.views.section import section_list
+from staff.views.section import ListView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -57,16 +57,16 @@ def sections(batch):
         capacity=SECTION_CAPACITY
     )
 
-    sections_queryset = Section.objects.filter(batch__id=batch.id)
+    section_queryset = Section.objects.filter(batch__id=batch.id)
 
-    yield sections_queryset
+    yield section_queryset
 
 def test_section_list_anonymous_user_redirected_to_login(sections):
     batch = sections.first().batch
     request = RequestFactory().get(f"/basics/batches/{batch.id}/sections/")
     request.user = AnonymousUser()
 
-    response = section_list(request)
+    response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/basics/batches/{batch.id}/sections/" in response.url
