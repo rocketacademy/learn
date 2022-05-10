@@ -8,7 +8,7 @@ from freezegun import freeze_time
 import pytest
 
 from staff.models import Batch, BatchSchedule, Course, Section
-from staff.views.batch import new
+from staff.views.batch import NewView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -25,25 +25,29 @@ def existing_user():
 
     yield existing_user
 
+@pytest.fixture()
+def course():
+    yield Course.objects.create(name=settings.CODING_BASICS)
+
+
 def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/basics/batches/new/')
     request.user = AnonymousUser()
 
-    response = new(request)
+    response = NewView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert 'staff/login/?next=/basics/batches/' in response.url
 
-def test_logged_in_user_can_access(existing_user):
+def test_logged_in_user_can_access(course, existing_user):
     request = RequestFactory().get('/basics/batches/new/')
     request.user = existing_user
 
-    response = new(request)
+    response = NewView.as_view()(request)
 
     assert response.status_code == HttpResponse.status_code
 
-def test_valid_form_creates_records(existing_user):
-    Course.objects.create(name=settings.CODING_BASICS)
+def test_valid_form_creates_records(course, existing_user):
     number_of_sections = 6
     section_capacity = 18
     number_of_batch_schedules = 2

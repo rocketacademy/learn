@@ -1,16 +1,18 @@
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.views import View
 
-from ..forms import LoginForm
+from staff.forms import LoginForm
 
 
-def staff_login(request):
-    if request.method == 'GET':
+class LoginView(View):
+    def get(self, request):
         form = LoginForm(None)
 
         return render(request, 'login.html', {'form': form})
-    elif request.method == 'POST':
+
+    def post(self, request):
         form = LoginForm(request.POST)
 
         if not form.is_valid():

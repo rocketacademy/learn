@@ -15,7 +15,7 @@ capacity = 90
 sections = 5
 
 class TestBatchCreation:
-    def test_batch_number_assigned(self):
+    def test_batch_number_assigned_if_new_record(self):
         course = Course.objects.create(name=COURSE_NAME)
         first_batch = Batch.objects.create(
             course=course,

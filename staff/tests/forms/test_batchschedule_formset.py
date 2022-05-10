@@ -7,7 +7,18 @@ pytestmark = pytest.mark.django_db
 
 class TestBatchScheduleFormSet:
     def test_empty_form_is_invalid(self):
-        batch_schedule_formset = BatchScheduleFormSet(data={})
+        batch_schedule_formset = BatchScheduleFormSet(
+            data={
+                'batch-schedule-TOTAL_FORMS': '1',
+                'batch-schedule-INITIAL_FORMS': '0',
+                'batch-schedule-MIN_NUM_FORMS': '0',
+                'batch-schedule-MAX_NUM_FORMS': '7',
+                'batch-schedule-0-day': '',
+                'batch-schedule-0-start_time': '',
+                'batch-schedule-0-end_time': '',
+            },
+            prefix='batch-schedule'
+        )
 
         outcome = batch_schedule_formset.is_valid()
 
