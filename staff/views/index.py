@@ -1,5 +1,7 @@
 from django.http import HttpResponseRedirect
+from django.views import View
 
 
-def index(request):
-    return HttpResponseRedirect('/staff/basics/batches/')
+class IndexView(View):
+    def get(self, request):
+        return HttpResponseRedirect('/staff/basics/batches/')

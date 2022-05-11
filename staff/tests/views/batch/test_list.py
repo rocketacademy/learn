@@ -1,16 +1,15 @@
 import datetime
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from django.test import Client, RequestFactory
+from django.http import HttpResponse, HttpResponseRedirect
+from django.test import RequestFactory
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views.batch import batch_detail, batch_list
+from staff.views.batch import ListView
 
 pytestmark = pytest.mark.django_db
-client = Client()
 
 @pytest.fixture()
 def existing_user():
@@ -26,7 +25,7 @@ def existing_user():
 
 @pytest.fixture()
 def batch():
-    COURSE_NAME = 'CODING_BASICS'
+    COURSE_NAME = settings.CODING_BASICS
     COURSE_DURATION = 35
 
     start_date = datetime.date.today()
@@ -41,27 +40,19 @@ def batch():
 
     yield batch
 
-def test_batch_list_anonymous_user_redirected_to_login():
+def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/basics/batches/')
     request.user = AnonymousUser()
 
-    response = batch_list(request)
+    response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert 'staff/login/?next=/basics/batches/' in response.url
 
-def test_batch_list_logged_in_user_can_access(batch, existing_user):
+def test_logged_in_user_can_access(existing_user):
     request = RequestFactory().get('/basics/batches/')
     request.user = existing_user
 
-    response = batch_list(request)
+    response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponse.status_code
-
-def test_batch_detail_template_rendered_if_batch_exists(batch, existing_user):
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
-
-    response = client.get(reverse('batch_detail', kwargs={'batch_id': batch.id}))
-
-    assert response.status_code == HttpResponse.status_code
-    assert 'basics/batch/detail.html' in (template.name for template in response.templates)

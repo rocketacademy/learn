@@ -23,6 +23,7 @@ pytest-django = "*"
 pytest-cov = "*"
 psycopg2-binary = "*"
 flake8 = "*"
+freezegun = "*"
 
 [requires]
 python_version = "3.10"

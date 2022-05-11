@@ -3,11 +3,13 @@ from django.urls import path
 from staff.views import batch, index, login, section, student
 
 urlpatterns = [
-    path('', index.index, name='index'),
-    path('login/', login.staff_login, name='staff_login'),
-    path('basics/batches/', batch.batch_list, name='batch_list'),
-    path('basics/batches/<int:batch_id>/', batch.batch_detail, name='batch_detail'),
-    path('basics/batches/<int:batch_id>/students/', student.student_list, name='student_list'),
-    path('basics/batches/<int:batch_id>/sections/', section.section_list, name='section_list'),
-    path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.section_detail, name='section_detail'),
+    path('', index.IndexView.as_view(), name='index'),
+    path('login/', login.LoginView.as_view(), name='staff_login'),
+    path('basics/batches/', batch.ListView.as_view(), name='batch_list'),
+    path('basics/batches/new/', batch.NewView.as_view(), name='batch_new'),
+    path('basics/batches/<int:batch_id>/', batch.DetailView.as_view(), name='batch_detail'),
+    path('basics/batches/<int:batch_id>/edit/', batch.EditView.as_view(), name='batch_edit'),
+    path('basics/batches/<int:batch_id>/students/', student.ListView.as_view(), name='student_list'),
+    path('basics/batches/<int:batch_id>/sections/', section.ListView.as_view(), name='section_list'),
+    path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.DetailView.as_view(), name='section_detail'),
 ]

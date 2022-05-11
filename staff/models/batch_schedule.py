@@ -14,7 +14,7 @@ class BatchSchedule(SafeDeleteModel):
     SATURDAY = 'SAT'
     SUNDAY = 'SUN'
 
-    COURSE_DAY_CHOICES = [
+    DAY_CHOICES = [
         (MONDAY, 'Monday'),
         (TUESDAY, 'Tuesday'),
         (WEDNESDAY, 'Wednesday'),
@@ -25,7 +25,7 @@ class BatchSchedule(SafeDeleteModel):
     ]
 
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
-    course_day = models.CharField(max_length=4, choices=COURSE_DAY_CHOICES)
+    day = models.CharField(max_length=4, choices=DAY_CHOICES)
     start_time = models.TimeField()
     end_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)
