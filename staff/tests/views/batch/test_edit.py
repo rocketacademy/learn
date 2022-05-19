@@ -59,6 +59,7 @@ def batch_schedule(batch):
     batch_schedule = BatchSchedule.objects.create(
         batch=batch,
         day='MON',
+        iso_week_day='1',
         start_time='00:00:00',
         end_time='02:00:00',
     )

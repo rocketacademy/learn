@@ -25,7 +25,8 @@ class BatchSchedule(SafeDeleteModel):
     ]
 
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
-    day = models.CharField(max_length=4, choices=DAY_CHOICES)
+    day = models.CharField(max_length=3, choices=DAY_CHOICES)
+    iso_week_day = models.IntegerField()
     start_time = models.TimeField()
     end_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)

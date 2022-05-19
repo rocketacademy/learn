@@ -25,7 +25,7 @@ class DetailView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         batch = Batch.objects.get(pk=batch_id)
         section_capacity = Section.objects.filter(batch__id=batch_id).first().capacity
-        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
+        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id).order_by('iso_week_day')
 
         return render(
             request,
@@ -86,6 +86,7 @@ class NewView(LoginRequiredMixin, View):
                         BatchSchedule.objects.create(
                             batch=batch,
                             day=request.POST[f"batch-schedule-{index}-day"],
+                            iso_week_day=settings.ISO_WEEK_DAYS[request.POST[f"batch-schedule-{index}-day"]],
                             start_time=request.POST[f"batch-schedule-{index}-start_time"],
                             end_time=request.POST[f"batch-schedule-{index}-end_time"]
                         )
@@ -211,6 +212,7 @@ def new_batch_schedules(batch, batch_schedule_formset):
                 BatchSchedule(
                     batch=batch,
                     day=day,
+                    iso_week_day=settings.ISO_WEEK_DAYS[form.cleaned_data.get('day')],
                     start_time=start_time,
                     end_time=end_time
                 )
