@@ -1,0 +1,29 @@
+.header-outer-container {
+  background-color: #00567e;
+  color: white;
+  padding-top: 6%;
+  padding-bottom: 6%;
+}
+
+.header-col-left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-text {
+  padding-right: 5%;
+}
+
+.header-text-bottom {
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.radio-button-div {
+  padding: 24px;
+}
+.radio-button-text {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

@@ -1,12 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>{{ title }}</h1>
-</body>
-</html>
+{% extends './student-registration.html' %}
+{% load i18n %}
+{% block registration_content %}
+<div class="d-flex flex-row justify-content-between">
+    {% if wizard.steps.current == wizard.steps.first %}
+    <div class="choose-batch-heading px-5 py-5">Pick an upcoming session</div>
+    {% else %}
+    <div class="choose-batch-heading px-5 py-5">About you</div>
+    {% endif %}
+</div>
+<div>
+    <form class="px-5 py-5" action="" method="post">
+        {% csrf_token %}
+            {{ wizard.management_form }}
+            {% if wizard.form.forms %}
+            {{ wizard.form.management_form }}
+            {% for form in wizard.form.forms %}
+            {{ form }} 
+            {% endfor %}
+            {% else %}
+            {{ wizard.form }}
+            {% endif %}
+        <div class="py-5 button-container-div">
+            {% if wizard.steps.prev %}
+            <button class="btn btn-primary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous Step</button>
+            {% endif %}
+            {% if wizard.steps.next %}
+            <button class="btn btn-primary my-5" type="submit" value="submit">Continue</button>
+            {% else %}
+            <button class="btn btn-primary" type="submit" value="submit">Submit</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

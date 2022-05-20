@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models.enrolments import Enrolment
+
+admin.site.register(Enrolment)
