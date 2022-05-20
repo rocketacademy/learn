@@ -14,7 +14,5 @@ class Registration(SafeDeleteModel):
     email = models.EmailField(max_length=254, unique=True)
     country_of_residence = models.CharField(max_length=255)
     referral_channel = models.CharField(max_length=255)
-    # payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(auto_now=True)
