@@ -86,4 +86,4 @@ def test_section_detail_template_rendered_if_batch_and_sections_exists(sections,
     response = client.get(reverse('section_detail', kwargs={'batch_id': batch.id, 'section_id': section_one.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'basics/section/overview.html' in (template.name for template in response.templates)
+    assert 'basics/section/detail.html' in (template.name for template in response.templates)
