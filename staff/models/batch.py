@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.html import format_html, mark_safe
+from django.utils.html import format_html
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
@@ -28,20 +28,21 @@ class Batch(SafeDeleteModel):
 
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"Batch {self.number}"
+
     @classmethod
     def next_number(self, course_id):
         if self.objects.count() == 0:
             return 1
         return self.objects.filter(course__id=course_id).aggregate(models.Max('number'))['number__max'] + 1
 
-    def registration_form_display(self):
-        duration = f'{self.start_date.strftime("%d %B")} to {self.end_date.strftime("%d %B")}'
+    @staticmethod
+    def html_formatted_batch_schedules(self):
+        batchschedule_queryset = self.batchschedule_set.all()
+        html_formatted_batch_schedules = ""
 
-        return format_html(
-            "<h6>Batch {}</h6><div>{}</div>",
-            self.number,
-            duration,
-        )
+        for batch_schedule in batchschedule_queryset:
+            html_formatted_batch_schedules += f"<small>{batch_schedule}</small><br>"
 
-    def __str__(self):
-        return self.registration_form_display()
+        return format_html(html_formatted_batch_schedules)
