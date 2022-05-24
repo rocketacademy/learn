@@ -1,0 +1,69 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% block registration_content %}
+<div class="col-md-4 col-lg-3 col-xl-2 d-none d-md-block">
+    <div class="py-5">
+        <div class="dotted">
+            <div class="progress-bar-item">
+                <li class="my-2 {% if wizard.steps.current == wizard.steps.first %}text-primary fw-bold{% endif %}">
+                    Course dates
+                </li>
+            </div>
+            <br>
+            <div class="progress-bar-item">
+                <li class="my-2 {% if wizard.steps.current is not wizard.steps.first %}text-primary fw-bold{% endif %}">
+                    About you
+                </li>
+            </div>
+            <br>
+            <div class="progress-bar-item">
+                <li class="my-2">Payment</li>
+            </div>
+            <br>
+            <div class="progress-bar-item">
+                <li class="my-2">Confirmation</li>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-8 p-5 border-start border-secondary">
+    <div class="d-flex flex-row justify-content-between">
+        {% if wizard.steps.current == wizard.steps.first %}
+        <h3>Pick an upcoming session</h3>
+        {% else %}
+        <h3>Tell us about yourself</h3>
+        {% endif %}
+    </div>
+    <div class="pt-4">
+        <form class="basics-registration-form" method="post">
+            {% csrf_token %}
+            {{ wizard.management_form }}
+            {% if wizard.form.forms %}
+                {{ wizard.form.management_form }}
+                {% for form in wizard.form.forms %}
+                    {% for field in form %}
+                        {{ field }}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                {% for field in form %}
+                    {{ field }}
+                {% endfor %}
+            {% endif %}
+            <div class="pt-5 mt-5">
+                {% if wizard.steps.current == wizard.steps.first %}
+                    <button class="btn btn-sm btn-primary px-4" type="submit" value="submit">Continue</button>
+                {% else %}
+                    <button class="btn btn-sm btn-outline-secondary px-4" formnovalidate="formnovalidate" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+                    <button class="btn btn-sm btn-primary px-4" type="submit" value="submit">Proceed to payment</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $('label > input').each(function() {
+        $(this).parent().before(this);
+    });
+</script>
+{% endblock %}

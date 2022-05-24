@@ -1,10 +1,10 @@
 from django.urls import path
 
-from student.views import registration
+from student.views import index
+from student.views import basics
 
 urlpatterns = [
-    path('registration/student-registration/',
-         registration.StudentRegistrationView.as_view(), name='student_registration'),
-    path('registration/confirmation/',
-         registration.ConfirmationView.as_view(), name='confirmation')
+    path('', index.IndexView.as_view(), name='index'),
+    path('basics/register/', basics.RegistrationWizard.as_view(), name='basics_register'),
+    path('basics/register/confirmation/', basics.ConfirmationView.as_view(), name='basics_register_confirmation')
 ]

@@ -1,7 +1,7 @@
 from django import forms
 from datetime import datetime
 
-from student.models.enrolments import Enrolment
+from student.models.enrolment import Enrolment
 from staff.models.batch_schedule import BatchSchedule
 
 
@@ -41,7 +41,6 @@ class BatchRadioSelect(forms.RadioSelect):
 
 
 class SelectBatchForm(forms.ModelForm):
-
     class Meta:
         model = Enrolment
         fields = [

@@ -1,0 +1,33 @@
+{% extends './base.html' %}
+{% block jumbotron_content %}
+<div>You've registered for</div>
+{% endblock %}
+{% block registration_content %}
+<div class="col-md-4 col-lg-3 col-xl-2 d-none d-md-block">
+    <div class="py-5">
+        <div class="dotted">
+            <div class="progress-bar-item">
+                <li class="my-2">Course dates</li>
+            </div>
+            <br>
+            <div class="progress-bar-item">
+                <li class="my-2">About you</li>
+            </div>
+            <br>
+            <div class="progress-bar-item">
+                <li class="my-2">Payment</li>
+            </div>
+            <br>
+            <div class="progress-bar-item">
+                <li class="my-2 text-primary fw-bold">Confirmation</li>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-8 p-5 border-start border-secondary">
+    <h3>Thanks for registering for Coding Basics!</h3>
+    <p class="pt-4">We have sent you a confirmation email.</p>
+    <p>Join us on Slack before the course begins - make sure you sign up or log in with <b>placeholder@email.com</b></p>
+    <p>See you in class on XX XXX XXXX at XX:XX XX. Look out for more instructions as the course date approaches.</p>
+</div>
+{% endblock %}

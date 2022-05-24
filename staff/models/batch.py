@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import format_html, mark_safe
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
@@ -32,3 +33,15 @@ class Batch(SafeDeleteModel):
         if self.objects.count() == 0:
             return 1
         return self.objects.filter(course__id=course_id).aggregate(models.Max('number'))['number__max'] + 1
+
+    def registration_form_display(self):
+        duration = f'{self.start_date.strftime("%d %B")} to {self.end_date.strftime("%d %B")}'
+
+        return format_html(
+            "<h6>Batch {}</h6><div>{}</div>",
+            self.number,
+            duration,
+        )
+
+    def __str__(self):
+        return self.registration_form_display()
