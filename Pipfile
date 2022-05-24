@@ -15,6 +15,7 @@ django-crispy-forms = "*"
 crispy-bootstrap5 = "*"
 environ = "*"
 django-safedelete = "*"
+sendgrid = "*"
 
 [dev-packages]
 pytest = "*"
