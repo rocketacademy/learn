@@ -1,6 +1,6 @@
 from django.urls import path
 
-from student.forms.registration.basics import BatchSelectionForm, StudentInfoForm
+from student.forms import BatchSelectionForm, StudentInfoForm
 from student.views import index
 from student.views import registration
 

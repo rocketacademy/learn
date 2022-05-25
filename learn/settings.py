@@ -188,3 +188,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # ------------------------------------------------------------------------------
 
 CODING_BASICS = 'CODING_BASICS'
+PLACEHOLDER_PASSWORD = 'Placeholderpassw0rd!'

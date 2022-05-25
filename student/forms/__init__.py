@@ -1,1 +1,2 @@
-from .registration.basics import BatchSelectionForm, StudentInfoForm
+from .registration.batch_selection import BatchSelectionForm
+from .registration.student_info import StudentInfoForm
