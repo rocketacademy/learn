@@ -15,7 +15,21 @@
 </div>
 <div class="container">
     <div class="row py-5">
-        {% block registration_content %}{% endblock %}
+        <div class="col-md-4 col-lg-3 col-xl-2 d-none d-md-block">
+            <div class="py-5">
+                <div class="dotted">
+                    {% block progress_bar %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 p-5 border-start border-secondary">
+            <div class="d-flex flex-row justify-content-between">
+                {% block form_subheader %}{% endblock %}
+            </div>
+            <div class="pt-4">
+                {% block form_content %}{% endblock %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

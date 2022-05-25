@@ -1,5 +1,4 @@
 from django import forms
-import datetime
 
 from authentication.models import User
 

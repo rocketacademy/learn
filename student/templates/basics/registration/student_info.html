@@ -1,0 +1,38 @@
+{% extends './base.html' %}
+
+{% block progress_bar %}
+<div class="progress-bar-item">
+    <li class="my-2">Course dates</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2 text-primary fw-bold">About you</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Payment</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Confirmation</li>
+</div>
+{% endblock %}
+
+{% block form_subheader %}
+<h3>Tell us about yourself</h3>
+{% endblock %}
+
+{% block form_content %}
+<form class="basics-registration-form" method="post">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% for field in form %}
+        {{ field.label }}
+        {{ field }}
+    {% endfor %}
+    <div class="pt-5 mt-5">
+        <button class="btn btn-sm btn-outline-secondary px-4" formnovalidate="formnovalidate" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+        <button class="btn btn-sm btn-primary px-4" type="submit" value="submit">Proceed to payment</button>
+    </div>
+</form>
+{% endblock %}
