@@ -17,6 +17,7 @@ environ = "*"
 django-safedelete = "*"
 django-polymorphic = "*"
 django-formtools = "*"
+stripe = "*"
 
 [dev-packages]
 pytest = "*"

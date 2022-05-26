@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'authentication',
     'staff',
     'student',
+    'payment',
 ]
 
 # AUTHENTICATION
@@ -183,6 +184,16 @@ REST_FRAMEWORK = {
 # ------------------------------------------------------------------------------
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# PAYMENT GATEWAYS
+
+STRIPE = 'stripe'
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+STRIPE_ENDPOINT_SECRET = env('STRIPE_ENDPOINT_SECRET')
+
+DOMAIN_URL = env('DOMAIN_URL')
+SINGAPORE_DOLLAR_CURRENCY = 'sgd'
 
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
