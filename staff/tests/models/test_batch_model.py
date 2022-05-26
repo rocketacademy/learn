@@ -74,12 +74,14 @@ def test_html_formatted_batch_schedules(batch):
     BatchSchedule.objects.create(
         batch=batch,
         day='MON',
+        iso_week_day='1',
         start_time=datetime.time(12, 00, 00),
         end_time=datetime.time(14, 00, 00),
     )
     BatchSchedule.objects.create(
         batch=batch,
         day='FRI',
+        iso_week_day='5',
         start_time=datetime.time(12, 00, 00),
         end_time=datetime.time(14, 00, 00),
     )

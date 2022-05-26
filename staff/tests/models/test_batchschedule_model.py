@@ -31,6 +31,7 @@ class TestBatchScheduleCreation:
         batch_schedule = BatchSchedule.objects.create(
             batch=batch,
             day='MON',
+            iso_week_day='1',
             start_time=datetime.time(12, 00, 00),
             end_time=datetime.time(14, 00, 00),
         )
