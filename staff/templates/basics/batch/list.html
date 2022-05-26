@@ -6,6 +6,10 @@
     <a type="link" href="new/" role="button" class="btn btn-outline-primary btn-sm px-4">
         + Create batch
     </a>
+        <form action="/staff/basics/batches/" method="post">
+            {% csrf_token %}
+            <button type="submit" value="send email">send email</button>
+        </form>
 </div>
 <div class="d-flex flex-row justify-content-start p-4">
     <table class="table table-hover">

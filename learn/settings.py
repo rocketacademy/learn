@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'safedelete',
     'authentication',
     'staff',
+    'emails'
 ]
 
 # AUTHENTICATION
@@ -133,7 +134,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ------------------------------------------------------------------------------
 STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 COMPRESS_PRECOMPILERS = [('text/x-scss', 'django_libsass.SassCompiler')]
-COMPRESS_CACHEABLE_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"))
+COMPRESS_CACHEABLE_PRECOMPILERS = (
+    ("text/x-scss", "django_libsass.SassCompiler"))
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = env.bool('COMPRESS_OFFLINE')
 COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
@@ -193,3 +195,4 @@ ISO_WEEK_DAYS = {
     'SUN': '7'
 }
 CODING_BASICS = 'CODING_BASICS'
+ROCKET_EMAIL_ADDRESS = 'engineering@rocketacademy.co'
