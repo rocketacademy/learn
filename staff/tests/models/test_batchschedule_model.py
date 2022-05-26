@@ -9,9 +9,9 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture()
 def batch():
-    COURSE_DURATION = 35
+    COURSE_DURATION_IN_DAYS = 35
     start_date = datetime.date.today()
-    end_date = start_date + datetime.timedelta(COURSE_DURATION)
+    end_date = start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS)
     capacity = 90
     sections = 5
 
