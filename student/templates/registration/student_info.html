@@ -1,0 +1,75 @@
+{% extends './base.html' %}
+
+{% block progress_bar %}
+<div class="progress-bar-item">
+    <li class="my-2">Course dates</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2 text-primary fw-bold">About you</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Payment</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Confirmation</li>
+</div>
+{% endblock %}
+
+{% block form_subheader %}
+<h3>Tell us about yourself</h3>
+{% endblock %}
+
+{% block form_content %}
+<form class="basics-registration-form" method="post">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    <div class="row">
+        <div class="col-md-6 my-2">
+            {{ form.first_name.label }}
+            {{ form.first_name }}
+            <small class="text-danger">
+                {{ form.first_name.errors|striptags }}
+            </small>
+        </div>
+        <div class="col-md-6 my-2">
+            {{ form.last_name.label }}
+            {{ form.last_name }}
+            <small class="text-danger">
+                {{ form.last_name.errors|striptags }}
+            </small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 my-2">
+            {{ form.email.label }}
+            {{ form.email }}
+            <small class="text-danger">
+                {{ form.email.errors|striptags }}
+            </small>
+        </div>
+        <div class="col-md-6 my-2">
+            {{ form.country_of_residence.label }}
+            {{ form.country_of_residence }}
+            <small class="text-danger">
+                {{ form.country_of_residence.errors|striptags }}
+            </small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 my-2">
+            {{ form.referral_channel.label }}
+            {{ form.referral_channel }}
+            <small class="text-danger">
+                {{ form.referral_channel.errors|striptags }}
+            </small>
+        </div>
+    </div>
+    <div class="pt-5 mt-5">
+        <button class="btn btn-sm btn-outline-secondary px-4" formnovalidate="formnovalidate" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+        <button class="btn btn-sm btn-primary px-4" type="submit" value="submit">Proceed to payment</button>
+    </div>
+</form>
+{% endblock %}

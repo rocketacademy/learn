@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+
+{% block progress_bar %}
+<div class="progress-bar-item">
+    <li class="my-2 text-primary fw-bold">Course dates</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">About you</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Payment</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Confirmation</li>
+</div>
+{% endblock %}
+
+{% block form_subheader %}
+<h3>Pick an upcoming session</h3>
+{% endblock %}
+
+{% block form_content %}
+<form class="basics-registration-form" method="post">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {{ form.batch }}
+    <small class="text-danger">
+        {{ form.batch.errors|striptags }}
+    </small>
+    <div class="pt-5 mt-5">
+        <button class="btn btn-sm btn-primary px-4" type="submit" value="submit">Continue</button>
+    </div>
+</form>
+<script type="text/javascript">
+    $('label > input').each(function() {
+        $(this).parent().before(this);
+    });
+</script>
+{% endblock %}

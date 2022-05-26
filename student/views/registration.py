@@ -1,39 +1,55 @@
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from staff.models.batch import Batch
-from authentication.models import User
-from student.models.enrolments import Enrolment
-from student.forms.registration.select_batch import SelectBatchForm
-from student.forms.registration.student_info import StudentInfoForm
-from formtools.wizard.views import SessionWizardView
 from django.views import View
+from formtools.wizard.views import SessionWizardView
 
+from student.models.registration import Registration
 
-def student_registration(request):
-    return render(request, 'registration/student-registration.html')
+User = get_user_model()
 
+TEMPLATES = {
+    'batch_selection': 'registration/batch_selection.html',
+    'student_info': 'registration/student_info.html'
+}
 
-class StudentRegistrationView(SessionWizardView):
-    template_name = 'registration/batch-selection.html'
-    form_list = [SelectBatchForm, StudentInfoForm]
+class RegistrationWizard(SessionWizardView):
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
 
     def done(self, form_list, **kwargs):
         form_data = [form.cleaned_data for form in form_list]
+        batch = form_data[0]['batch']
+        first_name = form_data[1]['first_name'].upper()
+        last_name = form_data[1]['last_name'].upper()
+        email = form_data[1]['email'].lower()
+        country_of_residence = form_data[1]['country_of_residence']
+        referral_channel = form_data[1]['referral_channel']
 
-        # create user in db
-        # TODO: password?
-        placeholder_password = 'qwerty1234'
-        user = User.objects.create_user(
-            form_data[1]['email'], form_data[1]['first_name'], form_data[1]['last_name'], placeholder_password)
+        Registration.objects.create(
+            batch=batch,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            country_of_residence=country_of_residence,
+            referral_channel=referral_channel
+        )
 
-        user.save()
+        user_queryset = User.objects.filter(email=email)
+        if not user_queryset:
+            User.objects.create(
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password=settings.PLACEHOLDER_PASSWORD
+            )
 
-        # create new entry in enrolment table
-        new_enrolment = Enrolment(batch=form_data[0]['batch'], user=user)
-        new_enrolment.save()
-
-        return render(self.request, 'registration/confirmation.html')
-
+        return HttpResponseRedirect('/student/basics/register/confirmation/')
 
 class ConfirmationView(View):
     def get(self, request):
-        return render(request, 'registration/confirmation.html')
+        return render(
+            request,
+            'registration/confirmation.html'
+        )

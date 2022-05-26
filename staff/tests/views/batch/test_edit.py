@@ -30,14 +30,14 @@ def existing_user():
 @pytest.fixture()
 def batch():
     COURSE_NAME = settings.CODING_BASICS
-    COURSE_DURATION = 35
+    COURSE_DURATION_IN_DAYS = 35
 
     start_date = datetime.date.today()
     course = Course.objects.create(name=COURSE_NAME)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
-        end_date=start_date + datetime.timedelta(COURSE_DURATION),
+        end_date=start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS),
         capacity=90,
         sections=5
     )
