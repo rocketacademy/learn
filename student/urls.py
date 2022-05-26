@@ -1,10 +1,16 @@
 from django.urls import path
 
+from student.forms import BatchSelectionForm, StudentInfoForm
+from student.views import index
 from student.views import registration
 
+FORMS = [
+    ('batch_selection', BatchSelectionForm),
+    ('student_info', StudentInfoForm)
+]
+
 urlpatterns = [
-    path('registration/student-registration/',
-         registration.StudentRegistrationView.as_view(), name='student_registration'),
-    path('registration/confirmation/',
-         registration.ConfirmationView.as_view(), name='confirmation')
+    path('', index.IndexView.as_view(), name='index'),
+    path('basics/register/', registration.RegistrationWizard.as_view(FORMS), name='basics_register'),
+    path('basics/register/confirmation/', registration.ConfirmationView.as_view(), name='basics_register_confirmation')
 ]
