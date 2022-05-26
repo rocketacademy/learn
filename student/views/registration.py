@@ -6,6 +6,7 @@ from django.views import View
 from formtools.wizard.views import SessionWizardView
 
 from student.models.registration import Registration
+from staff.models import Course
 
 User = get_user_model()
 
@@ -28,6 +29,7 @@ class RegistrationWizard(SessionWizardView):
         referral_channel = form_data[1]['referral_channel']
 
         Registration.objects.create(
+            course=batch.course,
             batch=batch,
             first_name=first_name,
             last_name=last_name,

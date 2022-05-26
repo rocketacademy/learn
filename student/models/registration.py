@@ -3,7 +3,7 @@ import pytz
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
-from staff.models.batch import Batch
+from staff.models.batch import Batch, Course
 
 
 class Registration(SafeDeleteModel):
@@ -25,6 +25,7 @@ class Registration(SafeDeleteModel):
         (INSTAGRAM, 'Instagram'),
     ]
 
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
