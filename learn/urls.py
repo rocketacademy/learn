@@ -22,4 +22,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('', views.home, name='home'),
     path('staff/', include('staff.urls')),
+    path('student/', include('student.urls')),
 ]

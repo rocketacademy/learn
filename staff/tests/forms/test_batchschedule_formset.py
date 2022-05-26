@@ -42,7 +42,6 @@ class TestBatchScheduleFormSet:
         )
 
         outcome = batch_schedule_formset.is_valid()
-        print(batch_schedule_formset)
 
         assert outcome is True
 

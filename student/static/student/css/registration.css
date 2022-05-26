@@ -1,0 +1,50 @@
+.progress-bar-item li::marker {
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+.progress-bar-item {
+    text-align: left;
+    background-color: #f8f9fa;
+    margin: 8px 0px 8px 0px;
+}
+
+.dotted:after {
+    content:"";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0.15rem;
+    height: 100%;
+    height: inherit;
+    border-left: 2px dashed lightgrey;
+}
+
+.dotted {
+    position: relative;
+}
+
+ul {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+}
+
+.basics-registration-form input[type="radio"] {
+    display: none;
+}
+
+.basics-registration-form label {
+    width: 100%;
+    padding: 20px 25px;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    margin: 10px 0px 10px 0px;
+}
+
+.basics-registration-form input[type="radio"]:checked + label {
+    color: white;
+    background-color: #00567E;
+    border-color: #00567E;
+}

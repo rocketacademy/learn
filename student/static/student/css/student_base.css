@@ -1,0 +1,15 @@
+.jumbotron {
+  background-color: #00567e;
+  color: white;
+  padding-top: 6%;
+  padding-bottom: 6%;
+}
+
+.radio-button-div {
+  padding: 24px;
+}
+.radio-button-text {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

@@ -55,18 +55,21 @@ WSGI_APPLICATION = 'learn.wsgi.application'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'polymorphic',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'compressor',
+    'formtools',
     'crispy_forms',
     'crispy_bootstrap5',
     'rest_framework',
     'safedelete',
     'authentication',
     'staff',
+    'student',
 ]
 
 # AUTHENTICATION
@@ -133,7 +136,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ------------------------------------------------------------------------------
 STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 COMPRESS_PRECOMPILERS = [('text/x-scss', 'django_libsass.SassCompiler')]
-COMPRESS_CACHEABLE_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"))
+COMPRESS_CACHEABLE_PRECOMPILERS = (
+    ("text/x-scss", "django_libsass.SassCompiler"))
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = env.bool('COMPRESS_OFFLINE')
 COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
@@ -193,3 +197,4 @@ ISO_WEEK_DAYS = {
     'SUN': '7'
 }
 CODING_BASICS = 'CODING_BASICS'
+PLACEHOLDER_PASSWORD = 'Placeholderpassw0rd!'
