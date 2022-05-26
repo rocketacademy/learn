@@ -187,4 +187,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
 
+ISO_WEEK_DAYS = {
+    'MON': '1',
+    'TUE': '2',
+    'WED': '3',
+    'THU': '4',
+    'FRI': '5',
+    'SAT': '6',
+    'SUN': '7'
+}
 CODING_BASICS = 'CODING_BASICS'

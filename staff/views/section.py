@@ -3,7 +3,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.views import View
 
-from staff.models import Batch, Section
+from staff.models import Batch, BatchSchedule, Section
 
 
 class ListView(LoginRequiredMixin, View):
@@ -24,6 +24,7 @@ class ListView(LoginRequiredMixin, View):
 class DetailView(LoginRequiredMixin, View):
     def get(self, request, batch_id, section_id):
         batch = Batch.objects.get(pk=batch_id)
+        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch.id)
         section = Section.objects.get(pk=section_id)
 
         if batch is None or section is None:
@@ -31,9 +32,10 @@ class DetailView(LoginRequiredMixin, View):
 
         return render(
             request,
-            'basics/section/overview.html',
+            'basics/section/detail.html',
             {
                 'batch': batch,
+                'batch_schedules': batchschedule_queryset,
                 'section': section,
                 'current_tab': 'overview'
             }
