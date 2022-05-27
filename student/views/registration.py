@@ -1,12 +1,10 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from formtools.wizard.views import SessionWizardView
 
 from student.models.registration import Registration
-from staff.models import Course
 
 User = get_user_model()
 
@@ -28,7 +26,7 @@ class RegistrationWizard(SessionWizardView):
         country_of_residence = form_data[1]['country_of_residence']
         referral_channel = form_data[1]['referral_channel']
 
-        Registration.objects.create(
+        registration = Registration.objects.create(
             course=batch.course,
             batch=batch,
             first_name=first_name,
@@ -47,7 +45,22 @@ class RegistrationWizard(SessionWizardView):
                 password=settings.PLACEHOLDER_PASSWORD
             )
 
-        return HttpResponseRedirect('/student/basics/register/confirmation/')
+        return redirect(
+            'basics_register_payment_preview',
+            payable_type=type(registration).__name__,
+            payable_id=registration.id,
+        )
+
+class PaymentPreviewView(View):
+    def get(self, request, payable_type, payable_id):
+        return render(
+            request,
+            'registration/payment_preview.html',
+            {
+                'payable_type': payable_type,
+                'payable_id': payable_id,
+            }
+        )
 
 class ConfirmationView(View):
     def get(self, request):

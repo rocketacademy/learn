@@ -1,0 +1,53 @@
+{% extends './base.html' %}
+
+{% block jumbotron_content %}
+<div>You're registering for</div>
+{% endblock %}
+
+{% block progress_bar %}
+<div class="progress-bar-item">
+    <li class="my-2">Course dates</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">About you</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2 text-primary fw-bold">Payment</li>
+</div>
+<br>
+<div class="progress-bar-item">
+    <li class="my-2">Confirmation</li>
+</div>
+{% endblock %}
+
+{% block form_subheader %}
+<h3>You're almost there!</h3>
+{% endblock %}
+
+{% block form_content %}
+<p>It costs $200 SGD to register for Coding Basics.</p>
+<p>This amount is not refundable.</p>
+<button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Make payment</button>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript">
+    $(function() {
+        const payable_type = "{{ payable_type }}";
+        const payable_id = "{{ payable_id }}";
+
+        fetch("/payment/config/")
+        .then((result) => { return result.json(); })
+        .then((data) => {
+            const stripe = Stripe(data.publicKey);
+            document.querySelector("#make-payment-button").addEventListener("click", () => {
+                fetch("/payment/create-checkout-session/" + payable_type + "/" + payable_id + "/")
+                .then((result) => { return result.json(); })
+                .then((data) => {
+                    return stripe.redirectToCheckout({sessionId: data.sessionId})
+                })
+            });
+        });
+    })
+</script>
+{% endblock %}
