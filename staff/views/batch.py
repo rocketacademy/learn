@@ -29,9 +29,8 @@ class ListView(LoginRequiredMixin, View):
 
         batch_queryset = Batch.objects.all().order_by('-number')
 
-        print('inside post reqwuest', request.POST)
         new_student = Correspondence.send_basics_registration_confirmation_email(
-            'michelle@rocketacademy.co', 'michelle', '12', '12-03-2022', 'Basics')
+            'sam@rocketacademy.co', 'sam', '12', '12-03-2022', 'Basics')
 
         return render(
             request,

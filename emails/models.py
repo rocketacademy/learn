@@ -71,9 +71,6 @@ class Correspondence(SafeDeleteModel):
             message.template_id = template_id
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
         except Exception as e:
             print(e.message)
         else:
@@ -83,5 +80,4 @@ class Correspondence(SafeDeleteModel):
             )
 
             new_correspondence.save()
-            print('new student registration', new_correspondence)
             return new_correspondence
