@@ -22,13 +22,16 @@ def create_checkout_session(request, payable_type, payable_id):
         try:
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
+                metadata={
+                    'payable_type': payable_type,
+                    'payable_id': payable_id,
+                },
                 line_items=[
                     {
-                        'name': payable_type,
-                        'description': payable_id,
+                        'name': 'Registration for Coding Basics',
                         'quantity': 1,
                         'currency': singapore_dollar_currency,
-                        'amount': '20000',
+                        'amount': '19900',
                     }
                 ],
                 mode='payment',
@@ -60,8 +63,8 @@ def stripe_webhook(request):
         event_data = event['data']['object']
 
         StripePayment.objects.create(
-            payable_type=event_data['display_items'][0]['custom']['name'],
-            payable_id=event_data['display_items'][0]['custom']['description'],
+            payable_type=event_data['metadata']['payable_type'],
+            payable_id=event_data['metadata']['payable_id'],
             intent=event_data['payment_intent'],
             customer=event_data['customer'],
             customer_email=event_data['customer_details']['email'],
