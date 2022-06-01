@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.views import View
 from formtools.wizard.views import SessionWizardView
@@ -26,29 +27,33 @@ class RegistrationWizard(SessionWizardView):
         country_of_residence = form_data[1]['country_of_residence']
         referral_channel = form_data[1]['referral_channel']
 
-        registration = Registration.objects.create(
-            course=batch.course,
-            batch=batch,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            country_of_residence=country_of_residence,
-            referral_channel=referral_channel
-        )
+        try:
+            with transaction.atomic():
+                registration = Registration.objects.create(
+                    course=batch.course,
+                    batch=batch,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    country_of_residence=country_of_residence,
+                    referral_channel=referral_channel
+                )
 
-        user_queryset = User.objects.filter(email=email)
-        if not user_queryset:
-            User.objects.create(
-                email=email,
-                first_name=first_name,
-                last_name=last_name,
-                password=settings.PLACEHOLDER_PASSWORD
-            )
+                user_queryset = User.objects.filter(email=email)
+                if not user_queryset:
+                    User.objects.create(
+                        email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        password=settings.PLACEHOLDER_PASSWORD
+                    )
 
-        return redirect(
-            'basics_register_payment_preview',
-            payable_id=registration.id,
-        )
+                return redirect(
+                    'basics_register_payment_preview',
+                    payable_id=registration.id,
+                )
+        except IntegrityError:
+            return redirect('basics_register')
 
 class PaymentPreviewView(View):
     def get(self, request, payable_id):

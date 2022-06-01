@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.db import IntegrityError, transaction
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 import stripe
@@ -64,14 +65,18 @@ def webhook(request):
     if event['type'] == 'checkout.session.completed':
         event_data = event['data']['object']
 
-        StripePayment.objects.create(
-            payable_type=event_data['metadata']['payable_type'],
-            payable_id=event_data['metadata']['payable_id'],
-            intent=event_data['payment_intent'],
-            customer=event_data['customer'],
-            customer_email=event_data['customer_details']['email'],
-            amount=event_data['amount_total'],
-            currency=event_data['currency'],
-            status=event_data['payment_status']
-        )
+        try:
+            with transaction.atomic():
+                StripePayment.objects.create(
+                    payable_type=event_data['metadata']['payable_type'],
+                    payable_id=event_data['metadata']['payable_id'],
+                    intent=event_data['payment_intent'],
+                    customer=event_data['customer'],
+                    customer_email=event_data['customer_details']['email'],
+                    amount=event_data['amount_total'],
+                    currency=event_data['currency'],
+                    status=event_data['payment_status']
+                )
+        except IntegrityError:
+            return HttpResponseServerError
     return HttpResponse(status=200)
