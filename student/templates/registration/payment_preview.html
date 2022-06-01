@@ -29,7 +29,11 @@
 {% block form_content %}
 <input type="hidden" id="payable-type" name="payable-type" value="{{ payable_type }}">
 <input type="hidden" id="payable-id" name="payable-id" value="{{ payable_id }}">
-<p>It costs $200 SGD to register for Coding Basics.</p>
+<input type="hidden" id="payable-line-item-name" name="payable-line-item-name" value="{{ payable_line_item_name }}">
+<input type="hidden" id="payable-line-item-amount-in-cents" name="payable-line-item-amount-in-cents" value="{{ payable_line_item_amount_in_cents }}">
+<input type="hidden" id="payment-success-path" name="payment-success-path" value="{{ payment_success_path }}">
+<input type="hidden" id="payment-cancel-path" name="payment-cancel-path" value="{{ payment_cancel_path }}">
+<p>It costs ${{ payable_line_item_amount_in_dollars }} SGD to register for Coding Basics.</p>
 <p>This amount is not refundable.</p>
 <button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Make payment</button>
 <script src="https://js.stripe.com/v3/"></script>

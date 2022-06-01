@@ -1,49 +1,51 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import json
 import stripe
 
-from .models import StripePayment
+from payment.models import StripePayment
 
 
 @csrf_exempt
-def stripe_config(request):
+def config(request):
     if request.method == 'GET':
         stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
         return JsonResponse(stripe_config, safe=False)
 
 @csrf_exempt
-def create_checkout_session(request, payable_type, payable_id):
-    if request.method == 'GET':
+def create_checkout_session(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        request_body = json.loads(body_unicode)
+
         stripe.api_key = settings.STRIPE_SECRET_KEY
-        domain_url = settings.DOMAIN_URL
-        singapore_dollar_currency = settings.SINGAPORE_DOLLAR_CURRENCY
 
         try:
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 metadata={
-                    'payable_type': payable_type,
-                    'payable_id': payable_id,
+                    'payable_type': request_body['payable_type'],
+                    'payable_id': request_body['payable_id'],
                 },
                 line_items=[
                     {
-                        'name': 'Registration for Coding Basics',
+                        'name': request_body['payable_line_item_name'],
                         'quantity': 1,
-                        'currency': singapore_dollar_currency,
-                        'amount': '19900',
+                        'currency': settings.SINGAPORE_DOLLAR_CURRENCY,
+                        'amount': request_body['payable_line_item_amount_in_cents'],
                     }
                 ],
                 mode='payment',
-                success_url=domain_url + '/student/basics/register/confirmation/',
-                cancel_url=domain_url + '/student/basics/register/',
+                success_url=settings.DOMAIN_URL + request_body['payment_success_path'],
+                cancel_url=settings.DOMAIN_URL + request_body['payment_cancel_path'],
             )
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as error:
             return JsonResponse({'error': str(error)})
 
 @csrf_exempt
-def stripe_webhook(request):
+def webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
     payload = request.body
@@ -72,5 +74,4 @@ def stripe_webhook(request):
             currency=event_data['currency'],
             status=event_data['payment_status']
         )
-
     return HttpResponse(status=200)

@@ -198,6 +198,8 @@ SINGAPORE_DOLLAR_CURRENCY = 'sgd'
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
 
+CODING_BASICS = 'CODING_BASICS'
+CODING_BASICS_REGISTRATION_FEE_SGD = 199
 ISO_WEEK_DAYS = {
     'MON': '1',
     'TUE': '2',
@@ -207,5 +209,4 @@ ISO_WEEK_DAYS = {
     'SAT': '6',
     'SUN': '7'
 }
-CODING_BASICS = 'CODING_BASICS'
 PLACEHOLDER_PASSWORD = 'Placeholderpassw0rd!'
