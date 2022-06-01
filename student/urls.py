@@ -12,5 +12,6 @@ FORMS = [
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
     path('basics/register/', registration.RegistrationWizard.as_view(FORMS), name='basics_register'),
+    path('basics/register/payment/<int:payable_id>/', registration.PaymentPreviewView.as_view(), name='basics_register_payment_preview'),
     path('basics/register/confirmation/', registration.ConfirmationView.as_view(), name='basics_register_confirmation')
 ]

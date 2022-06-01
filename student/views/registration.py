@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from formtools.wizard.views import SessionWizardView
 
@@ -23,11 +22,12 @@ class RegistrationWizard(SessionWizardView):
         batch = form_data[0]['batch']
         first_name = form_data[1]['first_name'].upper()
         last_name = form_data[1]['last_name'].upper()
-        email = form_data[1]['email'].lower()
+        email = form_data[1]['email'].upper()
         country_of_residence = form_data[1]['country_of_residence']
         referral_channel = form_data[1]['referral_channel']
 
-        Registration.objects.create(
+        registration = Registration.objects.create(
+            course=batch.course,
             batch=batch,
             first_name=first_name,
             last_name=last_name,
@@ -45,7 +45,26 @@ class RegistrationWizard(SessionWizardView):
                 password=settings.PLACEHOLDER_PASSWORD
             )
 
-        return HttpResponseRedirect('/student/basics/register/confirmation/')
+        return redirect(
+            'basics_register_payment_preview',
+            payable_id=registration.id,
+        )
+
+class PaymentPreviewView(View):
+    def get(self, request, payable_id):
+        return render(
+            request,
+            'registration/payment_preview.html',
+            {
+                'payable_type': Registration.__name__,
+                'payable_id': payable_id,
+                'payable_line_item_name': 'Registration for Coding Basics',
+                'payable_line_item_amount_in_dollars': settings.CODING_BASICS_REGISTRATION_FEE_SGD,
+                'payable_line_item_amount_in_cents': settings.CODING_BASICS_REGISTRATION_FEE_SGD * 100,
+                'payment_success_path': '/student/basics/register/confirmation/',
+                'payment_cancel_path': '/student/basics/register/'
+            }
+        )
 
 class ConfirmationView(View):
     def get(self, request):

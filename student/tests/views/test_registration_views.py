@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client
 from django.urls import reverse
 import pytest
-from rest_framework.test import APITestCase
 
 from staff.models import Batch, Course
 from student.models.registration import Registration
@@ -14,7 +13,7 @@ pytestmark = pytest.mark.django_db
 client = Client()
 User = get_user_model()
 
-existing_user_email = 'existing_user@email.com'
+existing_user_email = 'EXISTING_USER@EMAIL.COM'
 existing_user_first_name = 'Existing'
 existing_user_last_name = 'User'
 existing_user_password = settings.PLACEHOLDER_PASSWORD
