@@ -1,9 +1,15 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 import pytz
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
-from staff.models.batch import Batch, Course
+from payment.models import StripePayment
+from staff.models.batch import Batch
+from staff.models.course import Course
+from student.models.enrolment import Enrolment
+
+User = get_user_model()
 
 
 class Registration(SafeDeleteModel):
@@ -34,3 +40,26 @@ class Registration(SafeDeleteModel):
     referral_channel = models.CharField(max_length=255, choices=REFERRAL_CHANNELS)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def complete_transaction(self, event_data):
+        next_enrolable_section = self.batch.next_enrolable_section()
+        user = User.objects.get(email=self.email)
+
+        self.record_stripe_payment(event_data)
+        Enrolment.objects.create(
+            batch=self.batch,
+            section=next_enrolable_section,
+            user=user
+        )
+
+    def record_stripe_payment(self, event_data):
+        StripePayment.objects.create(
+            payable_type=event_data['metadata']['payable_type'],
+            payable_id=event_data['metadata']['payable_id'],
+            intent=event_data['payment_intent'],
+            customer=event_data['customer'],
+            customer_email=event_data['customer_details']['email'],
+            amount=event_data['amount_total'],
+            currency=event_data['currency'],
+            status=event_data['payment_status']
+        )

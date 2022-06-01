@@ -17,3 +17,8 @@ class Section(SafeDeleteModel):
         if self.objects.count() == 0:
             return 1
         return self.objects.filter(batch__id=batch_id).aggregate(models.Max('number'))['number__max'] + 1
+
+    def fully_enroled(self):
+        if self.enrolment_set.count() >= self.capacity:
+            return True
+        return False

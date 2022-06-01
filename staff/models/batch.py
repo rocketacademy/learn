@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
-from .course import Course
+from staff.models.course import Course
 
 class Batch(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
@@ -46,3 +46,11 @@ class Batch(SafeDeleteModel):
             html_formatted_batch_schedules += f"<small>{batch_schedule}</small><br>"
 
         return format_html(html_formatted_batch_schedules)
+
+    def next_enrolable_section(self):
+        ordered_sections = self.section_set.all().order_by('number')
+
+        for section in ordered_sections:
+            if not section.fully_enroled():
+                return section
+        return None
