@@ -54,3 +54,8 @@ class Batch(SafeDeleteModel):
             if not section.fully_enrolled():
                 return section
         return None
+
+    def fully_enrolled(self):
+        if self.enrolment_set.count() >= self.capacity and self.next_enrollable_section() is None:
+            return True
+        return False
