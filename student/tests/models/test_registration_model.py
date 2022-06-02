@@ -1,5 +1,4 @@
 import datetime
-from re import L
 from django.conf import settings
 from django.contrib.auth import get_user_model
 import pytest

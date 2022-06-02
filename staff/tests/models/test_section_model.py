@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 User = get_user_model()
 
 
-def test_fully_enroled_returns_true():
+def test_fully_enrolled_returns_true():
     COURSE_DURATION_IN_DAYS = 35
     start_date = datetime.date.today()
 
@@ -41,11 +41,11 @@ def test_fully_enroled_returns_true():
         user=user
     )
 
-    result = section.fully_enroled()
+    result = section.fully_enrolled()
 
     assert result is True
 
-def test_fully_enroled_returns_false():
+def test_fully_enrolled_returns_false():
     COURSE_DURATION_IN_DAYS = 35
     start_date = datetime.date.today()
 
@@ -63,6 +63,6 @@ def test_fully_enroled_returns_false():
         capacity=1
     )
 
-    result = section.fully_enroled()
+    result = section.fully_enrolled()
 
     assert result is False

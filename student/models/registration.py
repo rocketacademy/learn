@@ -42,13 +42,13 @@ class Registration(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     def complete_transaction(self, event_data):
-        next_enrolable_section = self.batch.next_enrolable_section()
+        next_enrollable_section = self.batch.next_enrollable_section()
         user = User.objects.get(email=self.email)
 
         self.record_stripe_payment(event_data)
         Enrolment.objects.create(
             batch=self.batch,
-            section=next_enrolable_section,
+            section=next_enrollable_section,
             user=user
         )
 

@@ -47,10 +47,10 @@ class Batch(SafeDeleteModel):
 
         return format_html(html_formatted_batch_schedules)
 
-    def next_enrolable_section(self):
+    def next_enrollable_section(self):
         ordered_sections = self.section_set.all().order_by('number')
 
         for section in ordered_sections:
-            if not section.fully_enroled():
+            if not section.fully_enrolled():
                 return section
         return None

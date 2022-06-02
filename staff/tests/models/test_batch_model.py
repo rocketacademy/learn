@@ -93,29 +93,29 @@ def test_html_formatted_batch_schedules(batch):
 
     assert html_formatted_batch_schedules == '<small>Mondays, 12:00PM to 2:00PM</small><br><small>Fridays, 12:00PM to 2:00PM</small><br>'
 
-def test_next_enrolable_section(batch):
+def test_next_enrollable_section(batch):
     first_user = User.objects.create(
         email='user@email.com',
         first_name='FirstName',
         last_name='LastName',
         password=settings.PLACEHOLDER_PASSWORD
     )
-    fully_enroled_section = Section.objects.create(
+    fully_enrolled_section = Section.objects.create(
         batch=batch,
         number=1,
         capacity=1
     )
-    enrolable_section = Section.objects.create(
+    enrollable_section = Section.objects.create(
         batch=batch,
         number=1,
         capacity=1
     )
     Enrolment.objects.create(
         batch=batch,
-        section=fully_enroled_section,
+        section=fully_enrolled_section,
         user=first_user
     )
 
-    result = batch.next_enrolable_section()
+    result = batch.next_enrollable_section()
 
-    assert result == enrolable_section
+    assert result == enrollable_section
