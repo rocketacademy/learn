@@ -119,3 +119,61 @@ def test_next_enrollable_section(batch):
     result = batch.next_enrollable_section()
 
     assert result == enrollable_section
+
+def test_fully_enrolled_returns_true(course):
+    user = User.objects.create(
+        email='user@email.com',
+        first_name='FirstName',
+        last_name='LastName',
+        password=settings.PLACEHOLDER_PASSWORD
+    )
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=1,
+        sections=1
+    )
+    section = Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+    Enrolment.objects.create(
+        batch=batch,
+        section=section,
+        user=user
+    )
+
+    result = batch.fully_enrolled()
+
+    assert result is True
+
+def test_fully_enrolled_returns_false_when_there_is_still_space(course):
+    user = User.objects.create(
+        email='user@email.com',
+        first_name='FirstName',
+        last_name='LastName',
+        password=settings.PLACEHOLDER_PASSWORD
+    )
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=2,
+        sections=1
+    )
+    section = Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=2
+    )
+    Enrolment.objects.create(
+        batch=batch,
+        section=section,
+        user=user
+    )
+
+    result = batch.fully_enrolled()
+
+    assert result is False
