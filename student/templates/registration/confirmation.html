@@ -28,6 +28,6 @@
 
 {% block form_content %}
 <p>We have sent you a confirmation email.</p>
-<p>Join us on Slack before the course begins - make sure you sign up or log in with <b>placeholder@email.com</b></p>
-<p>See you in class on XX XXX XXXX at XX:XX XX. Look out for more instructions as the course date approaches.</p>
+<p>Join us on Slack before the course begins - make sure you sign up or log in with <b>{{ registration.email }}</b>.</p>
+<p>See you in class on {{ registration.batch.start_date }}. Look out for more instructions as the course date approaches.</p>
 {% endblock %}
