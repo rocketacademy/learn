@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 client = Client()
 User = get_user_model()
 
-existing_user_email = 'EXISTING_USER@EMAIL.COM'
+existing_user_email = 'existing_user@email.com'
 existing_user_first_name = 'Existing'
 existing_user_last_name = 'User'
 existing_user_password = settings.PLACEHOLDER_PASSWORD

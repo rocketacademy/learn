@@ -23,7 +23,7 @@ class RegistrationWizard(SessionWizardView):
         batch = form_data[0]['batch']
         first_name = form_data[1]['first_name'].upper()
         last_name = form_data[1]['last_name'].upper()
-        email = form_data[1]['email'].upper()
+        email = form_data[1]['email'].lower()
         country_of_residence = form_data[1]['country_of_residence']
         referral_channel = form_data[1]['referral_channel']
 
@@ -50,30 +50,35 @@ class RegistrationWizard(SessionWizardView):
 
                 return redirect(
                     'basics_register_payment_preview',
-                    payable_id=registration.id,
+                    registration_id=registration.id,
                 )
         except IntegrityError:
             return redirect('basics_register')
 
 class PaymentPreviewView(View):
-    def get(self, request, payable_id):
+    def get(self, request, registration_id):
         return render(
             request,
             'registration/payment_preview.html',
             {
                 'payable_type': Registration.__name__,
-                'payable_id': payable_id,
+                'payable_id': registration_id,
                 'payable_line_item_name': 'Registration for Coding Basics',
                 'payable_line_item_amount_in_dollars': settings.CODING_BASICS_REGISTRATION_FEE_SGD,
                 'payable_line_item_amount_in_cents': settings.CODING_BASICS_REGISTRATION_FEE_SGD * 100,
-                'payment_success_path': '/student/basics/register/confirmation/',
+                'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
                 'payment_cancel_path': '/student/basics/register/'
             }
         )
 
 class ConfirmationView(View):
-    def get(self, request):
+    def get(self, request, registration_id):
+        registration = Registration.objects.get(pk=registration_id)
+
         return render(
             request,
-            'registration/confirmation.html'
+            'registration/confirmation.html',
+            {
+                'registration': registration
+            }
         )
