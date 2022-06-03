@@ -8,27 +8,31 @@
     <button type="button" class="btn btn-primary btn-sm px-4">Download .csv for Zoom</button>
 </div>
 <div class="p-4">
-    {% if sections.exists %}
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Section</th>
-                <th scope="col">Capacity</th>
-                <th scope="col">No. of students</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for section in sections %}
-            <tr class="clickable-row" data-url="{% url 'section_detail' batch_id=batch.id section_id=section.id %}" role="button">
-                <td>{{ section.number }}</td>
-                <td>{{ section.capacity }}</td>
-                <td>Placeholder till we enroll students</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div>There aren't any sections yet</div>
-    {% endif %}
+    <div class="row">
+        <div class="col-md-6">
+            {% if sections.exists %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Section</th>
+                        <th scope="col">Capacity</th>
+                        <th scope="col">No. of students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for section in sections %}
+                    <tr class="clickable-row" data-url="{% url 'section_detail' batch_id=batch.id section_id=section.id %}" role="button">
+                        <td>{{ section.number }}</td>
+                        <td>{{ section.capacity }}</td>
+                        <td>{{ section.enrolment_set.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div>There aren't any sections yet</div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

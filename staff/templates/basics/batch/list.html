@@ -26,10 +26,19 @@
                 <td>{{ batch.number }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>
-                <td>Placeholder</td>
+                <td>
+                    {% for batch_schedule in batch.batchschedule_set.all %}
+                    <div>
+                        {{ batch_schedule.get_day_display }},
+                        {{ batch_schedule.start_time|time:"h:i A" }}
+                        - 
+                        {{ batch_schedule.end_time|time:"h:i A" }}
+                    </div>
+                    {% endfor %}
+                </td>
                 <td>{{ batch.sections }}</td>
                 <td>{{ batch.capacity }}</td>
-                <td>Placeholder</td>
+                <td>{{ batch.enrolment_set.count }}</td>
             </tr>
             {% endfor %}
         </tbody>
