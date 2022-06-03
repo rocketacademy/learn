@@ -39,7 +39,7 @@ class Batch(SafeDeleteModel):
 
     @staticmethod
     def html_formatted_batch_schedules(self):
-        batchschedule_queryset = self.batchschedule_set.order_by('iso_week_day')
+        batchschedule_queryset = self.batchschedule_set.all()
         html_formatted_batch_schedules = ""
 
         for batch_schedule in batchschedule_queryset:

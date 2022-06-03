@@ -22,6 +22,10 @@ DAY_CHOICES = [
     (SUNDAY, 'Sunday')
 ]
 
+class BatchScheduleManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().order_by('iso_week_day')
+
 class BatchSchedule(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
@@ -32,6 +36,8 @@ class BatchSchedule(SafeDeleteModel):
     end_time = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = BatchScheduleManager()
 
     def __str__(self):
         day_choices_dict = dict(DAY_CHOICES)

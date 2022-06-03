@@ -25,7 +25,7 @@ class DetailView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         batch = Batch.objects.get(pk=batch_id)
         section_capacity = Section.objects.filter(batch__id=batch_id).first().capacity
-        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id).order_by('iso_week_day')
+        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
 
         return render(
             request,
