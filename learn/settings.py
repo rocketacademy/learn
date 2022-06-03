@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'staff',
     'student',
     'payment',
+    'emails',
 ]
 
 # AUTHENTICATION
