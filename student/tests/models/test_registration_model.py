@@ -2,6 +2,7 @@ import datetime
 from django.conf import settings
 from django.contrib.auth import get_user_model
 import pytest
+from emails.models import SendgridEmail
 
 from payment.models import StripePayment
 from staff.models.batch import Batch
@@ -91,3 +92,11 @@ def test_complete_transaction(registration):
     assert stripe_payment.amount == event_data['amount_total']
     assert stripe_payment.currency == event_data['currency']
     assert stripe_payment.status == event_data['payment_status']
+
+    assert SendgridEmail.objects.count() == 1
+    sendgrid_email = SendgridEmail.objects.last()
+    assert sendgrid_email.template_id == settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
+    assert sendgrid_email.emailable_id == registration.id
+    assert sendgrid_email.emailable_type == type(registration).__name__
+    assert sendgrid_email.recipient_email == registration.email
+    assert sendgrid_email.sender_email == settings.ROCKET_EMAIL
