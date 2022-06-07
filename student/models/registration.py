@@ -1,9 +1,15 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.http import HttpResponseServerError
 import pytz
+from python_http_client.exceptions import HTTPError
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
+from emails.models import SendgridEmail
 from payment.models import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course
@@ -51,6 +57,7 @@ class Registration(SafeDeleteModel):
             section=next_enrollable_section,
             user=user
         )
+        self.send_confirmation_email()
 
     def record_stripe_payment(self, event_data):
         StripePayment.objects.create(
@@ -63,3 +70,32 @@ class Registration(SafeDeleteModel):
             currency=event_data['currency'],
             status=event_data['payment_status']
         )
+
+    def send_confirmation_email(self):
+        from_email = settings.ROCKET_EMAIL
+        to_email = self.email
+        template_id = settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
+
+        message = Mail(
+            from_email=from_email,
+            to_emails=to_email,
+        )
+        message.dynamic_template_data = {
+            'first_name': self.first_name.capitalize(),
+            'email': to_email,
+            'start_date': self.batch.start_date.strftime('%A, %d %b %Y')
+        }
+        message.template_id = template_id
+
+        try:
+            sendgrid_client = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            sendgrid_client.send(message)
+            SendgridEmail.objects.create(
+                emailable_id=self.id,
+                emailable_type=type(self).__name__,
+                sender_email=from_email,
+                recipient_email=to_email,
+                template_id=template_id,
+            )
+        except Exception as error:
+            return HttpResponseServerError(f'Could not send registration confirmation email: {str(error)}')

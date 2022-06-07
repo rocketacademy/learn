@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'staff',
     'student',
     'payment',
+    'emails',
 ]
 
 # AUTHENTICATION
@@ -195,11 +196,15 @@ STRIPE_ENDPOINT_SECRET = env('STRIPE_ENDPOINT_SECRET')
 DOMAIN_URL = env('DOMAIN_URL')
 SINGAPORE_DOLLAR_CURRENCY = 'sgd'
 
+# SENDGRID
+# ------------------------------------------------------------------------------
+
+SENDGRID_API_KEY = env('SENDGRID_API_KEY')
+
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
 
 CODING_BASICS = 'CODING_BASICS'
-CODING_BASICS_REGISTRATION_FEE_SGD = 199
 ISO_WEEK_DAYS = {
     'MON': '1',
     'TUE': '2',
@@ -210,3 +215,10 @@ ISO_WEEK_DAYS = {
     'SUN': '7'
 }
 PLACEHOLDER_PASSWORD = 'Placeholderpassw0rd!'
+
+# FEES #
+CODING_BASICS_REGISTRATION_FEE_SGD = 199
+
+# EMAILS #
+ROCKET_EMAIL = 'engineering@rocketacademy.co'
+CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID = 'd-0fc0a2398ba044a0b5015a528460bd3d'

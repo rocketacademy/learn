@@ -18,6 +18,7 @@ django-safedelete = "*"
 django-polymorphic = "*"
 django-formtools = "*"
 stripe = "*"
+sendgrid = "*"
 
 [dev-packages]
 pytest = "*"
