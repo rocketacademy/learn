@@ -56,7 +56,7 @@ Since Learn is built with Django, we will need to set up our Python environment 
 
 
 ### Set up Learn in your local environment
-1. Navigate to the repository you want Learn to reside in
+1. Navigate to the repository you want Learn to reside in.
 2. Clone this [codebase](https://github.com/rocketacademy/learn)<br>
    `$ git clone https://github.com/rocketacademy/learn.git`
 3. Retrieve environment variables from 1Password and place them in a .env file in Learn's root directory.
@@ -64,7 +64,7 @@ Since Learn is built with Django, we will need to set up our Python environment 
    `$ mkvirtualenv $(basename $(pwd))`<br>
 5. You should see the following when the virtual environment has been created and activated.<br>
    `(learn) $`
-6. From now on, navigate to the project directory to activate or deactivate the virtual environment.
+6. From now on, navigate to the project directory to activate or deactivate the virtual environment.<br>
    `$ pipenv shell` or `$ workon learn`
    `$ deactivate`
 
@@ -77,9 +77,9 @@ Since Learn is built with Django, we will need to set up our Python environment 
 3. Check that `Postgres` has been installed
    `$ psql postgres`<br>
    `$ \du`
-4. Create Learn database
+4. Create Learn database<br>
    `$ createdb learn`
-5. Check that database was created
+5. Check that database was created<br>
    `$ psql learn`
    
 
@@ -90,5 +90,5 @@ Since Learn is built with Django, we will need to set up our Python environment 
 
 
 ### Stripe webhook
-In a separate terminal window, listen to Stripe webhook in order to receive payments and complete transactions
+In a separate terminal window, listen to Stripe webhook in order to receive payments and complete transactions<br>
 `$ stripe listen --forward-to localhost:8000/payment/stripe/webhook/`
