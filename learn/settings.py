@@ -186,11 +186,6 @@ REST_FRAMEWORK = {
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# HUBSPOT
-# ------------------------------------------------------------------------------
-
-HUBSPOT_PRIVATE_APP_ACCESS_TOKEN = env('HUBSPOT_PRIVATE_APP_ACCESS_TOKEN')
-
 # PAYMENT GATEWAYS
 # ------------------------------------------------------------------------------
 
