@@ -60,6 +60,9 @@ def webhook(request):
         return HttpResponseBadRequest('Invalid payload')
     except stripe.error.SignatureVerificationError as error:
         return HttpResponseBadRequest('Invalid signature')
+    except Exception as error:
+        print(error)
+        return HttpResponseServerError(error)
 
     if event['type'] == 'checkout.session.completed':
         event_data = event['data']['object']
