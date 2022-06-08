@@ -7,9 +7,6 @@ htmlcov
 .coverage
 .coveragerc
 
-# Pipenv #
-Pipfile.lock
-
 # Processed static #
 /static
 
