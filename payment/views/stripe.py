@@ -57,9 +57,9 @@ def webhook(request):
             payload, sig_header, endpoint_secret
         )
     except ValueError as error:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest('Invalid payload')
     except stripe.error.SignatureVerificationError as error:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest('Invalid signature')
 
     if event['type'] == 'checkout.session.completed':
         event_data = event['data']['object']
@@ -69,8 +69,9 @@ def webhook(request):
         try:
             with transaction.atomic():
                 payable_object.complete_transaction(event_data)
-        except IntegrityError as error:
-            return HttpResponseServerError()
+        except Exception as error:
+            print(error)
+            return HttpResponseServerError(error)
     # Save payment records for 'unpaid' payments, which are returned in expired checkout sessions
     elif event['type'] == 'checkout.session.expired':
         event_data = event['data']['object']
