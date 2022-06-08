@@ -1,3 +1,4 @@
+import dj_database_url
 import environ
 import os
 
@@ -26,13 +27,20 @@ USE_TZ = True
 # DATABASES
 # ------------------------------------------------------------------------------
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB_NAME'),
-        'ATOMIC_REQUESTS': True
+# For staging and prod, where Heroku PostgreSQL gives us a PostgreSQL URL in config vars
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
     }
-}
+# For local
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('POSTGRES_DB_NAME'),
+            'ATOMIC_REQUESTS': True
+        }
+    }
 
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

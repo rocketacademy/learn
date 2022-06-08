@@ -21,6 +21,7 @@ stripe = "*"
 sendgrid = "*"
 hubspot-api-client = "*"
 gunicorn = "*"
+dj-database-url = "*"
 
 [dev-packages]
 pytest = "*"
