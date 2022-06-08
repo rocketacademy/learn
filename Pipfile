@@ -20,6 +20,7 @@ django-formtools = "*"
 stripe = "*"
 sendgrid = "*"
 hubspot-api-client = "*"
+gunicorn = "*"
 
 [dev-packages]
 pytest = "*"
