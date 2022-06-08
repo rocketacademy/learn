@@ -1,6 +1,6 @@
 import datetime
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
