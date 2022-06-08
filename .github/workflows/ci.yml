@@ -7,9 +7,20 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  COMPRESS_OFFLINE: False
+  DJANGO_ALLOWED_HOSTS: .localhost,127.0.0.1
+  DJANGO_DEBUG: True
+  DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+  DOMAIN_URL: http://localhost:8000
+  POSTGRES_DB_NAME: learn
+  SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+  STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+  STRIPE_ENDPOINT_SECRET: ${{ secrets.STRIPE_ENDPOINT_SECRET }}
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
