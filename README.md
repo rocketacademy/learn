@@ -41,18 +41,20 @@ Since Learn is built with Django, we will need to set up our Python environment 
    - Activate the new virtual environment by calling this script<br>
      `. ~/.pyenv/versions/3.9.10/bin/virtualenvwrapper.sh`
 10. Restart your terminal and check that you see the following output. This means that `virtualenvwrapper` is initialising the environment. We will create a virtual environment after we clone Learn's code repository.
-    ```virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/premkproject
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postmkproject
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/initialize
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/premkvirtualenv
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postmkvirtualenv
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/prermvirtualenv
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postrmvirtualenv
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/predeactivate
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postdeactivate
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/preactivate
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postactivate
-     virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/get_env_details```
+    ```
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/premkproject
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postmkproject
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/initialize
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/premkvirtualenv
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postmkvirtualenv
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/prermvirtualenv
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postrmvirtualenv
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/predeactivate
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postdeactivate
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/preactivate
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/postactivate
+    virtualenvwrapper.user_scripts creating /Users/samanthakoh/.virtualenvs/get_env_details
+    ```
 
 
 ### Set up Learn in your local environment
