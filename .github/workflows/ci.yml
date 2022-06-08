@@ -37,6 +37,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install pipenv
           pipenv install --dev
+      - name: Run collectstatic
+        run: |
+          python manage.py collectstatic
       - name: Test with pytest
         run: |
           pipenv run pytest
