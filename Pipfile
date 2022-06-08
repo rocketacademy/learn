@@ -19,6 +19,7 @@ django-polymorphic = "*"
 django-formtools = "*"
 stripe = "*"
 sendgrid = "*"
+hubspot-api-client = "*"
 
 [dev-packages]
 pytest = "*"
