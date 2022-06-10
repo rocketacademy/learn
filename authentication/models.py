@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from polymorphic.models import PolymorphicModel
 
 
 class UserManager(BaseUserManager):
@@ -31,7 +32,7 @@ class UserManager(BaseUserManager):
         )
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, PolymorphicModel):
     email = models.EmailField(max_length=254, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -52,3 +53,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.full_name()
+
+class StudentUser(User):
+    hubspot_contact_id = models.IntegerField()

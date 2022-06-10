@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.http import HttpResponseServerError
 import pytz
-from python_http_client.exceptions import HTTPError
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 from sendgrid import SendGridAPIClient

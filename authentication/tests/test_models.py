@@ -24,7 +24,7 @@ class TestUserManager:
         assert str(exception_info.value) == 'User must have an email address.'
 
 class TestUser:
-    def test_modeL_create(self):
+    def test_model_create(self):
         user = User.objects.create_user(
             email=email,
             first_name=first_name,
