@@ -210,6 +210,11 @@ SINGAPORE_DOLLAR_CURRENCY = 'sgd'
 
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 
+# HUBSPOT
+# ------------------------------------------------------------------------------
+
+HUBSPOT_API_KEY = env('HUBSPOT_API_KEY')
+
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
 

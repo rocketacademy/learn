@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from polymorphic.models import PolymorphicModel
+from polymorphic.models import PolymorphicModel, PolymorphicManager
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager, PolymorphicManager):
     def _create_user(self, email, first_name, last_name, password, is_staff, is_superuser):
         if not email:
             raise ValueError('User must have an email address.')
@@ -54,5 +54,12 @@ class User(AbstractBaseUser, PermissionsMixin, PolymorphicModel):
     def __str__(self):
         return self.full_name()
 
+    def requires_update(self, properties):
+        if self.first_name is not properties['first_name']:
+            return True
+        if self.last_name is not properties['last_name']:
+            return True
+        return False
+
 class StudentUser(User):
-    hubspot_contact_id = models.IntegerField()
+    hubspot_contact_id = models.IntegerField(null=True, blank=True)
