@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 from formtools.wizard.views import SessionWizardView
 
+from authentication.models import StudentUser
 from student.models.registration import Registration
 
 User = get_user_model()
@@ -40,8 +41,21 @@ class RegistrationWizard(SessionWizardView):
                 )
 
                 user_queryset = User.objects.filter(email=email)
+                if user_queryset:
+                    existing_user = user_queryset.first()
+                    form_properties = {
+                        'first_name': first_name,
+                        'last_name': last_name
+                    }
+
+                    if existing_user.requires_update(form_properties) is True:
+                        existing_user = user_queryset.first()
+                        existing_user.first_name = first_name
+                        existing_user.last_name = last_name
+
+                        existing_user.save()
                 if not user_queryset:
-                    User.objects.create_user(
+                    StudentUser.objects.create_user(
                         email=email,
                         first_name=first_name,
                         last_name=last_name,
