@@ -40,9 +40,11 @@ $(function () {
             }),
           })
             .then((result) => {
+              console.log(result.json());
               return result.json();
             })
             .then((data) => {
+              console.log(data);
               return stripe.redirectToCheckout({ sessionId: data.sessionId });
             });
         });
