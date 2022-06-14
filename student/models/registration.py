@@ -50,7 +50,7 @@ class Registration(SafeDeleteModel):
         record_stripe_payment(event_data)
         create_enrolment_record(self.batch, student_user)
         create_or_update_hubspot_contact(student_user)
-        send_confirmation_email(self.email, self.first_name, self.batch)
+        send_confirmation_email(self.id, type(self).__name__, self.email, self.first_name, self.batch)
 
 def record_stripe_payment(event_data):
     StripePayment.objects.create(
@@ -91,7 +91,7 @@ def create_or_update_hubspot_contact(student_user):
         student_user.hubspot_contact_id = int(hubspot_contact['id'])
         student_user.save()
 
-def send_confirmation_email(email, first_name, batch):
+def send_confirmation_email(registration_id, registration_class_name, email, first_name, batch):
     from_email = settings.ROCKET_EMAIL
     to_email = email
     template_id = settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
@@ -108,4 +108,9 @@ def send_confirmation_email(email, first_name, batch):
     message.template_id = template_id
 
     sendgrid_client = Sendgrid()
-    sendgrid_client.send(message)
+    sendgrid_client.send(registration_id,
+                         registration_class_name,
+                         from_email,
+                         to_email,
+                         template_id,
+                         message)
