@@ -40,7 +40,6 @@ def create_checkout_session(request):
                 success_url=settings.DOMAIN_URL + request_body['payment_success_path'],
                 cancel_url=settings.DOMAIN_URL + request_body['payment_cancel_path'],
             )
-            print(checkout_session['id'])
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as error:
             return JsonResponse({'error': str(error)})
