@@ -185,6 +185,10 @@ def test_update_hubspot_contact_when_hubspot_contact_id_exists(mock_get_contact,
 
 @patch('emails.library.sendgrid.Sendgrid.send')
 def test_send_confirmation_email(mock_send, registration):
-    send_confirmation_email(registration.email, registration.first_name, registration.batch)
+    send_confirmation_email(registration.id,
+                            type(registration).__name__,
+                            registration.email,
+                            registration.first_name,
+                            registration.batch)
 
     mock_send.assert_called_once()
