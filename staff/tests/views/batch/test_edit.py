@@ -66,7 +66,6 @@ def batch_schedule(batch):
 
     yield batch_schedule
 
-@pytest.mark.django_db
 def test_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/edit/")
     request.user = AnonymousUser()
