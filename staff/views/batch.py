@@ -77,8 +77,8 @@ class NewView(LoginRequiredMixin, View):
                         end_date=batch_form.cleaned_data.get('end_date'),
                         sections=sections
                     )
-                    for number in range(1, sections + 1):
-                        set_up_section(batch, number, section_capacity)
+                    for section_number in range(1, sections + 1):
+                        set_up_section(batch, section_number, section_capacity)
                     for index in range(int(request.POST['batch-schedule-TOTAL_FORMS'])):
                         BatchSchedule.objects.create(
                             batch=batch,
@@ -157,12 +157,8 @@ class EditView(LoginRequiredMixin, View):
                     batch.capacity = sections * section_capacity
                     batch.save()
 
-                    for number in range(Section.next_number(batch_id), sections + 1):
-                        Section.objects.create(
-                            batch=batch,
-                            number=number,
-                            capacity=section_capacity
-                        )
+                    for section_number in range(Section.next_number(batch_id), sections + 1):
+                        set_up_section(batch, section_number, section_capacity)
                     section_queryset.update(capacity=section_capacity)
 
                     BatchSchedule.objects.filter(batch__id=batch.id).delete()
