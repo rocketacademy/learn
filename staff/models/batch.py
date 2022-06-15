@@ -21,7 +21,8 @@ class Batch(SafeDeleteModel):
         if not self.pk:
             self.number = Batch.next_number(self.course_id)
         elif Batch.objects.count() == 0:
-            self.number = 1
+            # 17 because this will be the next batch number when we launch Learn
+            self.number = 17
 
         if self.start_date >= self.end_date:
             raise ValueError('Batch end date should be after start date')
