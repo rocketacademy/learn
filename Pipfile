@@ -22,6 +22,7 @@ sendgrid = "*"
 hubspot-api-client = "*"
 gunicorn = "*"
 dj-database-url = "*"
+slack-sdk = "*"
 
 [dev-packages]
 pytest = "*"

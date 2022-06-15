@@ -8,6 +8,7 @@ from django.views import View
 
 from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
 from staff.models import Batch, BatchSchedule, Course, Section
+from student.library.slack import Slack
 
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -77,11 +78,7 @@ class NewView(LoginRequiredMixin, View):
                         sections=sections
                     )
                     for number in range(1, sections + 1):
-                        Section.objects.create(
-                            batch=batch,
-                            number=number,
-                            capacity=section_capacity
-                        )
+                        set_up_section(batch, number, section_capacity)
                     for index in range(int(request.POST['batch-schedule-TOTAL_FORMS'])):
                         BatchSchedule.objects.create(
                             batch=batch,
@@ -219,3 +216,14 @@ def new_batch_schedules(batch, batch_schedule_formset):
             )
 
     return new_batch_schedules
+
+def set_up_section(batch, section_number, section_capacity):
+    slack_client = Slack()
+    slack_channel_name = f"{batch.number}-{section_number}"
+
+    Section.objects.create(
+        batch=batch,
+        number=section_number,
+        capacity=section_capacity
+    )
+    slack_client.create_channel(slack_channel_name)

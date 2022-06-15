@@ -215,6 +215,11 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 
 HUBSPOT_API_KEY = env('HUBSPOT_API_KEY')
 
+# SLACK
+# ------------------------------------------------------------------------------
+
+SLACK_USER_OAUTH_TOKEN = env('SLACK_USER_OAUTH_TOKEN')
+
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
 
