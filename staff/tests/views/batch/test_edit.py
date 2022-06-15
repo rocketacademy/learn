@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from freezegun import freeze_time
 import pytest
+from unittest.mock import patch, call
 
 from staff.models import Batch, Course, Section
 from staff.models.batch_schedule import BatchSchedule
@@ -147,7 +148,8 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch, 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, existing_user):
+@patch('staff.views.batch.set_up_section')
+def test_valid_form_updates_and_creates_records(mock_set_up_section, batch, section, batch_schedule, existing_user):
     new_start_date = batch.start_date + datetime.timedelta(1)
     new_end_date = batch.end_date + datetime.timedelta(1)
 
@@ -194,9 +196,10 @@ def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, 
     assert batch.sections == new_sections_count
     assert batch.capacity == new_sections_count * section_capacity
 
-    section_queryset = Section.objects.all()
-    assert section_queryset.count() == new_sections_count
-    assert section_queryset.first().capacity == section_capacity
+    calls = [call(batch, new_sections_count, section_capacity)]
+    mock_set_up_section.assert_has_calls(calls, any_order=True)
+    first_section = Section.objects.all().first()
+    assert first_section.capacity == section_capacity
 
     batchschedule_queryset = BatchSchedule.objects.all()
     new_batch_schedule = batchschedule_queryset.last()
