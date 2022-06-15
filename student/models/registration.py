@@ -6,7 +6,6 @@ from safedelete.models import SafeDeleteModel
 from sendgrid.helpers.mail import Mail
 
 from authentication.models import StudentUser
-from emails.models import SendgridEmail
 from emails.library.sendgrid import Sendgrid
 from payment.models import StripePayment
 from staff.models.batch import Batch
@@ -103,7 +102,8 @@ def send_confirmation_email(registration_id, registration_class_name, email, fir
     message.dynamic_template_data = {
         'first_name': first_name.capitalize(),
         'email': to_email,
-        'start_date': batch.start_date.strftime('%A, %d %b %Y')
+        'start_date': batch.start_date.strftime('%A, %d %b %Y'),
+        'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK
     }
     message.template_id = template_id
 

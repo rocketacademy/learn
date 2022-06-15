@@ -9,6 +9,7 @@ class Section(SafeDeleteModel):
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
     number = models.PositiveIntegerField()
     capacity = models.PositiveIntegerField()
+    slack_channel_id = models.CharField(max_length=20, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

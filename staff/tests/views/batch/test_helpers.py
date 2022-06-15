@@ -27,6 +27,8 @@ def test_set_up_section_creates_record_and_slack_channel(mock_create_channel):
         sections=no_of_sections
     )
     section_number = 1
+    slack_channel_id = 'C12345A'
+    mock_create_channel.return_value = slack_channel_id
 
     set_up_section(batch, section_number, section_capacity)
 

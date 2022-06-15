@@ -217,9 +217,10 @@ def set_up_section(batch, section_number, section_capacity):
     slack_client = Slack()
     slack_channel_name = f"{batch.number}-{section_number}"
 
+    slack_channel_id = slack_client.create_channel(slack_channel_name)
     Section.objects.create(
         batch=batch,
         number=section_number,
-        capacity=section_capacity
+        capacity=section_capacity,
+        slack_channel_id=slack_channel_id
     )
-    slack_client.create_channel(slack_channel_name)

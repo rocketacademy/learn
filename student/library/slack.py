@@ -13,5 +13,7 @@ class Slack:
                 name=name
             )
             print(api_response)
+
+            return api_response['channel']['id']
         except SlackApiError as error:
             print(f'Error creating channel: {error}')

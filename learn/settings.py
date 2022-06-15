@@ -219,6 +219,7 @@ HUBSPOT_API_KEY = env('HUBSPOT_API_KEY')
 # ------------------------------------------------------------------------------
 
 SLACK_USER_OAUTH_TOKEN = env('SLACK_USER_OAUTH_TOKEN')
+SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK = env('SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK')
 
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
