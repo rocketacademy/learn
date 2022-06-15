@@ -38,7 +38,7 @@ def batch():
 def test_string_representation(batch):
     string_representation = batch.__str__()
 
-    assert string_representation == 'Batch 1'
+    assert string_representation == 'Batch 17'
 
 def test_batch_number_assigned_if_new_record(course):
     first_batch = Batch.objects.create(
@@ -56,8 +56,8 @@ def test_batch_number_assigned_if_new_record(course):
         sections=sections
     )
 
-    assert first_batch.number == 1
-    assert second_batch.number == 2
+    assert first_batch.number == 17
+    assert second_batch.number == 18
 
 def test_invalid_start_and_end_dates(course):
     end_date = start_date - datetime.timedelta(1)
