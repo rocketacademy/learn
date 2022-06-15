@@ -35,7 +35,8 @@ class Batch(SafeDeleteModel):
     @classmethod
     def next_number(self, course_id):
         if self.objects.count() == 0:
-            return 1
+            # 17 because this will be the next batch number when we launch Learn
+            return 17
         return self.objects.filter(course__id=course_id).aggregate(models.Max('number'))['number__max'] + 1
 
     @staticmethod
