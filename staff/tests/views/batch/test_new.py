@@ -6,9 +6,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from freezegun import freeze_time
 import pytest
-from unittest.mock import patch, call
+from unittest.mock import patch
 
-from staff.models import Batch, BatchSchedule, Course
+from staff.models import Batch, BatchSchedule, Course, Section
 from staff.views.batch import NewView
 
 pytestmark = pytest.mark.django_db
@@ -48,8 +48,8 @@ def test_logged_in_user_can_access(course, existing_user):
 
     assert response.status_code == HttpResponse.status_code
 
-@patch('staff.views.batch.set_up_section')
-def test_valid_form_creates_records(mock_set_up_section, course, existing_user):
+@patch('staff.views.batch.create_batch_slack_channel')
+def test_valid_form_creates_records(mock_create_batch_slack_channel, course, existing_user):
     number_of_sections = 6
     section_capacity = 18
     number_of_batch_schedules = 2
@@ -87,6 +87,11 @@ def test_valid_form_creates_records(mock_set_up_section, course, existing_user):
     assert batch.capacity == number_of_sections * section_capacity
     assert batch.course == Course.objects.get(name=settings.CODING_BASICS)
 
-    calls = [call(batch, section_number, section_capacity) for section_number in range(1, batch.sections + 1)]
-    mock_set_up_section.assert_has_calls(calls, any_order=True)
+    section_queryset = Section.objects.all()
+    first_section = section_queryset.first()
+    assert first_section.capacity == section_capacity
+    assert section_queryset.count() == batch.sections
+
+    mock_create_batch_slack_channel.assert_called_once()
+
     assert BatchSchedule.objects.count() == number_of_batch_schedules
