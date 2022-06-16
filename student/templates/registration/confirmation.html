@@ -27,7 +27,9 @@
 {% endblock %}
 
 {% block form_content %}
-<p><a href="{{ slack_invite_link }}">Join us on Slack</a> before the course begins - make sure you sign up or log in with <b>{{ registration.email }}</b>. The Slack invitation link will also be sent to you in your registration confirmation email.</p>
-<p>Look out for more instructions over email as the course date approaches.</p>
-<p>See you in class on {{ registration.batch.start_date }}. You can close this window now.</p>
+<p>Make sure to <a href="{{ slack_invite_link }}">join us on Slack</a> and log in with <b>{{ registration.email }}</b>!</p>
+<p>The Slack invitation link will also be sent in your confirmation email, so be on the lookout.</p>
+<p>Further instructions will be shared, via Slack and email, before the course starts.</p>
+<p>See you in class on {{ registration.batch.start_date }}. We can't wait to meet you!</p>
+<p>You can close this window now :)</p>
 {% endblock %}
