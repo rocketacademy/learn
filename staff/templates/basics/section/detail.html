@@ -28,7 +28,7 @@
                     <h6>End date</h6>
                     {{ batch.end_date }}
                 </div>
-                <div class="col-md-4 col-lg-4 my-2">
+                <div class="col-md-6 col-lg-6 my-2">
                     <h6>Course schedule</h6>
                     {% for batch_schedule in batch_schedules %}
                         <div>
@@ -41,11 +41,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-5 col-lg-3 my-2">
+                <div class="col-md-3 col-lg-3 my-2">
                     <h6>Section capacity</h6>
                     {{ section.capacity }}
                 </div>
-                <div class="col-md-5 col-lg-3 my-2">
+                <div class="col-md-3 col-lg-3 my-2">
                     <h6>Section enrollment</h6>
                     {{ section.enrolment_set.count }}
                 </div>
@@ -54,8 +54,29 @@
         <div class="d-flex flex-row p-4">
             <h5>Students enrolled in this section</h5>
         </div>
-        <div class="d-flex flex-row justify-content-start p-4">
-            <div>Table of students go here</div>
+        <div class="d-flex flex-row justify-content-start px-4">
+            {% if students.exists %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">First name</th>
+                        <th scope="col">Last name</th>
+                        <th scope="col">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.first_name|title }}</td>
+                        <td>{{ student.last_name|title }}</td>
+                        <td>{{ student.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div>There aren't any students enrolled in this batch yet</div>
+            {% endif %}
         </div>
     </div>
 </div>
