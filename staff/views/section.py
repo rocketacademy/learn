@@ -3,7 +3,9 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.views import View
 
+from authentication.models import StudentUser
 from staff.models import Batch, BatchSchedule, Section
+from student.models.enrolment import Enrolment
 
 
 class ListView(LoginRequiredMixin, View):
@@ -26,6 +28,7 @@ class DetailView(LoginRequiredMixin, View):
         batch = Batch.objects.get(pk=batch_id)
         batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch.id)
         section = Section.objects.get(pk=section_id)
+        studentuser_queryset = StudentUser.objects.filter(enrolment__in=Enrolment.objects.filter(section_id=section_id))
 
         if batch is None or section is None:
             return HttpResponseNotFound('Error: Batch and/or section does not exist')
@@ -37,6 +40,7 @@ class DetailView(LoginRequiredMixin, View):
                 'batch': batch,
                 'batch_schedules': batchschedule_queryset,
                 'section': section,
+                'students': studentuser_queryset,
                 'current_tab': 'overview'
             }
         )
