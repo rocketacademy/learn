@@ -78,7 +78,11 @@ class NewView(LoginRequiredMixin, View):
                         sections=sections
                     )
                     for section_number in range(1, sections + 1):
-                        set_up_section(batch, section_number, section_capacity)
+                        Section.objects.create(
+                            batch=batch,
+                            number=section_number,
+                            capacity=section_capacity,
+                        )
                     for index in range(int(request.POST['batch-schedule-TOTAL_FORMS'])):
                         BatchSchedule.objects.create(
                             batch=batch,
@@ -87,6 +91,7 @@ class NewView(LoginRequiredMixin, View):
                             start_time=request.POST[f"batch-schedule-{index}-start_time"],
                             end_time=request.POST[f"batch-schedule-{index}-end_time"]
                         )
+                    create_batch_slack_channel(batch)
 
                     return HttpResponseRedirect('/staff/basics/batches/')
             except IntegrityError:
@@ -158,7 +163,11 @@ class EditView(LoginRequiredMixin, View):
                     batch.save()
 
                     for section_number in range(Section.next_number(batch_id), sections + 1):
-                        set_up_section(batch, section_number, section_capacity)
+                        Section.objects.create(
+                            batch=batch,
+                            number=section_number,
+                            capacity=section_capacity,
+                        )
                     section_queryset.update(capacity=section_capacity)
 
                     BatchSchedule.objects.filter(batch__id=batch.id).delete()
@@ -213,14 +222,10 @@ def new_batch_schedules(batch, batch_schedule_formset):
 
     return new_batch_schedules
 
-def set_up_section(batch, section_number, section_capacity):
+def create_batch_slack_channel(batch):
     slack_client = Slack()
-    slack_channel_name = f"{batch.number}-{section_number}"
+    slack_channel_name = f"{batch.number}-all"
 
     slack_channel_id = slack_client.create_channel(slack_channel_name)
-    Section.objects.create(
-        batch=batch,
-        number=section_number,
-        capacity=section_capacity,
-        slack_channel_id=slack_channel_id
-    )
+    batch.slack_channel_id = slack_channel_id
+    batch.save()
