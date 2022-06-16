@@ -33,8 +33,9 @@
 <input type="hidden" id="payable-line-item-amount-in-cents" name="payable-line-item-amount-in-cents" value="{{ payable_line_item_amount_in_cents }}">
 <input type="hidden" id="payment-success-path" name="payment-success-path" value="{{ payment_success_path }}">
 <input type="hidden" id="payment-cancel-path" name="payment-cancel-path" value="{{ payment_cancel_path }}">
-<p>It costs ${{ payable_line_item_amount_in_dollars }} SGD to register for Coding Basics.</p>
-<p>This amount is not refundable.</p>
+<p>To confirm your place in Coding Basics, please proceed to make payment of ${{ payable_line_item_amount_in_dollars }} SGD.</p>
+<p>Please note that this amount is non-refundable.</p>
+<i>(But imagine how much you can learn with the equivalent of just ~30 cups of coffee!)</i></p>
 <button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Make payment</button>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="/static/student/js/payment_preview.js" ></script>
