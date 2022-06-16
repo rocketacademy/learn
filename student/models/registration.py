@@ -69,7 +69,7 @@ def create_enrolment_record(batch, student_user):
     Enrolment.objects.create(
         batch=batch,
         section=next_enrollable_section,
-        user=student_user
+        student_user=student_user
     )
 
 def create_or_update_hubspot_contact(student_user):

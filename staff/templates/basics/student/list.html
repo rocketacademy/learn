@@ -7,6 +7,27 @@
     <h5>Students</h5>
 </div>
 <div class="d-flex flex-row justify-content-start p-4">
-    <div>Table of students go here</div>
+    {% if student_user_queryset.exists %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th scope="col">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in student_user_queryset %}
+            <tr>
+                <td>{{ student.first_name|title }}</td>
+                <td>{{ student.last_name|title }}</td>
+                <td>{{ student.email }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div>There aren't any students enrolled in this batch yet</div>
+    {% endif %}
 </div>
 {% endblock %}

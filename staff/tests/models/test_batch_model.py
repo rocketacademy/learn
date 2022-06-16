@@ -1,13 +1,12 @@
 import datetime
 from django.conf import settings
-from django.contrib.auth import get_user_model
 import pytest
 
+from authentication.models import StudentUser
 from staff.models import Batch, BatchSchedule, Course, Section
 from student.models.enrolment import Enrolment
 
 pytestmark = pytest.mark.django_db
-User = get_user_model()
 
 COURSE_DURATION_IN_DAYS = 35
 
@@ -94,7 +93,7 @@ def test_html_formatted_batch_schedules(batch):
     assert html_formatted_batch_schedules == '<small>Mondays, 12:00PM to 2:00PM</small><br><small>Fridays, 12:00PM to 2:00PM</small><br>'
 
 def test_next_enrollable_section(batch):
-    first_user = User.objects.create(
+    first_student_user = StudentUser.objects.create(
         email='user@email.com',
         first_name='FirstName',
         last_name='LastName',
@@ -113,7 +112,7 @@ def test_next_enrollable_section(batch):
     Enrolment.objects.create(
         batch=batch,
         section=fully_enrolled_section,
-        user=first_user
+        student_user=first_student_user
     )
 
     result = batch.next_enrollable_section()
@@ -121,7 +120,7 @@ def test_next_enrollable_section(batch):
     assert result == enrollable_section
 
 def test_fully_enrolled_returns_true(course):
-    user = User.objects.create(
+    student_user = StudentUser.objects.create(
         email='user@email.com',
         first_name='FirstName',
         last_name='LastName',
@@ -142,7 +141,7 @@ def test_fully_enrolled_returns_true(course):
     Enrolment.objects.create(
         batch=batch,
         section=section,
-        user=user
+        student_user=student_user
     )
 
     result = batch.fully_enrolled()
@@ -150,7 +149,7 @@ def test_fully_enrolled_returns_true(course):
     assert result is True
 
 def test_fully_enrolled_returns_false_when_there_is_still_space(course):
-    user = User.objects.create(
+    student_user = StudentUser.objects.create(
         email='user@email.com',
         first_name='FirstName',
         last_name='LastName',
@@ -171,7 +170,7 @@ def test_fully_enrolled_returns_false_when_there_is_still_space(course):
     Enrolment.objects.create(
         batch=batch,
         section=section,
-        user=user
+        student_user=student_user
     )
 
     result = batch.fully_enrolled()
