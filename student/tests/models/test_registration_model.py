@@ -135,8 +135,8 @@ def test_create_enrolment_record(mock_next_enrollable_section, registration):
     student_user = StudentUser.objects.get(email=registration.email)
     assert enrolment.batch == registration.batch
     assert enrolment.section == section
-    assert enrolment.user.first_name == student_user.first_name
-    assert enrolment.user.last_name == student_user.last_name
+    assert enrolment.student_user.first_name == student_user.first_name
+    assert enrolment.student_user.last_name == student_user.last_name
 
 @patch('student.library.hubspot.Hubspot.create_contact')
 def test_create_hubspot_contact_when_hubspot_contact_id_does_not_exist(mock_create_contact, registration):
