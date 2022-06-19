@@ -1,6 +1,6 @@
 from django.conf import settings
 import hubspot
-from hubspot.crm.contacts import SimplePublicObjectInput, ApiException
+from hubspot.crm.contacts import ApiException, PublicObjectSearchRequest, SimplePublicObjectInput
 
 
 class Hubspot:
@@ -19,13 +19,39 @@ class Hubspot:
         except ApiException as error:
             print(f'Exception when calling basic_api->create: {error}')
 
-    def get_contact(self, contact_id):
+    def get_contact_by_id(self, contact_id):
         try:
             api_response = self.client.crm.contacts.basic_api.get_by_id(contact_id=contact_id, archived=False)
 
             return api_response.to_dict()
         except ApiException as error:
             print(f'Exception when calling basic_api->get_by_id: {error}')
+
+    def get_contact_by_email(self, email):
+        public_object_search_request = PublicObjectSearchRequest(
+            filter_groups=[
+                {
+                    'filters': [
+                        {
+                            'value': email,
+                            'propertyName': 'email',
+                            'operator': 'EQ'
+                        }
+                    ]
+                }
+            ],
+            sorts=[],
+            properties=['firstname', 'lastname', 'email'],
+            limit=1,
+            after=0
+        )
+
+        try:
+            api_response = self.client.crm.contacts.search_api.do_search(public_object_search_request=public_object_search_request)
+
+            return api_response.to_dict()
+        except ApiException as error:
+            print(f'Exception when calling search_api->do_search: {error}')
 
     def update_contact(self, contact_id, properties):
         simple_public_object_input = SimplePublicObjectInput(properties=properties)
