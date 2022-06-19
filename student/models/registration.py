@@ -46,71 +46,79 @@ class Registration(SafeDeleteModel):
     def complete_transaction(self, event_data):
         student_user = StudentUser.objects.get(email=self.email)
 
-        record_stripe_payment(event_data)
-        create_enrolment_record(self.batch, student_user)
-        create_or_update_hubspot_contact(student_user)
-        send_confirmation_email(self.id, type(self).__name__, self.email, self.first_name, self.batch)
+        self.record_stripe_payment(event_data)
+        self.create_enrolment_record(student_user)
+        self.create_or_update_hubspot_contact(student_user)
+        self.send_confirmation_email()
 
-def record_stripe_payment(event_data):
-    StripePayment.objects.create(
-        payable_type=event_data['metadata']['payable_type'],
-        payable_id=event_data['metadata']['payable_id'],
-        intent=event_data['payment_intent'],
-        customer=event_data['customer'],
-        customer_email=event_data['customer_details']['email'],
-        amount=event_data['amount_total'],
-        currency=event_data['currency'],
-        status=event_data['payment_status']
-    )
+    def record_stripe_payment(self, event_data):
+        StripePayment.objects.create(
+            payable_type=event_data['metadata']['payable_type'],
+            payable_id=event_data['metadata']['payable_id'],
+            intent=event_data['payment_intent'],
+            customer=event_data['customer'],
+            customer_email=event_data['customer_details']['email'],
+            amount=event_data['amount_total'],
+            currency=event_data['currency'],
+            status=event_data['payment_status']
+        )
 
-def create_enrolment_record(batch, student_user):
-    next_enrollable_section = batch.next_enrollable_section()
+    def create_enrolment_record(self, student_user):
+        next_enrollable_section = self.batch.next_enrollable_section()
 
-    Enrolment.objects.create(
-        batch=batch,
-        section=next_enrollable_section,
-        student_user=student_user
-    )
+        Enrolment.objects.create(
+            batch=self.batch,
+            section=next_enrollable_section,
+            student_user=student_user
+        )
 
-def create_or_update_hubspot_contact(student_user):
-    hubspot_client = Hubspot()
-    properties = {
-        'email': student_user.email,
-        'firstname': student_user.first_name,
-        'lastname': student_user.last_name
-    }
+    def create_or_update_hubspot_contact(self, student_user):
+        hubspot_client = Hubspot()
+        properties = {
+            'email': student_user.email,
+            'firstname': student_user.first_name,
+            'lastname': student_user.last_name
+        }
 
-    if student_user.hubspot_contact_id:
-        hubspot_contact = hubspot_client.get_contact(student_user.hubspot_contact_id)['properties']
+        if student_user.hubspot_contact_id:
+            hubspot_record_by_id = hubspot_client.get_contact_by_id(student_user.hubspot_contact_id)['properties']
 
-        if contact_requires_update(student_user, hubspot_contact) is True:
-            hubspot_client.update_contact(student_user.hubspot_contact_id, properties)
-    else:
-        hubspot_contact = hubspot_client.create_contact(properties)
-        student_user.hubspot_contact_id = int(hubspot_contact['id'])
-        student_user.save()
+            if contact_requires_update(student_user, hubspot_record_by_id) is True:
+                hubspot_client.update_contact(student_user.hubspot_contact_id, properties)
+        else:
+            hubspot_record_by_email = hubspot_client.get_contact_by_email(student_user.email)['results']
+            if hubspot_record_by_email and contact_requires_update(student_user, hubspot_record_by_email[0]['properties']) is True:
+                hubspot_record_id = hubspot_record_by_email[0]['properties']['hs_object_id']
 
-def send_confirmation_email(registration_id, registration_class_name, email, first_name, batch):
-    from_email = settings.ROCKET_EMAIL
-    to_email = email
-    template_id = settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
+                hubspot_client.update_contact(hubspot_record_id, properties)
+                student_user.hubspot_contact_id = int(hubspot_record_id)
+            else:
+                newly_created_hubspot_record = hubspot_client.create_contact(properties)
+                student_user.hubspot_contact_id = int(newly_created_hubspot_record['id'])
 
-    message = Mail(
-        from_email=from_email,
-        to_emails=to_email,
-    )
-    message.dynamic_template_data = {
-        'first_name': first_name.capitalize(),
-        'email': to_email,
-        'start_date': batch.start_date.strftime('%A, %d %b %Y'),
-        'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK
-    }
-    message.template_id = template_id
+            student_user.save()
 
-    sendgrid_client = Sendgrid()
-    sendgrid_client.send(registration_id,
-                         registration_class_name,
-                         from_email,
-                         to_email,
-                         template_id,
-                         message)
+    def send_confirmation_email(self):
+        from_email = settings.ROCKET_EMAIL
+        to_email = self.email
+        template_id = settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
+
+        message = Mail(
+            from_email=from_email,
+            to_emails=to_email,
+        )
+        message.dynamic_template_data = {
+            'first_name': self.first_name.capitalize(),
+            'email': to_email,
+            'start_date': self.batch.start_date.strftime('%A, %d %b %Y'),
+            'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK
+        }
+        message.template_id = template_id
+
+        sendgrid_client = Sendgrid()
+        sendgrid_client.send(self.id,
+                             type(self).__name__,
+                             from_email,
+                             to_email,
+                             template_id,
+                             message)

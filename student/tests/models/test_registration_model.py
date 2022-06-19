@@ -1,21 +1,16 @@
 import datetime
 from django.conf import settings
 import pytest
-from unittest.mock import patch
 
 from authentication.models import StudentUser
+from emails.library.sendgrid import Sendgrid
 from payment.models import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course
 from staff.models.section import Section
+from student.library.hubspot import Hubspot
 from student.models.enrolment import Enrolment
-from student.models.registration import (
-    Registration,
-    record_stripe_payment,
-    create_enrolment_record,
-    create_or_update_hubspot_contact,
-    send_confirmation_email
-)
+from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
 
@@ -59,15 +54,11 @@ def registration():
 
     yield registration
 
-@patch('student.models.registration.record_stripe_payment')
-@patch('student.models.registration.create_enrolment_record')
-@patch('student.models.registration.create_or_update_hubspot_contact')
-@patch('student.models.registration.send_confirmation_email')
-def test_complete_transaction(mock_record_stripe_payment,
-                              mock_create_enrolment_record,
-                              mock_create_or_update_hubspot_contact,
-                              mock_send_confirmation_email,
-                              registration):
+def test_complete_transaction(mocker, registration):
+    mocker.patch('student.models.registration.Registration.record_stripe_payment')
+    mocker.patch('student.models.registration.Registration.create_enrolment_record')
+    mocker.patch('student.models.registration.Registration.create_or_update_hubspot_contact')
+    mocker.patch('student.models.registration.Registration.send_confirmation_email')
     # This is a shortened version of event_data
     # Full details can be found in Stripe dashboard
     event_data = {
@@ -87,10 +78,10 @@ def test_complete_transaction(mock_record_stripe_payment,
 
     registration.complete_transaction(event_data)
 
-    mock_record_stripe_payment.assert_called_once()
-    mock_create_enrolment_record.assert_called_once()
-    mock_create_or_update_hubspot_contact.assert_called_once()
-    mock_send_confirmation_email.assert_called_once()
+    registration.record_stripe_payment.assert_called_once()
+    registration.create_enrolment_record.assert_called_once()
+    registration.create_or_update_hubspot_contact.assert_called_once()
+    registration.send_confirmation_email.assert_called_once()
 
 def test_record_stripe_payment(registration):
     event_data = {
@@ -108,7 +99,7 @@ def test_record_stripe_payment(registration):
         "payment_status": "paid",
     }
 
-    record_stripe_payment(event_data)
+    registration.record_stripe_payment(event_data)
 
     assert StripePayment.objects.count() == 1
     stripe_payment = StripePayment.objects.last()
@@ -121,14 +112,16 @@ def test_record_stripe_payment(registration):
     assert stripe_payment.currency == event_data['currency']
     assert stripe_payment.status == event_data['payment_status']
 
-@patch('staff.models.batch.Batch.next_enrollable_section')
-def test_create_enrolment_record(mock_next_enrollable_section, registration):
+def test_create_enrolment_record(mocker, registration):
     student_user = StudentUser.objects.last()
-    mock_next_enrollable_section.return_value = registration.batch.section_set.first()
+    mocker.patch(
+        'staff.models.batch.Batch.next_enrollable_section',
+        return_value=registration.batch.section_set.first()
+    )
 
-    create_enrolment_record(registration.batch, student_user)
+    registration.create_enrolment_record(student_user)
 
-    mock_next_enrollable_section.assert_called_once()
+    Batch.next_enrollable_section.assert_called_once()
     assert Enrolment.objects.count() == 1
     enrolment = Enrolment.objects.last()
     section = Section.objects.last()
@@ -138,27 +131,7 @@ def test_create_enrolment_record(mock_next_enrollable_section, registration):
     assert enrolment.student_user.first_name == student_user.first_name
     assert enrolment.student_user.last_name == student_user.last_name
 
-@patch('student.library.hubspot.Hubspot.create_contact')
-def test_create_hubspot_contact_when_hubspot_contact_id_does_not_exist(mock_create_contact, registration):
-    student_user = StudentUser.objects.get(email=registration.email)
-    # This is a shortened version of Hubspot's response
-    # Full details can be found at https://developers.hubspot.com/docs/api/crm/contacts
-    mock_create_contact.return_value = {
-        "id": "1",
-        "properties": {
-            "email": "user@example.com",
-            "firstname": "FirstName",
-            "lastname": "LastName",
-        },
-    }
-
-    create_or_update_hubspot_contact(student_user)
-
-    assert student_user.hubspot_contact_id == 1
-
-@patch('student.library.hubspot.Hubspot.get_contact')
-@patch('student.library.hubspot.Hubspot.update_contact')
-def test_update_hubspot_contact_when_hubspot_contact_id_exists(mock_get_contact, mock_update_contact):
+def test_update_hubspot_contact_when_hubspot_contact_id_exists_in_learn(mocker, registration):
     learn_user_email = 'learn@email.com'
     learn_first_name = 'LearnFirstName'
     learn_last_name = 'LearnLastName'
@@ -169,26 +142,92 @@ def test_update_hubspot_contact_when_hubspot_contact_id_exists(mock_get_contact,
         password=settings.PLACEHOLDER_PASSWORD,
         hubspot_contact_id=1
     )
+
     # This is a shortened version of Hubspot's response
     # Full details can be found at https://developers.hubspot.com/docs/api/crm/contacts
-    mock_get_contact.return_value = {
-        "properties": {
-            "email": "hubspotemail@example.com",
-            "firstname": "HubspotFirstName",
-            "lastname": "HubspotLastName",
-        },
-    }
+    mocker.patch(
+        'student.library.hubspot.Hubspot.get_contact_by_id',
+        return_value={
+            'properties': {
+                'email': 'hubspotemail@example.com',
+                'firstname': 'HubspotFirstName',
+                'lastname': 'HubspotLastName',
+            },
+        }
+    )
 
-    create_or_update_hubspot_contact(student_user)
+    mocker.patch(
+        'student.library.hubspot.Hubspot.update_contact',
+        return_value={
+            "properties": {
+                "email": "hubspotemail@example.com",
+                "firstname": "HubspotFirstName",
+                "lastname": "HubspotLastName",
+            },
+        }
+    )
 
-    mock_update_contact.assert_called_once()
+    registration.create_or_update_hubspot_contact(student_user)
 
-@patch('emails.library.sendgrid.Sendgrid.send')
-def test_send_confirmation_email(mock_send, registration):
-    send_confirmation_email(registration.id,
-                            type(registration).__name__,
-                            registration.email,
-                            registration.first_name,
-                            registration.batch)
+    Hubspot.update_contact.assert_called_once()
 
-    mock_send.assert_called_once()
+def test_create_hubspot_contact_when_hubspot_contact_does_not_exist(mocker, registration):
+    student_user = StudentUser.objects.get(email=registration.email)
+    mocker.patch(
+        'student.library.hubspot.Hubspot.get_contact_by_email',
+        return_value={
+            "total": "0",
+            "results": [],
+        }
+    )
+    # This is a shortened version of Hubspot's response
+    # Full details can be found at https://developers.hubspot.com/docs/api/crm/contacts
+    mocker.patch(
+        'student.library.hubspot.Hubspot.create_contact',
+        return_value={
+            'id': '1',
+            'properties': {
+                'email': 'user@example.com',
+                'firstname': 'FirstName',
+                'lastname': 'LastName',
+            },
+        }
+    )
+
+    registration.create_or_update_hubspot_contact(student_user)
+
+    assert student_user.hubspot_contact_id == 1
+
+def test_update_hubspot_contact_when_contact_created_separately_in_hubspot(mocker, registration):
+    student_user = StudentUser.objects.get(email=registration.email)
+    mocker.patch(
+        'student.library.hubspot.Hubspot.get_contact_by_email',
+        return_value={
+            'total': 1,
+            'results': [
+                {
+                    'id': '651',
+                    'properties':
+                        {
+                            'email': 'user@example.com',
+                            'firstname': 'Another',
+                            'hs_object_id': '651',
+                            'lastname': 'Name'
+                        },
+                        'archived': False
+                }
+            ]
+        }
+    )
+    mocker.patch('student.library.hubspot.Hubspot.update_contact')
+
+    registration.create_or_update_hubspot_contact(student_user)
+
+    Hubspot.update_contact.assert_called_once()
+
+def test_send_confirmation_email(mocker, registration):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
+
+    registration.send_confirmation_email()
+
+    Sendgrid.send.assert_called_once()
