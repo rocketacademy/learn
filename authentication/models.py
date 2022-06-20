@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from polymorphic.models import PolymorphicModel, PolymorphicManager
 
+from staff.models import Batch
+import student
 
 class UserManager(BaseUserManager, PolymorphicManager):
     def _create_user(self, email, first_name, last_name, password, is_staff, is_superuser):
@@ -63,3 +65,9 @@ class User(AbstractBaseUser, PermissionsMixin, PolymorphicModel):
 
 class StudentUser(User):
     hubspot_contact_id = models.IntegerField(null=True, blank=True)
+    slack_user_id = models.CharField(max_length=20, null=True, blank=True)
+
+    def current_enrolled_batches(self):
+        batch_queryset = Batch.objects.filter(enrolment__in=student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id))
+
+        return batch_queryset

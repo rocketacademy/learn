@@ -12,8 +12,18 @@ class Slack:
             api_response = self.client.conversations_create(
                 name=name
             )
-            print(api_response)
 
             return api_response['channel']['id']
         except SlackApiError as error:
             print(f'Error creating channel: {error}')
+
+    def add_users_to_channel(self, slack_user_ids, slack_channel_id):
+        try:
+            api_response = self.client.conversations_invite(
+                users=slack_user_ids,
+                channel=slack_channel_id
+            )
+
+            return api_response
+        except SlackApiError as error:
+            print(f'Error inviting user(s) to channel: {error}')
