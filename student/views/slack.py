@@ -26,10 +26,10 @@ def event_hook(request):
 def team_join_event(event):
     slack_user_email = event['user']['profile']['email']
     slack_user_id = event['user']['id']
-    student_user = StudentUser.objects.filter(email=slack_user_email)
+    student_user = StudentUser.objects.filter(email=slack_user_email).first()
 
     if student_user:
-        current_enrolled_batches = student_user.first().current_enrolled_batches()
+        current_enrolled_batches = student_user.current_enrolled_batches()
         student_user.slack_user_id = slack_user_id
         student_user.save()
 
