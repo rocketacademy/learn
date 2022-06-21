@@ -19,5 +19,5 @@ urlpatterns = [
     path('basics/register/<int:registration_id>/confirmation/',
          registration.ConfirmationView.as_view(),
          name='basics_register_confirmation'),
-    path('slack/event/hook/', slack.event_hook, name='slack_event_hook')
+    path('slack/event/hook/', slack.event_hook, name='slack_event_hook'),
 ]

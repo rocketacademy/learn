@@ -1,4 +1,5 @@
 from django.conf import settings
+from sentry_sdk import capture_exception, capture_message
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
@@ -15,7 +16,8 @@ class Slack:
 
             return api_response['channel']['id']
         except SlackApiError as error:
-            print(f'Error creating channel: {error}')
+            capture_message('Error creating channel')
+            capture_exception(error)
 
     def add_users_to_channel(self, slack_user_ids, slack_channel_id):
         try:
@@ -26,4 +28,5 @@ class Slack:
 
             return api_response
         except SlackApiError as error:
-            print(f'Error inviting user(s) to channel: {error}')
+            capture_message('Error inviting user(s) to channel')
+            capture_exception(error)

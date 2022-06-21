@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from sentry_sdk import capture_message
 import threading
 
 from authentication.models import StudentUser
@@ -40,4 +41,4 @@ def team_join_event(event):
             for batch in current_enrolled_batches:
                 slack_client.add_users_to_channel(slack_user_ids, batch.slack_channel_id)
     else:
-        print(f'User with email {slack_user_email} does not exist in Learn')
+        capture_message(f'User with email {slack_user_email} does not exist in Learn')
