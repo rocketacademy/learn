@@ -1,6 +1,7 @@
 from django.conf import settings
 import hubspot
 from hubspot.crm.contacts import ApiException, PublicObjectSearchRequest, SimplePublicObjectInput
+from sentry_sdk import capture_exception, capture_message
 
 
 class Hubspot:
@@ -17,7 +18,8 @@ class Hubspot:
 
             return api_response.to_dict()
         except ApiException as error:
-            print(f'Exception when calling basic_api->create: {error}')
+            capture_message('Exception when calling basic_api->create')
+            capture_exception(error)
 
     def get_contact_by_id(self, contact_id):
         try:
@@ -25,7 +27,8 @@ class Hubspot:
 
             return api_response.to_dict()
         except ApiException as error:
-            print(f'Exception when calling basic_api->get_by_id: {error}')
+            capture_message('Exception when calling basic_api->get_by_id')
+            capture_exception(error)
 
     def get_contact_by_email(self, email):
         public_object_search_request = PublicObjectSearchRequest(
@@ -51,7 +54,8 @@ class Hubspot:
 
             return api_response.to_dict()
         except ApiException as error:
-            print(f'Exception when calling search_api->do_search: {error}')
+            capture_message('Exception when calling search_api->do_search')
+            capture_exception(error)
 
     def update_contact(self, contact_id, properties):
         simple_public_object_input = SimplePublicObjectInput(properties=properties)
@@ -64,7 +68,8 @@ class Hubspot:
 
             return api_response
         except ApiException as error:
-            print(f'Exception when calling basic_api->update: {error}')
+            capture_message('Exception when calling basic_api->update')
+            capture_exception(error)
 
 def contact_requires_update(existing_user, hubspot_contact):
     if existing_user.email is not hubspot_contact['email']:

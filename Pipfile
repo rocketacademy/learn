@@ -23,6 +23,7 @@ hubspot-api-client = "*"
 gunicorn = "*"
 dj-database-url = "*"
 slack-sdk = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 pytest = "*"

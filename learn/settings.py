@@ -1,6 +1,8 @@
 import dj_database_url
 import environ
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -220,6 +222,28 @@ HUBSPOT_API_KEY = env('HUBSPOT_API_KEY')
 
 SLACK_USER_OAUTH_TOKEN = env('SLACK_USER_OAUTH_TOKEN')
 SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK = env('SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK')
+
+# SENTRY
+# ------------------------------------------------------------------------------
+
+# DSN tells SDK where to send events
+SENTRY_DSN = env('SENTRY_DSN')
+
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
