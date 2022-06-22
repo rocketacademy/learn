@@ -77,7 +77,9 @@ class Registration(SafeDeleteModel):
         properties = {
             'email': student_user.email,
             'firstname': student_user.first_name,
-            'lastname': student_user.last_name
+            'lastname': student_user.last_name,
+            'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
+            'basics_batch_number': self.batch.number,
         }
 
         if student_user.hubspot_contact_id:

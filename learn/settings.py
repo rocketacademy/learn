@@ -216,6 +216,7 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 # ------------------------------------------------------------------------------
 
 HUBSPOT_API_KEY = env('HUBSPOT_API_KEY')
+BASICS_ENROLLED_FUNNEL_STATUS = 'basics_enrolled'
 
 # SLACK
 # ------------------------------------------------------------------------------
