@@ -14,6 +14,7 @@
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">Email</th>
+                <th scope="col">Slack invitation</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,11 @@
                 <td>{{ student.first_name|title }}</td>
                 <td>{{ student.last_name|title }}</td>
                 <td>{{ student.email }}</td>
+                {% if student.slack_user_id %}
+                    <td>Accepted</td>
+                {% else %}
+                    <td>Has not accepted</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
