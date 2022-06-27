@@ -113,7 +113,8 @@ class Registration(SafeDeleteModel):
             'first_name': self.first_name.capitalize(),
             'email': to_email,
             'start_date': self.batch.start_date.strftime('%A, %d %b %Y'),
-            'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK
+            'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK,
+            'batch_number': self.batch.number
         }
         message.template_id = template_id
 
