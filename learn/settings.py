@@ -1,4 +1,3 @@
-import datetime
 import dj_database_url
 import environ
 import os
@@ -263,11 +262,7 @@ ISO_WEEK_DAYS = {
 PLACEHOLDER_PASSWORD = 'Placeholderpassw0rd!'
 
 # FEES #
-PAID_BASICS_START_DATE = datetime.date(2022, 6, 28)
-if datetime.date.today() >= PAID_BASICS_START_DATE:
-    CODING_BASICS_REGISTRATION_FEE_SGD = 199
-else:
-    CODING_BASICS_REGISTRATION_FEE_SGD = 1
+CODING_BASICS_REGISTRATION_FEE_SGD = 199
 
 # EMAILS #
 ROCKET_CODING_BASICS_EMAIL = 'basics@rocketacademy.co'
