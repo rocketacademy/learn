@@ -71,15 +71,4 @@ def webhook(request):
                 payable_object.complete_transaction(event_data)
         except Exception as error:
             return HttpResponseServerError(error)
-    # Save payment records for 'unpaid' payments, which are returned in expired checkout sessions
-    elif event['type'] == 'checkout.session.expired':
-        event_data = event['data']['object']
-        payable_id = int(event_data['metadata']['payable_id'])
-        payable_object = apps.get_model('student', event_data['metadata']['payable_type']).objects.get(pk=payable_id)
-
-        try:
-            with transaction.atomic():
-                payable_object.record_stripe_payment(event_data)
-        except IntegrityError:
-            return HttpResponseServerError()
     return HttpResponse(status=200)
