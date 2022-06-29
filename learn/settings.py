@@ -249,6 +249,7 @@ sentry_sdk.init(
 # GLOBAL CONSTANTS
 # ------------------------------------------------------------------------------
 
+PROJECT_NAME = 'learn'
 CODING_BASICS = 'CODING_BASICS'
 ISO_WEEK_DAYS = {
     'MON': '1',
