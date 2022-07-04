@@ -251,6 +251,7 @@ sentry_sdk.init(
 
 PROJECT_NAME = 'learn'
 CODING_BASICS = 'CODING_BASICS'
+DAYS_BEFORE_BATCH_START_DATE = 14
 ISO_WEEK_DAYS = {
     'MON': '1',
     'TUE': '2',
