@@ -7,7 +7,7 @@ from student.library.slack import Slack
 
 
 class Command(BaseCommand):
-    help = 'Creates slack section channels before course begins'
+    help = 'Creates Slack section channels before course begins'
 
     def handle(self, *args, **options):
         today = date.today()
