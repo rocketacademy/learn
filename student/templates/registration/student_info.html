@@ -66,10 +66,18 @@
                 {{ form.referral_channel.errors|striptags }}
             </small>
         </div>
+        <div class="col-md-6 my-2" id="registration_form-referral_code_field_div" style="display:none">
+            {{ form.referral_code.label }}
+            {{ form.referral_code }}
+            <small class="text-danger">
+                {{ form.referral_code.errors|striptags }}
+            </small>
+        </div>
     </div>
     <div class="pt-5 mt-5">
         <button class="btn btn-sm btn-outline-secondary px-4" formnovalidate="formnovalidate" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
         <button class="btn btn-sm btn-primary px-4" type="submit" value="submit">Proceed to payment</button>
     </div>
 </form>
+<script src="/static/student/js/referral_code.js" ></script>
 {% endblock %}
