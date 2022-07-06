@@ -1,4 +1,5 @@
 {% extends './base.html' %}
+{% load crispy_forms_tags %}
 
 {% block progress_bar %}
 <div class="progress-bar-item">
@@ -28,15 +29,13 @@
     {{ wizard.management_form }}
     <div class="row">
         <div class="col-md-6 my-2">
-            {{ form.first_name.label }}
-            {{ form.first_name }}
+            {{ form.first_name|as_crispy_field }}
             <small class="text-danger">
                 {{ form.first_name.errors|striptags }}
             </small>
         </div>
         <div class="col-md-6 my-2">
-            {{ form.last_name.label }}
-            {{ form.last_name }}
+            {{ form.last_name|as_crispy_field }}
             <small class="text-danger">
                 {{ form.last_name.errors|striptags }}
             </small>
@@ -44,15 +43,13 @@
     </div>
     <div class="row">
         <div class="col-md-6 my-2">
-            {{ form.email.label }}
-            {{ form.email }}
+            {{ form.email|as_crispy_field }}
             <small class="text-danger">
                 {{ form.email.errors|striptags }}
             </small>
         </div>
         <div class="col-md-6 my-2">
-            {{ form.country_of_residence.label }}
-            {{ form.country_of_residence }}
+            {{ form.country_of_residence|as_crispy_field }}
             <small class="text-danger">
                 {{ form.country_of_residence.errors|striptags }}
             </small>
@@ -60,15 +57,13 @@
     </div>
     <div class="row">
         <div class="col-md-6 my-2">
-            {{ form.referral_channel.label }}
-            {{ form.referral_channel }}
+            {{ form.referral_channel|as_crispy_field }}
             <small class="text-danger">
                 {{ form.referral_channel.errors|striptags }}
             </small>
         </div>
         <div class="col-md-6 my-2" id="registration_form-referral_code_field_div" style="display:none">
-            {{ form.referral_code.label }}
-            {{ form.referral_code }}
+            {{ form.referral_code|as_crispy_field }}
             <small class="text-danger">
                 {{ form.referral_code.errors|striptags }}
             </small>
