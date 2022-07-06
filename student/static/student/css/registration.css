@@ -35,7 +35,7 @@ ul {
     display: none;
 }
 
-.basics-registration-form label {
+.basics-registration-form #id_batch_selection-batch label {
     width: 100%;
     padding: 20px 25px;
     border: 1px solid lightgrey;
