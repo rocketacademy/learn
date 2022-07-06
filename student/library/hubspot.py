@@ -6,7 +6,7 @@ from sentry_sdk import capture_exception, capture_message
 
 class Hubspot:
     def __init__(self):
-        self.client = hubspot.Client.create(api_key=settings.HUBSPOT_API_KEY)
+        self.client = hubspot.Client.create(access_token=settings.HUBSPOT_PRIVATE_APP_ACCESS_TOKEN)
 
     def create_contact(self, properties):
         simple_public_object_input = SimplePublicObjectInput(properties=properties)
