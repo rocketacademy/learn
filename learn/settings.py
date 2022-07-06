@@ -215,7 +215,6 @@ SENDGRID_API_KEY = env('SENDGRID_API_KEY')
 # HUBSPOT
 # ------------------------------------------------------------------------------
 
-HUBSPOT_API_KEY = env('HUBSPOT_API_KEY')
 HUBSPOT_PRIVATE_APP_ACCESS_TOKEN = env('HUBSPOT_PRIVATE_APP_ACCESS_TOKEN')
 BASICS_ENROLLED_FUNNEL_STATUS = 'basics_enrolled'
 

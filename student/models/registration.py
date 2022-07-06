@@ -40,6 +40,7 @@ class Registration(SafeDeleteModel):
     email = models.EmailField(max_length=255)
     country_of_residence = models.CharField(max_length=255, choices=pytz.country_names.items())
     referral_channel = models.CharField(max_length=255, choices=REFERRAL_CHANNELS)
+    referral_code = models.CharField(max_length=6, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
