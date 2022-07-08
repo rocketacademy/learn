@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% block coupon_content %}
+<div class="py-4">
+    <h5>Coupon - {{ coupon.code }}</h5>
+        <div class="row mt-4">
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>Start date</h6>
+                {{ coupon.start_date|date:"d M, Y" }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>End date</h6>
+                {% if coupon.end_date %}
+                    {{ coupon.end_date|date:"d M, Y" }}
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>Type</h6>
+                {{ coupon.get_type_display }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>Discount</h6>
+                {{ coupon.get_discount_display }}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>Code</h6>
+                {{ coupon.code }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                <h6>Description</h6>
+                {{ coupon.description }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

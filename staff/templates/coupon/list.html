@@ -1,39 +1,39 @@
-{% extends '../staff_base.html' %}
-{% block content %}
-<div class="col-lg-12 col-md-8 col-sm-12">
-    <div class="d-flex flex-row justify-content-between px-4">
-        <h5>Coupons</h5>
-        <a type="link" href="new/" role="button" class="btn btn-outline-primary btn-sm px-4">
-            + Create coupon
-        </a>
-    </div>
-    <div class="d-flex flex-row justify-content-start p-4">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">Start date</th>
-                    <th scope="col">End date</th>
-                    <th scope="col">Code</th>
-                    <th scope="col">Discount</th>
-                    <th scope="col">Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for coupon in coupons %}
-                <tr> 
-                    <td>{{ coupon.start_date|date:"d M, Y" }}</td>
-                    <td>{{ coupon.end_date|date:"d M, Y" }}</td>
-                    <td>{{ coupon.code }}</td>
-                    {% if coupon.discount_type == 'percent' %}
-                        <td>{{ coupon.discount_amount }}%</td>
-                    {% elif coupon.discount_type == 'dollars' %}
-                        <td>${{ coupon.discount_amount }}</td>
-                    {% endif %}
-                    <td>{{ coupon.description }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+{% extends './base.html' %}
+{% block coupon_content %}
+<div class="d-flex flex-row justify-content-between p-4">
+    <h5>Overview</h5>
+    <a type="link" href="new/" role="button" class="btn btn-outline-primary btn-sm px-4">
+        + Create coupon
+    </a>
+</div>
+<div class="px-4">
+    {% if coupons.exists %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Discount</th>
+                <th scope="col">Code</th>
+                <th scope="col">Start date</th>
+                <th scope="col">End date</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coupon in coupons %}
+            <tr>
+                <td>{{ coupon.get_type_display }}</td>
+                <td>{{ coupon.get_discount_display }}</td>
+                <td>{{ coupon.code }}</td>
+                <td>{{ coupon.start_date|date:"d M, Y" }}</td>
+                <td>{{ coupon.end_date|date:"d M, Y" }}</td>
+                <td>{{ coupon.description|linebreaks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div>There aren't any active coupons at the moment</div>
+    {% endif %}
 </div>
 {% endblock %}
