@@ -7,7 +7,7 @@ from sendgrid.helpers.mail import Mail
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
-from payment.models import StripePayment
+from payment.models.stripe_payment import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course
 from student.library.hubspot import Hubspot, contact_requires_update
