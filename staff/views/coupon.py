@@ -37,14 +37,7 @@ class NewView(LoginRequiredMixin, View):
         if coupon_form.is_valid():
             try:
                 with transaction.atomic():
-                    coupon = Coupon.objects.create(
-                        start_date=coupon_form.cleaned_data.get('start_date'),
-                        end_date=coupon_form.cleaned_data.get('end_date'),
-                        type=coupon_form.cleaned_data.get('type'),
-                        discount_type=coupon_form.cleaned_data.get('discount_type'),
-                        discount_amount=coupon_form.cleaned_data.get('discount_amount'),
-                        description=coupon_form.cleaned_data.get('description')
-                    )
+                    coupon = coupon_form.save()
 
                     return redirect('coupon_detail', coupon_id=coupon.id)
             except IntegrityError:
@@ -65,6 +58,7 @@ class DetailView(LoginRequiredMixin, View):
             request,
             'coupon/detail.html',
             {
-                'coupon': coupon
+                'coupon': coupon,
+                'coupon_effects': coupon.effects.all()
             }
         )

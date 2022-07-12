@@ -15,15 +15,7 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-6 col-lg-3 my-2">
-                {{ coupon_form.discount_amount|as_crispy_field }}
-            </div>
-            <div class="col-md-6 col-lg-3 my-2">
-                {{ coupon_form.discount_type|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-md-6 col-lg-3 my-2">
-                {{ coupon_form.type|as_crispy_field }}
+                {{ coupon_form.effects|as_crispy_field }}
             </div>
             <div class="col-md-6 col-lg-3 my-2">
                 {{ coupon_form.description|as_crispy_field }}
