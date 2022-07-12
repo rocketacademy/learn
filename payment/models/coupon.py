@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.html import format_html
 from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
 
@@ -25,3 +26,12 @@ class Coupon(SafeDeleteModel):
             raise ValueError('Coupon end date should be after start date')
 
         return super().save(*args, **kwargs)
+
+    def get_effects_display(self):
+        couponeffect_queryset = self.effects.all()
+        html_formatted_effects_display = ""
+
+        for coupon_effect in couponeffect_queryset:
+            html_formatted_effects_display += f"{coupon_effect}<br>"
+
+        return format_html(html_formatted_effects_display)
