@@ -11,8 +11,10 @@ class Coupon(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
 
     REFERRAL = 'referral'
+    PARTNERSHIP = 'partnership'
     TYPE_CHOICES = [
-        (REFERRAL, 'Referral')
+        (REFERRAL, 'Referral'),
+        (PARTNERSHIP, 'Partnership')
     ]
 
     DISCOUNT_TYPE_CHOICES = [
