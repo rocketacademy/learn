@@ -12,7 +12,6 @@ class StudentInfoForm(forms.ModelForm):
             'email',
             'country_of_residence',
             'referral_channel',
-            'referral_code'
         ]
         widgets = {
             'first_name': forms.TextInput(
@@ -48,12 +47,6 @@ class StudentInfoForm(forms.ModelForm):
                     'id': 'registration-form-referral-channel',
                 }
             ),
-            'referral_code': forms.TextInput(
-                attrs={
-                    'class': 'form-control my-1',
-                    'id': 'registration-form-referral-code',
-                }
-            )
         }
         labels = {
             'referral_channel': 'How did you hear about us?'

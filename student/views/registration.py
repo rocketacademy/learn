@@ -27,7 +27,6 @@ class RegistrationWizard(SessionWizardView):
         email = form_data[1]['email'].lower()
         country_of_residence = form_data[1]['country_of_residence']
         referral_channel = form_data[1]['referral_channel']
-        referral_code = form_data[1]['referral_code']
 
         try:
             with transaction.atomic():
@@ -39,7 +38,6 @@ class RegistrationWizard(SessionWizardView):
                     email=email,
                     country_of_residence=country_of_residence,
                     referral_channel=referral_channel,
-                    referral_code=referral_code
                 )
 
                 user_queryset = User.objects.filter(email=email)
