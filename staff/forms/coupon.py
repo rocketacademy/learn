@@ -8,17 +8,13 @@ class CouponForm(forms.ModelForm):
         fields = [
             'start_date',
             'end_date',
-            'type',
-            'discount_type',
-            'discount_amount',
+            'effects',
             'description'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'type': forms.Select(),
-            'discount_type': forms.Select(),
-            'discount_amount': forms.NumberInput,
+            'effects': forms.SelectMultiple(),
             'description': forms.Textarea(attrs={'rows': 2})
         }
 
@@ -32,14 +28,3 @@ class CouponForm(forms.ModelForm):
             self.add_error('end_date', message)
 
         return self.cleaned_data
-
-    def clean_discount_amount(self):
-        discount_amount = self.cleaned_data.get('discount_amount')
-
-        if discount_amount < 1:
-            raise forms.ValidationError(
-                ('Discount amount should be greater than zero'),
-                code='invalid_discount_amount'
-            )
-
-        return discount_amount

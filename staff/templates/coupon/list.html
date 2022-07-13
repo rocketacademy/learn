@@ -11,23 +11,21 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Type</th>
-                <th scope="col">Discount</th>
-                <th scope="col">Code</th>
                 <th scope="col">Start date</th>
                 <th scope="col">End date</th>
                 <th scope="col">Description</th>
+                <th scope="col">Effects</th>
+                <th scope="col">Code</th>
             </tr>
         </thead>
         <tbody>
             {% for coupon in coupons %}
             <tr>
-                <td>{{ coupon.get_type_display }}</td>
-                <td>{{ coupon.get_discount_display }}</td>
-                <td>{{ coupon.code }}</td>
                 <td>{{ coupon.start_date|date:"d M, Y" }}</td>
                 <td>{{ coupon.end_date|date:"d M, Y" }}</td>
                 <td>{{ coupon.description|linebreaks }}</td>
+                <td>{{ coupon.get_effects_display }}</td>
+                <td>{{ coupon.code }}</td>
             </tr>
             {% endfor %}
         </tbody>

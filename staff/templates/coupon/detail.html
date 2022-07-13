@@ -19,19 +19,17 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-6 col-lg-3 my-2">
-                <h6>Type</h6>
-                {{ coupon.get_type_display }}
+                <h6>Effects</h6>
+                {% for coupon_effect in coupon_effects %}
+                    {{ coupon_effect }}
+                {% endfor %}
             </div>
-            <div class="col-md-6 col-lg-3 my-2">
-                <h6>Discount</h6>
-                {{ coupon.get_discount_display }}
-            </div>
-        </div>
-        <div class="row mt-4">
             <div class="col-md-6 col-lg-3 my-2">
                 <h6>Code</h6>
                 {{ coupon.code }}
             </div>
+        </div>
+        <div class="row mt-4">
             <div class="col-md-6 col-lg-3 my-2">
                 <h6>Description</h6>
                 {{ coupon.description }}
