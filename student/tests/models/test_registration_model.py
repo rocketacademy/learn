@@ -126,6 +126,7 @@ def test_create_enrolment_record(mocker, registration):
     enrolment = Enrolment.objects.last()
     section = Section.objects.last()
     student_user = StudentUser.objects.get(email=registration.email)
+    assert enrolment.registration == registration
     assert enrolment.batch == registration.batch
     assert enrolment.section == section
     assert enrolment.student_user.first_name == student_user.first_name

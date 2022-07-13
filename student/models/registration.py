@@ -68,6 +68,7 @@ class Registration(SafeDeleteModel):
         next_enrollable_section = self.batch.next_enrollable_section()
 
         Enrolment.objects.create(
+            registration=self,
             batch=self.batch,
             section=next_enrollable_section,
             student_user=student_user
