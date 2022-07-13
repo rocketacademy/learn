@@ -4,30 +4,40 @@
 </div>
 {% block batch_content %}
 <div class="d-flex flex-row justify-content-between px-4">
-    <h5>Students</h5>
+    <h5>Enrolments</h5>
 </div>
 <div class="d-flex flex-row justify-content-start p-4">
-    {% if students.exists %}
+    {% if enrolments.exists %}
     <table class="table">
         <thead>
             <tr>
+                <th scope="col">Section</th>
                 <th scope="col">First name</th>
                 <th scope="col">Last name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Slack invitation</th>
+                <th scope="col">Referral code</th>
+                <th scope="col">Enrolled at</th>
             </tr>
         </thead>
         <tbody>
-            {% for student in students %}
+            {% for enrolment in enrolments %}
             <tr>
-                <td>{{ student.first_name|title }}</td>
-                <td>{{ student.last_name|title }}</td>
-                <td>{{ student.email }}</td>
-                {% if student.slack_user_id %}
+                <td>{{ enrolment.section.number }}</td>
+                <td>{{ enrolment.registration.first_name|title }}</td>
+                <td>{{ enrolment.registration.last_name|title }}</td>
+                <td>{{ enrolment.registration.email }}</td>
+                {% if enrolment.student.slack_user_id %}
                     <td>Accepted</td>
                 {% else %}
                     <td>Has not accepted</td>
                 {% endif %}
+                {% if enrolment.registration.referral_code %}
+                    <td>{{ enrolment.registration.referral_code }}</td>
+                {% else %}
+                    <td>-</td>
+                {% endif %}
+                <td>{{ enrolment.created_at }}</td>
             </tr>
             {% endfor %}
         </tbody>

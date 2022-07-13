@@ -62,6 +62,12 @@
                 {{ form.referral_channel.errors|striptags }}
             </small>
         </div>
+        <div class="col-md-6 my-2">
+            {{ form.referral_code|as_crispy_field }}
+            <small class="text-danger">
+                {{ form.referral_code.errors|striptags }}
+            </small>
+        </div>
     </div>
     <div class="pt-5 mt-5">
         <button class="btn btn-sm btn-outline-secondary px-4" formnovalidate="formnovalidate" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>

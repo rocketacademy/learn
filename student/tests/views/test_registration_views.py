@@ -58,6 +58,7 @@ def test_registration_wizard_form_existing_user(batch, existing_user):
         'student_info-email': existing_user_email,
         'student_info-country_of_residence': 'SG',
         'student_info-referral_channel': 'word_of_mouth',
+        'student_info-referral_code': 'A1234B'
     })
 
     assert batch_selection_form_response.status_code == HttpResponse.status_code

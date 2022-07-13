@@ -8,7 +8,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Batch, Course
-from staff.views.student import ListView
+from staff.views.enrolment import ListView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -43,17 +43,17 @@ def batch():
 
     yield batch
 
-def test_student_list_anonymous_user_redirected_to_login(batch):
-    request = RequestFactory().get(f"/basics/batches/{batch.id}/students/")
+def test_enrolment_list_anonymous_user_redirected_to_login(batch):
+    request = RequestFactory().get(f"/basics/batches/{batch.id}/enrolments/")
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{batch.id}/students/" in response.url
+    assert f"staff/login/?next=/basics/batches/{batch.id}/enrolments/" in response.url
 
-def test_student_list_logged_in_user_can_access(batch, logged_in_existing_user):
-    response = client.get(reverse('student_list', kwargs={'batch_id': batch.id}))
+def test_enrolment_list_logged_in_user_can_access(batch, logged_in_existing_user):
+    response = client.get(reverse('enrolment_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'basics/student/list.html' in (template.name for template in response.templates)
+    assert 'basics/enrolment/list.html' in (template.name for template in response.templates)

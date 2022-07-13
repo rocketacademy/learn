@@ -8,12 +8,13 @@ from staff.models.batch import Batch
 from staff.models.section import Section
 
 
-# null=True on student_user because this column was previously user
+# null=True on registration_id and student_user because these columns have been changed
 # Django requires default value for records existing before this new column
 # null value makes most sense, although in reality this column will not be empty
 class Enrolment(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
+    registration = models.ForeignKey('student.Registration', on_delete=models.CASCADE, null=True)
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     student_user = models.ForeignKey(StudentUser, on_delete=models.CASCADE, null=True)

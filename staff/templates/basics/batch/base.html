@@ -11,7 +11,7 @@
                     <a href="{% url 'batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}sidebar-link-active border-start border-primary{% endif %}">Overview</a>
                 </li>
                 <li>
-                    <a href="{% url 'student_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'students'%}sidebar-link-active border-start border-primary{% endif %}">Students</a>
+                    <a href="{% url 'enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolment'%}sidebar-link-active border-start border-primary{% endif %}">Enrolments</a>
                 </li>
                 <li>
                     <a href="{% url 'section_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'sections'%}sidebar-link-active border-start border-primary{% endif %}">Sections</a>
