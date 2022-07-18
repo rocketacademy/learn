@@ -10,7 +10,7 @@ from payment.models.coupon_effect import CouponEffect
 class Coupon(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
 
-    code = models.CharField(max_length=6, blank=True)
+    code = models.CharField(max_length=15, blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(null=True, blank=True)
     effects = models.ManyToManyField(CouponEffect)
