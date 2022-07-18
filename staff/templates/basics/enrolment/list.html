@@ -27,7 +27,7 @@
                 <td>{{ enrolment.registration.first_name|title }}</td>
                 <td>{{ enrolment.registration.last_name|title }}</td>
                 <td>{{ enrolment.registration.email }}</td>
-                {% if enrolment.student.slack_user_id %}
+                {% if enrolment.student_user.slack_user_id %}
                     <td>Accepted</td>
                 {% else %}
                     <td>Has not accepted</td>
