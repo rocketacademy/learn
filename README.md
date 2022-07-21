@@ -4,7 +4,6 @@ This is Rocket's learning management system, meant to streamline operations for 
 
 It is built with Django, hosted on Heroku, and connected to a PostgreSQL database.
 
-
 ### Install `pyenv`, `python`, `pipenv`, and `virtualenvwrapper`
 Since Learn is built with Django, we will need to set up our Python environment locally. Doing this wrongly could result in confusion about which Python is running. The following steps are summarised from the following articles:
 - [Setting Python3 as default on Mac](https://opensource.com/article/19/5/python-3-default-mac)
@@ -70,6 +69,10 @@ Since Learn is built with Django, we will need to set up our Python environment 
    `$ pipenv shell` or `$ workon learn`
    `$ deactivate`
 
+### Install certifi since Python no longer relies on macOS' openSSL certificates
+1. Create `install_certifi.py` file
+2. Copy and paste code from this [gist](https://gist.github.com/marschhuynh/31c9375fc34a3e20c2d3b9eb8131d8f3)
+3. Run `python install_ceritif.py`
 
 ### Install and set up Postgres database
 1. Install `Postgres`<br>
@@ -83,7 +86,7 @@ Since Learn is built with Django, we will need to set up our Python environment 
    `$ createdb learn`
 5. Check that database was created<br>
    `$ psql learn`
-   
+
 
 ### Verify that set-up is complete
 `$ python manage.py show_urls`<br>
