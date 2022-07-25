@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from polymorphic.models import PolymorphicModel, PolymorphicManager
@@ -68,6 +69,7 @@ class StudentUser(User):
     slack_user_id = models.CharField(max_length=20, null=True, blank=True)
 
     def current_enrolled_batches(self):
-        batch_queryset = Batch.objects.filter(enrolment__in=student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id))
+        enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id)
+        current_enrolled_batches = Batch.objects.filter(end_date__gte=datetime.date.today()).filter(enrolment__in=enrolments)
 
-        return batch_queryset
+        return current_enrolled_batches
