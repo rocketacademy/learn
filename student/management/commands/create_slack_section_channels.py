@@ -10,8 +10,7 @@ class Command(BaseCommand):
     help = 'Creates Slack section channels before course begins'
 
     def handle(self, *args, **options):
-        today = date.today()
-        batch_start_date = today + timedelta(days=settings.DAYS_BEFORE_BATCH_START_DATE)
+        batch_start_date = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_CREATING_SECTION_CHANNELS)
         slack_client = Slack()
 
         batches_about_to_begin = Batch.objects.filter(start_date=batch_start_date)
