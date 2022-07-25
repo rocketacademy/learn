@@ -64,7 +64,7 @@ def enrolment():
 
     yield enrolment
 
-def test_team_join_event_calls_slack_methods_to_add_users(mocker, student_user, enrolment):
+def test_team_join_event_calls_slack_methods_to_add_users_if_user_currently_enrolled(mocker, student_user, enrolment):
     event = {
         'type': 'team_join',
         'user': {
@@ -80,3 +80,22 @@ def test_team_join_event_calls_slack_methods_to_add_users(mocker, student_user, 
     team_join_event(event)
 
     Slack.add_users_to_channel.assert_called_once_with([student_slack_user_id], enrolment.batch.slack_channel_id)
+
+def test_team_join_event_calls_slack_methods_to_add_users_if_user_not_currently_enrolled(mocker, student_user):
+    event = {
+        'type': 'team_join',
+        'user': {
+            'profile': {
+                'email': email
+            },
+            'id': 'U12345B'
+        }
+    }
+    student_slack_user_id = event['user']['id']
+    mocker.patch('student.library.slack.Slack.add_users_to_channel')
+
+    team_join_event(event)
+
+    student_user.refresh_from_db()
+    assert student_user.slack_user_id == student_slack_user_id
+    Slack.add_users_to_channel.assert_not_called()
