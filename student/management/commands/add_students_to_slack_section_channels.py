@@ -19,7 +19,8 @@ class Command(BaseCommand):
 
         for section_id in section_ids:
             slack_section_channel_id = Section.objects.get(pk=section_id).slack_channel_id
-            slack_user_ids = list(StudentUser.objects.filter(pk__in=(Enrolment.objects.filter(section_id=section_id).values('student_user_id'))).values_list('slack_user_id', flat=True))
+            student_user_ids = Enrolment.objects.filter(section_id=section_id).values('student_user_id')
+            slack_user_ids = list(StudentUser.objects.filter(pk__in=student_user_ids).values_list('slack_user_id', flat=True))
             self.stdout.write(f"Adding users {slack_user_ids} to {slack_section_channel_id}")
 
             slack_client.add_users_to_channel(slack_user_ids, slack_section_channel_id)
