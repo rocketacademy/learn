@@ -97,3 +97,10 @@ Since Learn is built with Django, we will need to set up our Python environment 
 ### Stripe webhook
 In a separate terminal window, listen to Stripe webhook in order to receive payments and complete transactions<br>
 `$ stripe listen --forward-to localhost:8000/payment/stripe/webhook/`
+
+### Slack event hook
+We use Slack event hooks to perform actions when users accept our Slack workspace invitations
+In a separate terminal window, set up your Slack event hook by
+1. Starting a local web service<br>
+   `ngrok http 8000`
+2. Adding the event hook's endpoint in api.slack.com > Event Subscriptions

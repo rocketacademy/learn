@@ -1,7 +1,9 @@
 from django.db import models
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
+
 from .batch import Batch
+
 
 class Section(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
