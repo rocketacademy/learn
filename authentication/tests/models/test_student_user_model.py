@@ -89,3 +89,23 @@ def test_current_enrolled_batches_returns_empty_if_no_enrolments(student_user):
     current_enrolled_batches = student_user.current_enrolled_batches()
 
     assert list(current_enrolled_batches) == []
+
+def test_current_enrolled_sections_returns_sections_in_batches_that_have_not_ended(student_user, enrolment):
+    current_enrolled_sections = student_user.current_enrolled_sections()
+
+    assert list(current_enrolled_sections) == [enrolment.section]
+
+def test_current_enrolled_sections_returns_empty_if_batches_have_ended(student_user, enrolment):
+    enrolment.batch.start_date = date.today() - timedelta(days=35)
+    enrolment.batch.end_date = date.today() - timedelta(days=1)
+    enrolment.batch.save()
+
+    current_enrolled_sections = student_user.current_enrolled_sections()
+
+    assert list(current_enrolled_sections) == []
+
+
+def test_current_enrolled_sections_returns_empty_if_no_enrolments(student_user):
+    current_enrolled_sections = student_user.current_enrolled_sections()
+
+    assert list(current_enrolled_sections) == []
