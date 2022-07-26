@@ -77,6 +77,15 @@ def test_current_enrolled_batches_does_not_return_batches_that_have_ended(studen
     assert list(current_enrolled_batches) == []
 
 def test_current_enrolled_batches_returns_empty_if_no_enrolments(student_user):
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=date.today(),
+        end_date=date.today() + timedelta(days=1),
+        capacity=1,
+        sections=1,
+    )
+
     current_enrolled_batches = student_user.current_enrolled_batches()
 
     assert list(current_enrolled_batches) == []
