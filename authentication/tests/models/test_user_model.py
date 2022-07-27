@@ -1,5 +1,6 @@
-import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
+import pytest
 
 User = get_user_model()
 pytestmark = pytest.mark.django_db
@@ -7,7 +8,8 @@ pytestmark = pytest.mark.django_db
 email = 'someemail@domain.com'
 first_name = 'FirstName'
 last_name = 'LastName'
-password = 'password1234!'
+password = settings.PLACEHOLDER_PASSWORD
+
 
 class TestUserManager:
     def test_empty_email_does_not_create_user(self):

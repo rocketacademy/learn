@@ -30,15 +30,18 @@ def team_join_event(event):
     student_user = StudentUser.objects.filter(email=slack_user_email).first()
 
     if student_user:
-        current_enrolled_batches = student_user.current_enrolled_batches()
-        student_user.slack_user_id = slack_user_id
-        student_user.save()
+        try:
+            student_user.slack_user_id = slack_user_id
+            student_user.save()
 
-        if current_enrolled_batches:
             slack_client = Slack()
-            slack_user_ids = [slack_user_id]
-
-            for batch in current_enrolled_batches:
-                slack_client.add_users_to_channel(slack_user_ids, batch.slack_channel_id)
+            for batch in student_user.current_enrolled_batches() or []:
+                if batch.slack_channel_id:
+                    slack_client.add_users_to_channel([slack_user_id], batch.slack_channel_id)
+            for section in student_user.current_enrolled_sections() or []:
+                if section.slack_channel_id:
+                    slack_client.add_users_to_channel([slack_user_id], section.slack_channel_id)
+        except Exception as error:
+            capture_message(error)
     else:
         capture_message(f'User with email {slack_user_email} does not exist in Learn')
