@@ -68,6 +68,9 @@ Since Learn is built with Django, we will need to set up our Python environment 
 6. From now on, navigate to the project directory to activate or deactivate the virtual environment.<br>
    `$ pipenv shell` or `$ workon learn`
    `$ deactivate`
+7. Install packages.<br>
+   `$ pipenv install`<br>
+   `$ pipenv install --dev`
 
 ### Install certifi since Python no longer relies on macOS' openSSL certificates
 1. Create `install_certifi.py` file
@@ -89,9 +92,11 @@ Since Learn is built with Django, we will need to set up our Python environment 
 
 
 ### Verify that set-up is complete
-`$ python manage.py show_urls`<br>
 `$ python manage.py migrate`<br>
+`$ python manage.py collectstatic`<br>
+`$ pytest`<br>
 `$ python manage.py runserver`
+
 
 
 ### Stripe webhook
