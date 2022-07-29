@@ -1,7 +1,6 @@
 import pytest
-from django.utils.timezone import make_aware, now, timedelta
+from django.utils.timezone import now, timedelta
 from django.conf import settings
-# from django.utils.timezone import make_aware
 
 from payment.models.coupon import Coupon
 from payment.models.coupon_effect import CouponEffect
