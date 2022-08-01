@@ -18,6 +18,7 @@ existing_user_first_name = 'Existing'
 existing_user_last_name = 'User'
 existing_user_password = settings.PLACEHOLDER_PASSWORD
 
+
 @pytest.fixture()
 def batch():
     COURSE_NAME = settings.CODING_BASICS
@@ -35,6 +36,7 @@ def batch():
 
     yield batch
 
+
 @pytest.fixture()
 def existing_user():
     existing_user = User.objects.create(
@@ -45,6 +47,7 @@ def existing_user():
     )
 
     yield existing_user
+
 
 def test_registration_wizard_form_existing_user(batch, existing_user):
     batch_selection_form_response = client.post(reverse('basics_register'), {
@@ -58,7 +61,6 @@ def test_registration_wizard_form_existing_user(batch, existing_user):
         'student_info-email': existing_user_email,
         'student_info-country_of_residence': 'SG',
         'student_info-referral_channel': 'word_of_mouth',
-        'student_info-referral_code': 'A1234B'
     })
 
     assert batch_selection_form_response.status_code == HttpResponse.status_code
@@ -66,6 +68,7 @@ def test_registration_wizard_form_existing_user(batch, existing_user):
     registration = Registration.objects.get(email=existing_user_email)
     assert registration.batch == batch
     assert User.objects.all().count() == 1
+
 
 def test_registration_wizard_form_new_user(batch, existing_user):
     client.post(reverse('basics_register'), {
