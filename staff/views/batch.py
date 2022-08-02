@@ -161,13 +161,19 @@ class EditView(LoginRequiredMixin, View):
                     batch.sections = sections
                     batch.capacity = sections * section_capacity
                     batch.save()
+                    slack_client = Slack()
 
                     for section_number in range(Section.next_number(batch_id), sections + 1):
-                        Section.objects.create(
+                        section = Section.objects.create(
                             batch=batch,
                             number=section_number,
                             capacity=section_capacity,
                         )
+                        slack_channel_name = f"{batch.number}-{section.number}"
+
+                        slack_channel_id = slack_client.create_channel(slack_channel_name)
+                        section.slack_channel_id = slack_channel_id
+                        section.save()
                     section_queryset.update(capacity=section_capacity)
 
                     BatchSchedule.objects.filter(batch__id=batch.id).delete()

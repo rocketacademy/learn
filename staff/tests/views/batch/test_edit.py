@@ -7,11 +7,11 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from freezegun import freeze_time
 import pytest
-from unittest.mock import patch, call
 
 from staff.models import Batch, Course, Section
 from staff.models.batch_schedule import BatchSchedule
 from staff.views.batch import EditView
+from student.library.slack import Slack
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -148,7 +148,7 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch, 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, existing_user):
+def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, existing_user, mocker):
     new_start_date = batch.start_date + datetime.timedelta(1)
     new_end_date = batch.end_date + datetime.timedelta(1)
 
@@ -181,6 +181,11 @@ def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, 
         'password': 'password1234!'}
     )
 
+    mocker.patch(
+        'student.library.slack.Slack.create_channel',
+        return_value='C1234567Q'
+    )
+
     freezer = freeze_time('2021-12-31')
     freezer.start()
     response = client.post(reverse('batch_edit', kwargs={'batch_id': batch.id}), data=payload)
@@ -197,8 +202,10 @@ def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, 
 
     section_queryset = Section.objects.all()
     first_section = section_queryset.first()
+    new_section = section_queryset.last()
     assert first_section.capacity == section_capacity
     assert section_queryset.count() == batch.sections
+    Slack.create_channel.assert_called_once_with(f"{batch.number}-{new_section.number}")
 
     batchschedule_queryset = BatchSchedule.objects.all()
     new_batch_schedule = batchschedule_queryset.last()
