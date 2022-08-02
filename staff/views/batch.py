@@ -171,8 +171,9 @@ class EditView(LoginRequiredMixin, View):
                             capacity=section_capacity,
                         )
                         slack_channel_name = f"{batch.number}-{section.number}"
+                        cutoff_date = batch.start_date - timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS)
 
-                        if date.today() > (batch.start_date - timedelta(days=7)):
+                        if date.today() > cutoff_date:
                             slack_channel_id = slack_client.create_channel(slack_channel_name)
                             section.slack_channel_id = slack_channel_id
                             section.save()
