@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
@@ -171,9 +172,10 @@ class EditView(LoginRequiredMixin, View):
                         )
                         slack_channel_name = f"{batch.number}-{section.number}"
 
-                        slack_channel_id = slack_client.create_channel(slack_channel_name)
-                        section.slack_channel_id = slack_channel_id
-                        section.save()
+                        if date.today() > (batch.start_date - timedelta(days=7)):
+                            slack_channel_id = slack_client.create_channel(slack_channel_name)
+                            section.slack_channel_id = slack_channel_id
+                            section.save()
                     section_queryset.update(capacity=section_capacity)
 
                     BatchSchedule.objects.filter(batch__id=batch.id).delete()
