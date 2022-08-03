@@ -24,14 +24,15 @@
 
 {% block form_subheader %}
 <h3>You're almost there!</h3>
+{% if final_payable_amount == original_payable_amount %}
+<h3>${{ final_payable_amount }} SGD</h3>
+{% else %}
+<h3><s class="text-secondary">${{ original_payable_amount }}</s> ${{ final_payable_amount }} SGD</h3>
+{% endif %}
 {% endblock %}
 
 {% block form_content %}
-{% if final_payable_amount == payable_line_item_amount_in_dollars %}
-<h3>${{ final_payable_amount }} SGD</h3>
-{% else %}
-<h3><s class="text-secondary">${{ payable_line_item_amount_in_dollars }}</s> ${{ final_payable_amount }} SGD</h3>
-{% endif %}
+
 <input type="hidden" id="payable-type" name="payable-type" value="{{ payable_type }}">
 <input type="hidden" id="payable-id" name="payable-id" value="{{ payable_id }}">
 <input type="hidden" id="payable-line-item-name" name="payable-line-item-name" value="{{ payable_line_item_name }}">
