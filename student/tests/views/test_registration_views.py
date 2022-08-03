@@ -89,7 +89,7 @@ def test_registration_wizard_form_new_user(batch, existing_user):
 
     assert User.objects.all().count() == 2
 
-def test_payment_preview_get_render_method_discount_logic():
+def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_valid():
     course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
@@ -98,7 +98,7 @@ def test_payment_preview_get_render_method_discount_logic():
         capacity=1,
         sections=1,
     )
-    section = Section.objects.create(
+    Section.objects.create(
         batch=batch,
         number=1,
         capacity=1
@@ -124,7 +124,6 @@ def test_payment_preview_get_render_method_discount_logic():
         referral_code=coupon.code
     )
 
-    registration = Registration.objects.get(pk=1)
     response = client.get(reverse('basics_register_payment_preview', kwargs={'registration_id': registration.id}))
 
     assert response.status_code == 200
