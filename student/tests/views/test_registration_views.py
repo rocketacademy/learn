@@ -4,9 +4,12 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client
 from django.urls import reverse
+from django.utils.timezone import make_aware
 import pytest
 
-from staff.models import Batch, Course
+from payment.models.coupon import Coupon
+from payment.models.coupon_effect import CouponEffect
+from staff.models import Batch, Course, Section
 from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
@@ -85,3 +88,46 @@ def test_registration_wizard_form_new_user(batch, existing_user):
     })
 
     assert User.objects.all().count() == 2
+
+
+def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_valid():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=datetime.date.today(),
+        end_date=datetime.date.today() + datetime.timedelta(days=1),
+        capacity=1,
+        sections=1,
+    )
+    Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+    coupon_effect = CouponEffect.objects.create(
+        couponable_type='Course',
+        couponable_id=1,
+        discount_type='dollars',
+        discount_amount=10
+    )
+    coupon = Coupon.objects.create(
+        start_date=make_aware(datetime.datetime.now()),
+    )
+    coupon.effects.set([coupon_effect])
+    registration = Registration.objects.create(
+        course=course,
+        batch=batch,
+        first_name='FirstName',
+        last_name='LastName',
+        email='user@email.com',
+        country_of_residence='SG',
+        referral_channel='word_of_mouth',
+        referral_code=coupon.code
+    )
+
+    response = client.get(reverse('basics_register_payment_preview', kwargs={
+                          'registration_id': registration.id}))
+
+    assert response.status_code == 200
+    assert response.context['final_payable_amount'] == 189
+    assert response.context['original_payable_amount'] == 199
