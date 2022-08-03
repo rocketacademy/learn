@@ -27,13 +27,18 @@
 {% endblock %}
 
 {% block form_content %}
+{% if final_payable_amount == payable_line_item_amount_in_dollars %}
+<h3>${{ final_payable_amount }} SGD</h3>
+{% else %}
+<h3><s class="text-secondary">${{ payable_line_item_amount_in_dollars }}</s> ${{ final_payable_amount }} SGD</h3>
+{% endif %}
 <input type="hidden" id="payable-type" name="payable-type" value="{{ payable_type }}">
 <input type="hidden" id="payable-id" name="payable-id" value="{{ payable_id }}">
 <input type="hidden" id="payable-line-item-name" name="payable-line-item-name" value="{{ payable_line_item_name }}">
 <input type="hidden" id="payable-line-item-amount-in-cents" name="payable-line-item-amount-in-cents" value="{{ payable_line_item_amount_in_cents }}">
 <input type="hidden" id="payment-success-path" name="payment-success-path" value="{{ payment_success_path }}">
 <input type="hidden" id="payment-cancel-path" name="payment-cancel-path" value="{{ payment_cancel_path }}">
-<p>To confirm your place in Coding Basics, please proceed to make a payment of ${{ payable_line_item_amount_in_dollars }} SGD. You will be redirected to Stripe, our payment handler, once you click the button below.</p>
+<p>To confirm your place in Coding Basics, please proceed to make a payment of ${{ final_payable_amount }} SGD. You will be redirected to Stripe, our payment handler, once you click the button below.</p>
 <p>Please note that this amount is non-refundable.</p>
 <i>(But imagine how much you can learn with the equivalent of just ~30 cups of coffee!)</i></p>
 <button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Make payment</button>

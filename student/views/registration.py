@@ -7,6 +7,8 @@ from formtools.wizard.views import SessionWizardView
 
 from authentication.models import StudentUser
 from student.models.registration import Registration
+from payment.models.coupon import Coupon
+
 
 User = get_user_model()
 
@@ -71,8 +73,20 @@ class RegistrationWizard(SessionWizardView):
         except IntegrityError:
             return redirect('basics_register')
 
+
 class PaymentPreviewView(View):
     def get(self, request, registration_id):
+        registration = Registration.objects.get(pk=registration_id)
+        payment_amount = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        if registration.referral_code:
+            coupon = Coupon.objects.get(code=registration.referral_code)
+            coupon_effect = coupon.effects.filter(couponable_type='Course', couponable_id=1).first()
+            if coupon_effect.discount_type == 'dollars':
+                payment_amount -= coupon_effect.discount_amount
+            if coupon_effect.discount_type == 'percent':
+                discount_in_dollars = coupon_effect.discount_amount / 100 * payment_amount
+                payment_amount -= discount_in_dollars
+
         return render(
             request,
             'registration/payment_preview.html',
@@ -83,7 +97,8 @@ class PaymentPreviewView(View):
                 'payable_line_item_amount_in_dollars': settings.CODING_BASICS_REGISTRATION_FEE_SGD,
                 'payable_line_item_amount_in_cents': settings.CODING_BASICS_REGISTRATION_FEE_SGD * 100,
                 'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
-                'payment_cancel_path': '/student/basics/register/'
+                'payment_cancel_path': '/student/basics/register/',
+                'final_payable_amount': payment_amount,
             }
         )
 
