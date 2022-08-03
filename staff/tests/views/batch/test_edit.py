@@ -7,11 +7,11 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from freezegun import freeze_time
 import pytest
-from unittest.mock import patch, call
 
 from staff.models import Batch, Course, Section
 from staff.models.batch_schedule import BatchSchedule
 from staff.views.batch import EditView
+from student.library.slack import Slack
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -33,7 +33,7 @@ def batch():
     COURSE_NAME = settings.CODING_BASICS
     COURSE_DURATION_IN_DAYS = 35
 
-    start_date = datetime.date.today()
+    start_date = datetime.date(2022, 1, 7)
     course = Course.objects.create(name=COURSE_NAME)
     batch = Batch.objects.create(
         course=course,
@@ -148,7 +148,7 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch, 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, existing_user):
+def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, existing_user, mocker):
     new_start_date = batch.start_date + datetime.timedelta(1)
     new_end_date = batch.end_date + datetime.timedelta(1)
 
@@ -181,7 +181,12 @@ def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, 
         'password': 'password1234!'}
     )
 
-    freezer = freeze_time('2021-12-31')
+    mocker.patch(
+        'student.library.slack.Slack.create_channel',
+        return_value='C1234567Q'
+    )
+
+    freezer = freeze_time('2022-1-2')
     freezer.start()
     response = client.post(reverse('batch_edit', kwargs={'batch_id': batch.id}), data=payload)
     freezer.stop()
@@ -197,8 +202,10 @@ def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, 
 
     section_queryset = Section.objects.all()
     first_section = section_queryset.first()
+    new_section = section_queryset.last()
     assert first_section.capacity == section_capacity
     assert section_queryset.count() == batch.sections
+    Slack.create_channel.assert_called_once_with(f"{batch.number}-{new_section.number}")
 
     batchschedule_queryset = BatchSchedule.objects.all()
     new_batch_schedule = batchschedule_queryset.last()
@@ -206,3 +213,38 @@ def test_valid_form_updates_and_creates_records(batch, section, batch_schedule, 
     assert new_batch_schedule.day == new_batch_schedule_day
     assert new_batch_schedule.start_time == new_batch_schedule_start_time
     assert new_batch_schedule.end_time == new_batch_schedule_end_time
+
+def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_starts(batch, section, batch_schedule, existing_user, mocker):
+    batch.start_date = datetime.date(2022, 1, 7)
+    batch.end_date = datetime.date(2022, 2, 1)
+    new_sections_count = Section.objects.all().count() + 1
+
+    payload = {
+        'start_date': batch.start_date,
+        'end_date': batch.end_date,
+        'sections': new_sections_count,
+        'capacity': section.capacity,
+        'batch-schedule-TOTAL_FORMS': ['1'],
+        'batch-schedule-INITIAL_FORMS': ['1'],
+        'batch-schedule-MIN_NUM_FORMS': ['0'],
+        'batch-schedule-MAX_NUM_FORMS': ['7'],
+        'batch-schedule-0-day': ['MON'],
+        'batch-schedule-0-start_time': ['00:00:00'],
+        'batch-schedule-0-end_time': ['02:00:00'],
+    }
+    client.post('/staff/login/', {
+        'email': existing_user.email,
+        'password': 'password1234!'}
+    )
+
+    mocker.patch(
+        'student.library.slack.Slack.create_channel',
+        return_value='C1234567Q'
+    )
+
+    freezer = freeze_time('2021-12-31')
+    freezer.start()
+    response = client.post(reverse('batch_edit', kwargs={'batch_id': batch.id}), data=payload)
+    freezer.stop()
+
+    Slack.create_channel.assert_not_called()
