@@ -125,8 +125,14 @@ def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_va
         referral_code=coupon.code
     )
 
-    response = client.get(reverse('basics_register_payment_preview', kwargs={
-                          'registration_id': registration.id}))
+    response = client.get(
+        reverse(
+            'basics_register_payment_preview',
+            kwargs={
+                'registration_id': registration.id
+            }
+        )
+    )
 
     assert response.status_code == 200
     assert response.context['final_payable_amount'] == 189
