@@ -6,7 +6,8 @@ from django.test import Client, RequestFactory
 from django.urls import reverse
 import pytest
 
-from staff.forms.coupon_effect import CouponEffectForm
+from payment.models.coupon_effect import CouponEffect
+from staff.models import Course
 from staff.views.coupon_effect import NewView
 
 
@@ -45,4 +46,24 @@ def test_get_renders_with_form_when_user_logged_in(logged_in_existing_user):
     response = client.get(reverse('coupon_effect_new'))
 
     assert response.status_code == HttpResponse.status_code
+    assert 'coupon_effect/new.html' in (template.name for template in response.templates)
     assert 'coupon_effect_form' in response.context
+
+def test_post_saves_form_with_coding_basics_as_couponable(logged_in_existing_user):
+    course = Course.objects.create(name=settings.CODING_BASICS)
+
+    response = client.post(
+        reverse('coupon_effect_new'),
+        {
+            'discount_amount': 15,
+            'discount_type': 'percent',
+        }
+    )
+
+    coupon_effect = CouponEffect.objects.first()
+    assert response.status_code == HttpResponseRedirect.status_code
+    assert f"staff/coupon-effects/{coupon_effect.id}/" in response.url
+    assert coupon_effect.couponable_type == type(course).__name__
+    assert coupon_effect.couponable_id == course.id
+    assert coupon_effect.discount_amount == 15
+    assert coupon_effect.discount_type == 'percent'
