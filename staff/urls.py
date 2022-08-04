@@ -1,6 +1,6 @@
 from django.urls import path
 
-from staff.views import batch, coupon, enrolment, index, login, section
+from staff.views import batch, coupon, coupon_effect, enrolment, index, login, section
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
@@ -15,5 +15,6 @@ urlpatterns = [
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
     path('coupons/new/', coupon.NewView.as_view(), name='coupon_new'),
     path('coupons/<int:coupon_id>/', coupon.DetailView.as_view(), name='coupon_detail'),
+    path('coupon-effects/new/', coupon_effect.NewView.as_view(), name='coupon_effect_new'),
     path('login/', login.LoginView.as_view(), name='staff_login'),
 ]

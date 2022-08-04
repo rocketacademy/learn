@@ -1,37 +1,56 @@
 {% extends './base.html' %}
 {% block coupon_content %}
-<div class="d-flex flex-row justify-content-between p-4">
+<div class="p-4">
     <h5>Overview</h5>
-    <a type="link" href="new/" role="button" class="btn btn-outline-primary btn-sm px-4">
-        + Create coupon
-    </a>
 </div>
-<div class="px-4">
-    {% if coupons.exists %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Start date</th>
-                <th scope="col">End date</th>
-                <th scope="col">Description</th>
-                <th scope="col">Effects</th>
-                <th scope="col">Code</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for coupon in coupons %}
-            <tr>
-                <td>{{ coupon.start_date|date:"d M, Y" }}</td>
-                <td>{{ coupon.end_date|date:"d M, Y" }}</td>
-                <td>{{ coupon.description|linebreaks }}</td>
-                <td>{{ coupon.get_effects_display }}</td>
-                <td>{{ coupon.code }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-        <div>There aren't any active coupons at the moment</div>
-    {% endif %}
+<div class="row d-flex flex-row justify-content-between px-4">
+    <div class="col-md-2 d-md-none mb-3">
+        <a type="link" href="{% url 'coupon_effect_new' %}" class="btn btn-outline-primary btn-sm my-1">
+            + Coupon effect
+        </a><br>
+        <a type="link" href="{% url 'coupon_new' %}" class="btn btn-outline-primary btn-sm my-1">
+            + Coupon
+        </a>
+    </div>
+    <div class="col-md-10 col-sm-12">
+        {% if coupons.exists %}
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col">Start date</th>
+                    <th scope="col">End date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Effects</th>
+                    <th scope="col">Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coupon in coupons %}
+                <tr>
+                    <td>{{ coupon.start_date|date:"d M, Y" }}</td>
+                    <td>{{ coupon.end_date|date:"d M, Y" }}</td>
+                    <td>{{ coupon.description|linebreaks }}</td>
+                    <td>{{ coupon.get_effects_display }}</td>
+                    <td>{{ coupon.code }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <div>There aren't any active coupons at the moment</div>
+        {% endif %}
+    </div>
+    <div class="col-md-2 d-none d-md-block px-5">
+        <div class="row">
+            <a type="link" href="{% url 'coupon_effect_new' %}" class="btn btn-outline-primary btn-sm my-1">
+                + Coupon effect
+            </a>
+        </div>
+        <div class="row">
+            <a type="link" href="{% url 'coupon_new' %}" class="btn btn-outline-primary btn-sm my-1">
+                + Coupon
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}

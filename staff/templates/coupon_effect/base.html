@@ -1,0 +1,9 @@
+{% extends '../staff_base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row">
+    <div class="d-flex flex-row justify-content-between py-2 border-bottom">
+        <h3>Coupon effects</h3>
+    </div>
+    {% block coupon_content %}{% endblock %}
+{% endblock %}
