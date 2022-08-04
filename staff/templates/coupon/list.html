@@ -1,7 +1,7 @@
 {% extends './base.html' %}
 {% block coupon_content %}
 <div class="p-4">
-    <h5>Overview</h5>
+    <h4>Overview</h4>
 </div>
 <div class="row d-flex flex-row justify-content-between px-4">
     <div class="col-md-2 d-md-none mb-3">
@@ -14,7 +14,7 @@
     </div>
     <div class="col-md-10 col-sm-12">
         {% if coupons.exists %}
-        <table class="table table-responsive">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">Start date</th>
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
                 {% for coupon in coupons %}
-                <tr>
+                <tr class="clickable-row" data-url="{% url 'coupon_detail' coupon_id=coupon.id %}" role="button">
                     <td>{{ coupon.start_date|date:"d M, Y" }}</td>
                     <td>{{ coupon.end_date|date:"d M, Y" }}</td>
                     <td>{{ coupon.description|linebreaks }}</td>
