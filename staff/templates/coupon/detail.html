@@ -6,8 +6,9 @@
     <div>
         <a 
         type="link"
+        href="{% url 'coupon_edit' coupon_id=coupon.id %}"
         role="button"
-        class="btn btn-outline-primary btn-sm px-4 pe-none">
+        class="btn btn-outline-primary btn-sm px-4">
             Edit coupon details
         </a>
     </div>
@@ -31,7 +32,7 @@
         <div class="col-md-6 col-lg-3 my-2">
             <h6>Effects</h6>
             {% for coupon_effect in coupon_effects %}
-                {{ coupon_effect }}
+                <p class="my-2">{{ coupon_effect }}</p>
             {% endfor %}
         </div>
         <div class="col-md-6 col-lg-3 my-2">
