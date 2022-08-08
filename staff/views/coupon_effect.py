@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 import stripe
 
+from payment.library.stripe import Stripe
 from payment.models.coupon_effect import CouponEffect
 from staff.forms.stripe_coupon_effect import StripeCouponEffectForm
 from staff.models import Course
@@ -28,15 +29,17 @@ class NewView(LoginRequiredMixin, View):
         if stripe_coupon_effect_form.is_valid():
             try:
                 with transaction.atomic():
-                    coding_basics_course = Course.objects.get(name=settings.CODING_BASICS)
                     stripe_coupon_effect = stripe_coupon_effect_form.save()
-                    stripe_coupon_effect.couponable_type = type(coding_basics_course).__name__
-                    stripe_coupon_effect.couponable_id = coding_basics_course.id
+                    coding_basics_course = Course.objects.get(name=settings.CODING_BASICS)
                     discount = {
                         'type': stripe_coupon_effect.discount_type,
-                        'amount': stripe_coupon_effect.discount_amount * 100
+                        'amount': stripe_coupon_effect.discount_amount
                     }
-                    stripe_coupon = create_stripe_coupon(discount)
+
+                    stripe_coupon = Stripe().create_coupon(discount)
+                    print(stripe_coupon)
+                    stripe_coupon_effect.couponable_type = type(coding_basics_course).__name__
+                    stripe_coupon_effect.couponable_id = coding_basics_course.id
                     stripe_coupon_effect.stripe_coupon_id = stripe_coupon['id']
                     stripe_coupon_effect.save()
 
@@ -62,20 +65,3 @@ class DetailView(LoginRequiredMixin, View):
                 'coupon_effect': coupon_effect,
             }
         )
-
-def create_stripe_coupon(discount):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-
-    if discount['type'] == 'percent':
-        stripe_coupon = stripe.Coupon.create(
-            percent_off=discount['amount'],
-            duration='forever'
-        )
-    elif discount['type'] == 'dollars':
-        stripe_coupon = stripe.Coupon.create(
-            amount_off=discount['amount'],
-            duration='forever',
-            currency=settings.SINGAPORE_DOLLAR_CURRENCY
-        )
-
-    return stripe_coupon
