@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.conf import settings
-from django.db import IntegrityError, transaction
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
