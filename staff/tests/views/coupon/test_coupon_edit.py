@@ -48,7 +48,7 @@ def coupon():
 
     yield coupon
 
-def test_coupon_detail_anonymous_user_redirected_to_login(coupon):
+def test_coupon_edit_anonymous_user_redirected_to_login(coupon):
     request = RequestFactory().get(f"/coupons/{coupon.id}/")
     request.user = AnonymousUser()
 
@@ -57,7 +57,7 @@ def test_coupon_detail_anonymous_user_redirected_to_login(coupon):
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/coupons/{coupon.id}/" in response.url
 
-def test_coupon_detail_template_rendered_for_logged_in_user(coupon, logged_in_existing_user):
+def test_coupon_edit_template_rendered_for_logged_in_user(coupon, logged_in_existing_user):
     request = RequestFactory().get(f"/coupons/{coupon.id}/edit/")
     request.user = logged_in_existing_user
 
