@@ -1,0 +1,32 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% block coupon_content %}
+<div class="py-4">
+    <form id="edit-coupon-form" action="{% url 'coupon_edit' coupon_id=coupon.id %}" method="post">
+        {% csrf_token %}
+        <div class="d-flex flex-row justify-content-between px-4">
+            <h4>Coupon - {{ coupon.code }}</h4>
+            <div>
+                <a type="link" href="{% url 'coupon_detail' coupon_id=coupon.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
+                <button class="btn btn-primary btn-sm mx-2 px-4" type="submit">Save changes</button>
+            </div>
+        </div>
+        <div class="row mt-4 px-4">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ coupon_form.start_date|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ coupon_form.end_date|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mt-4 px-4">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ coupon_form.effects|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ coupon_form.description|as_crispy_field }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
