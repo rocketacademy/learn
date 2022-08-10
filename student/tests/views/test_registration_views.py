@@ -135,8 +135,9 @@ def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_va
     )
 
     assert response.status_code == 200
-    assert response.context['final_payable_amount'] == 189
     assert response.context['original_payable_amount'] == 199
+    assert response.context['discount'] == 10
+    assert response.context['final_payable_amount'] == 189
 
 def test_registration_form_does_not_render_batch_on_start_date():
     course = Course.objects.create(name=settings.CODING_BASICS)

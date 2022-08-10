@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.html import format_html
@@ -5,6 +6,7 @@ from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
 
 from payment.models.coupon_effect import CouponEffect
+from staff.models import Course
 
 
 class Coupon(SafeDeleteModel):
@@ -35,3 +37,22 @@ class Coupon(SafeDeleteModel):
             html_formatted_effects_display += f"{coupon_effect}<br>"
 
         return format_html(html_formatted_effects_display)
+
+    def biggest_discount_for(self, course, original_price):
+        coupon_effects = self.effects.filter(
+            couponable_type=type(course).__name__,
+            couponable_id=course.id
+        )
+        biggest_discount = 0
+
+        for coupon_effect in coupon_effects:
+            if coupon_effect.discount_type == 'percent':
+                amount = original_price * coupon_effect.discount_amount / 100
+
+                if amount > biggest_discount:
+                    biggest_discount = amount
+            elif coupon_effect.discount_type == 'dollars':
+                if coupon_effect.discount_amount > biggest_discount:
+                    biggest_discount = coupon_effect.discount_amount
+
+        return biggest_discount
