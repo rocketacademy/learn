@@ -7,6 +7,7 @@ from sendgrid.helpers.mail import Mail
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
+from payment.models.stripe_discount import StripeDiscount
 from payment.models.stripe_payment import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course
@@ -53,7 +54,7 @@ class Registration(SafeDeleteModel):
         self.send_confirmation_email()
 
     def record_stripe_payment(self, event_data):
-        StripePayment.objects.create(
+        stripe_payment = StripePayment.objects.create(
             payable_type=event_data['metadata']['payable_type'],
             payable_id=event_data['metadata']['payable_id'],
             intent=event_data['payment_intent'],
@@ -63,6 +64,14 @@ class Registration(SafeDeleteModel):
             currency=event_data['currency'],
             status=event_data['payment_status']
         )
+
+        if event_data['metadata']['stripe_coupon_id']:
+            stripe_payment.discount = StripeDiscount.objects.create(
+                original_amount=event_data['amount_subtotal'],
+                amount=event_data['total_details']['amount_discount'],
+                coupon_id=event_data['metadata']['stripe_coupon_id']
+            )
+            stripe_payment.save()
 
     def create_enrolment_record(self, student_user):
         next_enrollable_section = self.batch.next_enrollable_section()

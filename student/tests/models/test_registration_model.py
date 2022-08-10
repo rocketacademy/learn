@@ -4,6 +4,7 @@ import pytest
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
+from payment.models.stripe_discount import StripeDiscount
 from payment.models.stripe_payment import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course
@@ -84,8 +85,12 @@ def test_complete_transaction(mocker, registration):
     registration.send_confirmation_email.assert_called_once()
 
 def test_record_stripe_payment(registration):
+    original_amount = 19900
+    discount_amount = 1500
+    amount_after_discount = original_amount - discount_amount
     event_data = {
-        "amount_total": 19900,
+        "amount_total": amount_after_discount,
+        "amount_subtotal": original_amount,
         "currency": "sgd",
         "customer": "cus_Lnh1zdmxckmUUU",
         "customer_details": {
@@ -93,10 +98,14 @@ def test_record_stripe_payment(registration):
         },
         "metadata": {
             "payable_id": registration.id,
-            "payable_type": type(registration).__name__
+            "payable_type": type(registration).__name__,
+            "stripe_coupon_id": '4OM9lIyP'
         },
         "payment_intent": "pi_3L65dXHQt5htmvv4176vtmCj",
         "payment_status": "paid",
+        "total_details": {
+            "amount_discount": discount_amount,
+        },
     }
 
     registration.record_stripe_payment(event_data)
@@ -111,6 +120,9 @@ def test_record_stripe_payment(registration):
     assert stripe_payment.amount == event_data['amount_total']
     assert stripe_payment.currency == event_data['currency']
     assert stripe_payment.status == event_data['payment_status']
+    assert stripe_payment.discount.original_amount == event_data['amount_subtotal']
+    assert stripe_payment.discount.amount == event_data['total_details']['amount_discount']
+    assert stripe_payment.discount.coupon_id == event_data['metadata']['stripe_coupon_id']
 
 def test_create_enrolment_record(mocker, registration):
     student_user = StudentUser.objects.last()
