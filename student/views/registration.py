@@ -6,8 +6,8 @@ from django.views import View
 from formtools.wizard.views import SessionWizardView
 
 from authentication.models import StudentUser
+from payment.library.stripe import Stripe
 from payment.models.coupon import Coupon
-from staff.models import Course
 from student.models.registration import Registration
 
 User = get_user_model()
@@ -83,6 +83,7 @@ class PaymentPreviewView(View):
         if registration.referral_code:
             coupon = Coupon.objects.get(code=registration.referral_code)
             biggest_discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
+            stripe_coupon = Stripe().create_coupon(biggest_discount)
             final_payable_amount = original_payable_amount - biggest_discount
         return render(
             request,
@@ -93,7 +94,7 @@ class PaymentPreviewView(View):
                 'payable_line_item_name': 'Registration for Coding Basics',
                 'payable_line_item_amount_in_cents': original_payable_amount * 100,
                 'original_payable_amount': original_payable_amount,
-                'discount': biggest_discount,
+                'stripe_coupon_id': stripe_coupon['id'],
                 'final_payable_amount': final_payable_amount,
                 'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
                 'payment_cancel_path': '/student/basics/register/',
