@@ -27,7 +27,7 @@ def batch():
     COURSE_NAME = settings.CODING_BASICS
     COURSE_DURATION_IN_DAYS = 35
 
-    start_date = datetime.date.today()
+    start_date = datetime.date.today() + datetime.timedelta(days=1)
     course = Course.objects.create(name=COURSE_NAME)
     batch = Batch.objects.create(
         course=course,
