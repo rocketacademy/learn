@@ -2,12 +2,13 @@ from django.apps import apps
 from django.db import models
 from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
+from polymorphic.models import PolymorphicModel
 
 PERCENTAGE = 'percent'
 DOLLARS = 'dollars'
 
 
-class CouponEffect(SafeDeleteModel):
+class CouponEffect(PolymorphicModel, SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
 
     DISCOUNT_TYPE_CHOICES = [

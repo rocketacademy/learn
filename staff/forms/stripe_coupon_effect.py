@@ -1,10 +1,10 @@
 from django import forms
 
-from payment.models.coupon_effect import CouponEffect
+from payment.models.stripe_coupon_effect import StripeCouponEffect
 
-class CouponEffectForm(forms.ModelForm):
+class StripeCouponEffectForm(forms.ModelForm):
     class Meta:
-        model = CouponEffect
+        model = StripeCouponEffect
         fields = [
             'discount_type',
             'discount_amount'
