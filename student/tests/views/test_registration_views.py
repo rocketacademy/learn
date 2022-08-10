@@ -137,3 +137,23 @@ def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_va
     assert response.status_code == 200
     assert response.context['final_payable_amount'] == 189
     assert response.context['original_payable_amount'] == 199
+
+def test_registration_form_does_not_render_batch_on_start_date():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=datetime.date.today(),
+        end_date=datetime.date.today() + datetime.timedelta(days=35),
+        capacity=1,
+        sections=1,
+    )
+    Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+
+    response = client.get(reverse('basics_register'))
+
+    assert response.status_code == 200
+    assert 'id="id_batch_selection-batch_0"' not in str(response.content)
