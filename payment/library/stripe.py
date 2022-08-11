@@ -10,6 +10,7 @@ class Stripe:
     def create_coupon(self, discount_in_dollars):
         try:
             stripe_coupon = stripe.Coupon.create(
+                # discount_in_dollars multiplied by 100 because Stripe expects amounts in cents
                 amount_off=discount_in_dollars * 100,
                 duration='forever',
                 currency=settings.SINGAPORE_DOLLAR_CURRENCY
