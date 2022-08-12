@@ -8,10 +8,11 @@ class Stripe:
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
     def create_coupon(self, discount_in_dollars):
+        discount_in_cents = int(discount_in_dollars * 100)
+
         try:
             stripe_coupon = stripe.Coupon.create(
-                # discount_in_dollars multiplied by 100 because Stripe expects amounts in cents
-                amount_off=discount_in_dollars * 100,
+                amount_off=discount_in_cents,
                 duration='forever',
                 currency=settings.SINGAPORE_DOLLAR_CURRENCY
             )
