@@ -120,7 +120,6 @@ def test_record_stripe_payment(registration):
     assert stripe_payment.amount == event_data['amount_total']
     assert stripe_payment.currency == event_data['currency']
     assert stripe_payment.status == event_data['payment_status']
-    assert stripe_payment.discount.original_amount == event_data['amount_subtotal']
     assert stripe_payment.discount.amount == event_data['total_details']['amount_discount']
     assert stripe_payment.discount.coupon_id == event_data['metadata']['stripe_coupon_id']
 
