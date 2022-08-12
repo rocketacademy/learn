@@ -79,12 +79,15 @@ class PaymentPreviewView(View):
     def get(self, request, registration_id):
         registration = Registration.objects.get(pk=registration_id)
         original_payable_amount = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        discount = 0
+        stripe_coupon_id = None
 
         if registration.referral_code:
             coupon = Coupon.objects.get(code=registration.referral_code)
-            biggest_discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
-            stripe_coupon = Stripe().create_coupon(biggest_discount)
-            final_payable_amount = original_payable_amount - biggest_discount
+            discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
+            stripe_coupon = Stripe().create_coupon(discount)
+            stripe_coupon_id = stripe_coupon['id']
+
         return render(
             request,
             'registration/payment_preview.html',
@@ -94,8 +97,8 @@ class PaymentPreviewView(View):
                 'payable_line_item_name': 'Registration for Coding Basics',
                 'payable_line_item_amount_in_cents': original_payable_amount * 100,
                 'original_payable_amount': original_payable_amount,
-                'stripe_coupon_id': stripe_coupon['id'],
-                'final_payable_amount': final_payable_amount,
+                'stripe_coupon_id': stripe_coupon_id,
+                'final_payable_amount': original_payable_amount - discount,
                 'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
                 'payment_cancel_path': '/student/basics/register/',
             }

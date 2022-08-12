@@ -65,7 +65,7 @@ class Registration(SafeDeleteModel):
             status=event_data['payment_status']
         )
 
-        if event_data['metadata']['stripe_coupon_id']:
+        if 'stripe_coupon_id' in event_data['metadata']:
             stripe_payment.discount = StripeDiscount.objects.create(
                 amount=event_data['total_details']['amount_discount'],
                 coupon_id=event_data['metadata']['stripe_coupon_id']

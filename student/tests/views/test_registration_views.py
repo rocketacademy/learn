@@ -23,6 +23,18 @@ existing_user_password = settings.PLACEHOLDER_PASSWORD
 
 
 @pytest.fixture()
+def existing_user():
+    existing_user = User.objects.create(
+        email=existing_user_email,
+        first_name=existing_user_first_name,
+        last_name=existing_user_last_name,
+        password=existing_user_password
+    )
+
+    yield existing_user
+
+
+@pytest.fixture()
 def batch():
     COURSE_NAME = settings.CODING_BASICS
     COURSE_DURATION_IN_DAYS = 35
@@ -41,15 +53,52 @@ def batch():
 
 
 @pytest.fixture()
-def existing_user():
-    existing_user = User.objects.create(
-        email=existing_user_email,
-        first_name=existing_user_first_name,
-        last_name=existing_user_last_name,
-        password=existing_user_password
+def registration():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=datetime.date.today(),
+        end_date=datetime.date.today() + datetime.timedelta(days=1),
+        capacity=1,
+        sections=1,
+    )
+    Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+    registration = Registration.objects.create(
+        course=course,
+        batch=batch,
+        first_name='FirstName',
+        last_name='LastName',
+        email='user@email.com',
+        country_of_residence='SG',
+        referral_channel='word_of_mouth',
     )
 
-    yield existing_user
+    yield registration
+
+
+def test_registration_form_does_not_render_batch_on_start_date():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=datetime.date.today(),
+        end_date=datetime.date.today() + datetime.timedelta(days=35),
+        capacity=1,
+        sections=1,
+    )
+    Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+
+    response = client.get(reverse('basics_register'))
+
+    assert response.status_code == 200
+    assert 'id="id_batch_selection-batch_0"' not in str(response.content)
 
 
 def test_registration_wizard_form_existing_user(batch, existing_user):
@@ -89,41 +138,32 @@ def test_registration_wizard_form_new_user(batch, existing_user):
 
     assert User.objects.all().count() == 2
 
+def test_payment_preview_get_renders_original_price_if_no_valid_referral_code(registration, mocker):
+    response = client.get(
+        reverse(
+            'basics_register_payment_preview',
+            kwargs={
+                'registration_id': registration.id
+            }
+        )
+    )
 
-def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_valid(mocker):
-    course = Course.objects.create(name=settings.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=datetime.date.today(),
-        end_date=datetime.date.today() + datetime.timedelta(days=1),
-        capacity=1,
-        sections=1,
-    )
-    Section.objects.create(
-        batch=batch,
-        number=1,
-        capacity=1
-    )
+    assert response.status_code == 200
+    assert response.context['original_payable_amount'] == 199
+    assert response.context['stripe_coupon_id'] == None
+    assert response.context['final_payable_amount'] == 199
+
+def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_valid(registration, mocker):
     coupon_effect = CouponEffect.objects.create(
-        couponable_type='Course',
-        couponable_id=1,
+        couponable_type=type(registration.batch.course).__name__,
+        couponable_id=registration.batch.course.id,
         discount_type='dollars',
         discount_amount=10
     )
-    coupon = Coupon.objects.create(
-        start_date=make_aware(datetime.datetime.now()),
-    )
+    coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()),)
     coupon.effects.set([coupon_effect])
-    registration = Registration.objects.create(
-        course=course,
-        batch=batch,
-        first_name='FirstName',
-        last_name='LastName',
-        email='user@email.com',
-        country_of_residence='SG',
-        referral_channel='word_of_mouth',
-        referral_code=coupon.code
-    )
+    registration.referral_code = coupon.code
+    registration.save()
     stripe_coupon_id = 'Z4OV52SU'
     mocker.patch(
         'payment.library.stripe.Stripe.create_coupon',
@@ -158,23 +198,3 @@ def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_
     assert response.context['original_payable_amount'] == 199
     assert response.context['stripe_coupon_id'] == stripe_coupon_id
     assert response.context['final_payable_amount'] == 189
-
-def test_registration_form_does_not_render_batch_on_start_date():
-    course = Course.objects.create(name=settings.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=datetime.date.today(),
-        end_date=datetime.date.today() + datetime.timedelta(days=35),
-        capacity=1,
-        sections=1,
-    )
-    Section.objects.create(
-        batch=batch,
-        number=1,
-        capacity=1
-    )
-
-    response = client.get(reverse('basics_register'))
-
-    assert response.status_code == 200
-    assert 'id="id_batch_selection-batch_0"' not in str(response.content)

@@ -13,9 +13,12 @@ $(function () {
   const payment_cancel_path = document.getElementById(
     "payment-cancel-path"
   ).value;
-  const stripe_coupon_id = document.getElementById(
+  let stripe_coupon_id = document.getElementById(
     "stripe-coupon-id"
   ).value;
+  if (stripe_coupon_id == 'None') {
+    stripe_coupon_id = null;
+  }
 
   fetch("/payment/stripe/config/")
     .then((result) => {
