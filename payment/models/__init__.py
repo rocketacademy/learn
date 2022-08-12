@@ -1,6 +1,6 @@
 from .coupon import Coupon
 from .coupon_effect import CouponEffect
-from .stripe_coupon_effect import StripeCouponEffect
-
+from .discount import Discount
 from .payment import Payment
+from .stripe_discount import StripeDiscount
 from .stripe_payment import StripePayment

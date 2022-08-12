@@ -27,6 +27,7 @@ def create_checkout_session(request):
                 metadata={
                     'payable_type': request_body['payable_type'],
                     'payable_id': request_body['payable_id'],
+                    'stripe_coupon_id': request_body['stripe_coupon_id']
                 },
                 line_items=[
                     {
@@ -37,6 +38,9 @@ def create_checkout_session(request):
                     }
                 ],
                 mode='payment',
+                discounts=[{
+                    'coupon': request_body['stripe_coupon_id']
+                }],
                 success_url=settings.DOMAIN_URL + request_body['payment_success_path'],
                 cancel_url=settings.DOMAIN_URL + request_body['payment_cancel_path'],
             )

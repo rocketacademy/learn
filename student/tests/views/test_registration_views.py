@@ -90,7 +90,7 @@ def test_registration_wizard_form_new_user(batch, existing_user):
     assert User.objects.all().count() == 2
 
 
-def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_valid():
+def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_valid(mocker):
     course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
@@ -124,6 +124,26 @@ def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_va
         referral_channel='word_of_mouth',
         referral_code=coupon.code
     )
+    stripe_coupon_id = 'Z4OV52SU'
+    mocker.patch(
+        'payment.library.stripe.Stripe.create_coupon',
+        return_value={
+            'id': stripe_coupon_id,
+            'object': 'coupon',
+            'amount_off': 10,
+            'created': 1660146918,
+            'currency': 'sgd',
+            'duration': 'forever',
+            'livemode': False,
+            'max_redemptions': None,
+            'metadata': {},
+            'name': 'SGD 10.00 off',
+            'percent_off': None,
+            'redeem_by': None,
+            'times_redeemed': 0,
+            'valid': True
+        }
+    )
 
     response = client.get(
         reverse(
@@ -135,8 +155,9 @@ def test_payment_preview_get_passes_discount_price_to_render_if_referral_code_va
     )
 
     assert response.status_code == 200
-    assert response.context['final_payable_amount'] == 189
     assert response.context['original_payable_amount'] == 199
+    assert response.context['stripe_coupon_id'] == stripe_coupon_id
+    assert response.context['final_payable_amount'] == 189
 
 def test_registration_form_does_not_render_batch_on_start_date():
     course = Course.objects.create(name=settings.CODING_BASICS)

@@ -7,21 +7,16 @@ class Stripe:
     def __init__(self):
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
-    def create_coupon(self, discount):
+    def create_coupon(self, discount_in_dollars):
         try:
-            if discount['type'] == 'percent':
-                stripe_coupon = stripe.Coupon.create(
-                    percent_off=discount['amount'],
-                    duration='forever'
-                )
-            elif discount['type'] == 'dollars':
-                stripe_coupon = stripe.Coupon.create(
-                    amount_off=discount['amount'] * 100,
-                    duration='forever',
-                    currency=settings.SINGAPORE_DOLLAR_CURRENCY
-                )
+            stripe_coupon = stripe.Coupon.create(
+                # discount_in_dollars multiplied by 100 because Stripe expects amounts in cents
+                amount_off=discount_in_dollars * 100,
+                duration='forever',
+                currency=settings.SINGAPORE_DOLLAR_CURRENCY
+            )
 
             return stripe_coupon
         except Exception as error:
-            capture_message(f"Exception when calling stripe.Coupon.create with {discount}")
+            capture_message(f"Exception when calling stripe.Coupon.create with discount_in_dollars={discount_in_dollars}")
             capture_exception(error)

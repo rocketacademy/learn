@@ -13,6 +13,9 @@ $(function () {
   const payment_cancel_path = document.getElementById(
     "payment-cancel-path"
   ).value;
+  const stripe_coupon_id = document.getElementById(
+    "stripe-coupon-id"
+  ).value;
 
   fetch("/payment/stripe/config/")
     .then((result) => {
@@ -37,6 +40,7 @@ $(function () {
                 payable_line_item_amount_in_cents,
               payment_success_path: payment_success_path,
               payment_cancel_path: payment_cancel_path,
+              stripe_coupon_id: stripe_coupon_id
             }),
           })
             .then((result) => {

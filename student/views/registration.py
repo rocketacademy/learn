@@ -6,9 +6,9 @@ from django.views import View
 from formtools.wizard.views import SessionWizardView
 
 from authentication.models import StudentUser
-from student.models.registration import Registration
+from payment.library.stripe import Stripe
 from payment.models.coupon import Coupon
-
+from student.models.registration import Registration
 
 User = get_user_model()
 
@@ -16,6 +16,7 @@ TEMPLATES = {
     'batch_selection': 'registration/batch_selection.html',
     'student_info': 'registration/student_info.html'
 }
+
 
 class RegistrationWizard(SessionWizardView):
     def get_template_names(self):
@@ -77,16 +78,13 @@ class RegistrationWizard(SessionWizardView):
 class PaymentPreviewView(View):
     def get(self, request, registration_id):
         registration = Registration.objects.get(pk=registration_id)
-        payment_amount = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        original_payable_amount = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+
         if registration.referral_code:
             coupon = Coupon.objects.get(code=registration.referral_code)
-            coupon_effect = coupon.effects.filter(couponable_type='Course', couponable_id=1).first()
-            if coupon_effect.discount_type == 'dollars':
-                payment_amount -= coupon_effect.discount_amount
-            if coupon_effect.discount_type == 'percent':
-                discount_in_dollars = coupon_effect.discount_amount / 100 * payment_amount
-                payment_amount -= discount_in_dollars
-
+            biggest_discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
+            stripe_coupon = Stripe().create_coupon(biggest_discount)
+            final_payable_amount = original_payable_amount - biggest_discount
         return render(
             request,
             'registration/payment_preview.html',
@@ -94,9 +92,10 @@ class PaymentPreviewView(View):
                 'payable_type': Registration.__name__,
                 'payable_id': registration_id,
                 'payable_line_item_name': 'Registration for Coding Basics',
-                'final_payable_amount': payment_amount,
-                'original_payable_amount': settings.CODING_BASICS_REGISTRATION_FEE_SGD,
-                'payable_line_item_amount_in_cents': settings.CODING_BASICS_REGISTRATION_FEE_SGD * 100,
+                'payable_line_item_amount_in_cents': original_payable_amount * 100,
+                'original_payable_amount': original_payable_amount,
+                'stripe_coupon_id': stripe_coupon['id'],
+                'final_payable_amount': final_payable_amount,
                 'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
                 'payment_cancel_path': '/student/basics/register/',
             }
