@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.db import models
 from django.utils.html import format_html
 from safedelete import SOFT_DELETE_CASCADE
@@ -63,6 +64,19 @@ class Batch(SafeDeleteModel):
         if self.enrolment_set.count() >= self.capacity and self.next_enrollable_section() is None:
             return True
         return False
+
+    def html_formatted_batch_price(self):
+        base_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        html_formatted_price = f"<span class='float-end d-none d-xl-block'>${base_price}</span>"
+        html_formatted_price += f"<div class='lh-lg d-xl-none my-10'>${base_price}<div>"
+        if self.weeks_to_start() >= 2:
+            discount = (self.weeks_to_start() - 1) * 10
+            if discount > 40:
+                discount = 40
+            discounted_price = base_price - discount
+            html_formatted_price = f"<span class='float-end d-none d-xl-block'>${discounted_price}  <span class='text-secondary'><s>${base_price}</s></span></span>"
+            html_formatted_price += f"<div class='lh-lg d-xl-none'>${discounted_price}  <span class='text-secondary'><s>${base_price}</s></span></div>"
+        return format_html(html_formatted_price)
 
     def weeks_to_start(self):
         days_to_start_date = self.start_date - datetime.date.today()
