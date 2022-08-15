@@ -176,3 +176,35 @@ def test_fully_enrolled_returns_false_when_there_is_still_space(course):
     result = batch.fully_enrolled()
 
     assert result is False
+
+def test_weeks_to_start_method_returns_calculated_weeks():
+    start_date = datetime.date.today() + datetime.timedelta(weeks=7)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    result = batch.weeks_to_start()
+
+    assert result == 7
+
+def test_weeks_to_start_method_returns_zero_weeks_if_days_under_7():
+    start_date = datetime.date.today() + datetime.timedelta(days=6)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    result = batch.weeks_to_start()
+
+    assert result == 0
