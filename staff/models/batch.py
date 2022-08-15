@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.utils.html import format_html
 from safedelete import SOFT_DELETE_CASCADE
@@ -62,3 +63,7 @@ class Batch(SafeDeleteModel):
         if self.enrolment_set.count() >= self.capacity and self.next_enrollable_section() is None:
             return True
         return False
+
+    def weeks_to_start(self):
+        timedelta_difference_in_days = self.start_date - datetime.date.today()
+        return timedelta_difference_in_days.days // 7
