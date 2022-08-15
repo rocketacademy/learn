@@ -41,25 +41,46 @@ def test_only_picks_up_batches_starting_in_7_days(mocker):
     registration = Registration.objects.create(
         course=course,
         batch=batch_starting_in_7_days,
-        first_name='Firstname',
-        last_name='Lastname',
-        email='student@example.com',
+        first_name='Student',
+        last_name='No Slack ID',
+        email='student@noslackid.com',
         country_of_residence='SG',
         referral_channel='word_of_mouth',
     )
-    student_user = StudentUser.objects.create_user(
-        email='student@example.com',
-        first_name='Firstname',
-        last_name='Lastname',
+    student_user_without_slack_user_id = StudentUser.objects.create_user(
+        email='student@noslackid.com',
+        first_name='Student',
+        last_name='No Slack ID',
         password=settings.PLACEHOLDER_PASSWORD,
     )
-    student_user.slack_user_id = 'U1234A'
-    student_user.save()
     enrolment = Enrolment.objects.create(
         registration=registration,
         batch=batch_starting_in_7_days,
         section=section,
-        student_user=student_user,
+        student_user=student_user_without_slack_user_id,
+    )
+    registration = Registration.objects.create(
+        course=course,
+        batch=batch_starting_in_7_days,
+        first_name='Student',
+        last_name='With Slack ID',
+        email='student@withslackid.com',
+        country_of_residence='SG',
+        referral_channel='word_of_mouth',
+    )
+    student_user_with_slack_user_id = StudentUser.objects.create_user(
+        email='student@withslackid.com',
+        first_name='Student',
+        last_name='With Slack ID',
+        password=settings.PLACEHOLDER_PASSWORD,
+    )
+    student_user_with_slack_user_id.slack_user_id = 'U1234A'
+    student_user_with_slack_user_id.save()
+    enrolment = Enrolment.objects.create(
+        registration=registration,
+        batch=batch_starting_in_7_days,
+        section=section,
+        student_user=student_user_with_slack_user_id,
     )
     mocker.patch(
         'student.library.slack.Slack.add_users_to_channel'
@@ -67,4 +88,4 @@ def test_only_picks_up_batches_starting_in_7_days(mocker):
 
     Command().handle()
 
-    Slack.add_users_to_channel.assert_called_once_with([student_user.slack_user_id], section.slack_channel_id)
+    Slack.add_users_to_channel.assert_called_once_with([student_user_with_slack_user_id.slack_user_id], section.slack_channel_id)
