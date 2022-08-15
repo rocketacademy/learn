@@ -75,7 +75,7 @@ Since Learn is built with Django, we will need to set up our Python environment 
 ### Install certifi since Python no longer relies on macOS' openSSL certificates
 1. Create `install_certifi.py` file
 2. Copy and paste code from this [gist](https://gist.github.com/marschhuynh/31c9375fc34a3e20c2d3b9eb8131d8f3)
-3. Run `python install_ceritif.py`
+3. Run `python install_certifi.py`
 
 ### Install and set up Postgres database
 1. Install `Postgres`<br>
