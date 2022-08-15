@@ -65,5 +65,5 @@ class Batch(SafeDeleteModel):
         return False
 
     def weeks_to_start(self):
-        timedelta_difference_in_days = self.start_date - datetime.date.today()
-        return timedelta_difference_in_days.days // 7
+        days_to_start_date = self.start_date - datetime.date.today()
+        return days_to_start_date.days // 7
