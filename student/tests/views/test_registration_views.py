@@ -138,7 +138,7 @@ def test_registration_wizard_form_new_user(batch, existing_user):
 
     assert User.objects.all().count() == 2
 
-def test_payment_preview_get_renders_original_price_if_no_valid_referral_code(registration, mocker):
+def test_payment_preview_get_renders_original_price_if_no_valid_referral_code_no_early_bird(registration):
     response = client.get(
         reverse(
             'basics_register_payment_preview',
@@ -150,7 +150,7 @@ def test_payment_preview_get_renders_original_price_if_no_valid_referral_code(re
 
     assert response.status_code == 200
     assert response.context['original_payable_amount'] == 199
-    assert response.context['stripe_coupon_id'] == None
+    assert response.context['stripe_coupon_id'] is None
     assert response.context['final_payable_amount'] == 199
 
 def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_valid(registration, mocker):
@@ -197,4 +197,44 @@ def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_
     assert response.status_code == 200
     assert response.context['original_payable_amount'] == 199
     assert response.context['stripe_coupon_id'] == stripe_coupon_id
+    assert response.context['final_payable_amount'] == 189
+
+def test_payment_preview_get_renders_early_bird_price_without_valid_referral_code():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    start_date = datetime.date.today() + datetime.timedelta(days=14)
+    end_date = start_date + datetime.timedelta(days=1)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=1,
+        sections=1,
+    )
+    Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+    registration = Registration.objects.create(
+        course=course,
+        batch=batch,
+        first_name='FirstName',
+        last_name='LastName',
+        email='user@email.com',
+        country_of_residence='SG',
+        referral_channel='word_of_mouth',
+    )
+
+    response = client.get(
+        reverse(
+            'basics_register_payment_preview',
+            kwargs={
+                'registration_id': registration.id
+            }
+        )
+    )
+
+    assert response.status_code == 200
+    assert response.context['original_payable_amount'] == 199
+    assert response.context['stripe_coupon_id'] is None
     assert response.context['final_payable_amount'] == 189
