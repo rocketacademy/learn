@@ -27,11 +27,12 @@ class BatchSelectionForm(forms.ModelForm):
 
         self.fields['batch'].queryset = enrollable_batches
         self.fields['batch'].label_from_instance = lambda item: format_html(
-            "<h6>{} - {} to {}</h6>{}",
+            "<h6>{} - {} to {}{}</h6>{}",
             item,
             item.start_date.strftime("%d %B"),
             item.end_date.strftime("%d %B"),
-            Batch.html_formatted_batch_schedules(item)
+            Batch.html_formatted_batch_price(item),
+            Batch.html_formatted_batch_schedules(item),
         )
 
     def clean(self):

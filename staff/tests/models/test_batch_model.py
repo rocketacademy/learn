@@ -208,3 +208,86 @@ def test_weeks_to_start_method_returns_zero_weeks_if_days_under_7():
     result = batch.weeks_to_start()
 
     assert result == 0
+
+def test_current_price_method_returns_original_price_under_two_weeks():
+    start_date = datetime.date.today() + datetime.timedelta(days=13)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    current_price = batch.current_price()
+
+    assert current_price == 199
+
+def test_current_price_method_returns_first_tier_discounted_price_at_two_weeks():
+    start_date = datetime.date.today() + datetime.timedelta(days=14)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    current_price = batch.current_price()
+
+    assert current_price == settings.CODING_BASICS_REGISTRATION_FEE_SGD - settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
+
+def test_current_price_method_returns_capped_discounted_price():
+    start_date = datetime.date.today() + datetime.timedelta(weeks=8)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    current_price = batch.current_price()
+
+    assert current_price == settings.CODING_BASICS_REGISTRATION_FEE_SGD - settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+
+
+def test_html_formatted_batch_price_returns_base_price_formatting_under_two_weeks(course):
+    start_date = datetime.date.today() + datetime.timedelta(days=13)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    html_formatted_batch_price = batch.html_formatted_batch_price()
+
+    assert html_formatted_batch_price == "<span class='float-end d-none d-xl-block'>$199</span><div class='lh-lg d-xl-none my-10'>$199<div>"
+
+def test_html_formatted_batch_price_returns_discounted_price_formatting_after_13_days(course):
+    start_date = datetime.date.today() + datetime.timedelta(days=14)
+    end_date = start_date + datetime.timedelta(weeks=6)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=34,
+        sections=2
+    )
+
+    html_formatted_batch_price = batch.html_formatted_batch_price()
+
+    required_string = "<span class='float-end d-none d-xl-block'>$189  <span class='text-secondary'><s>$199</s></span></span>"
+    required_string += "<div class='lh-lg d-xl-none'>$189  <span class='text-secondary'><s>$199</s></span></div>"
+    assert html_formatted_batch_price == required_string

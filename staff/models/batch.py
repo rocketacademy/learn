@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.db import models
 from django.utils.html import format_html
 from safedelete import SOFT_DELETE_CASCADE
@@ -63,6 +64,28 @@ class Batch(SafeDeleteModel):
         if self.enrolment_set.count() >= self.capacity and self.next_enrollable_section() is None:
             return True
         return False
+
+    def html_formatted_batch_price(self):
+        original_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        html_formatted_price = f"<span class='float-end d-none d-xl-block'>${original_price}</span>"
+        html_formatted_price += f"<div class='lh-lg d-xl-none my-10'>${original_price}<div>"
+
+        current_price = self.current_price()
+        if current_price is not original_price:
+            html_formatted_price = f"<span class='float-end d-none d-xl-block'>${current_price}  <span class='text-secondary'><s>${original_price}</s></span></span>"
+            html_formatted_price += f"<div class='lh-lg d-xl-none'>${current_price}  <span class='text-secondary'><s>${original_price}</s></span></div>"
+        return format_html(html_formatted_price)
+    
+    def current_price(self):
+        original_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        current_price = original_price
+        if self.weeks_to_start() >= 2:
+            discount = (self.weeks_to_start() - 1) * settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
+            if discount > settings.CODING_BASICS_TIERED_DISCOUNT_CAP:
+                discount = settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+            current_price = original_price - discount
+
+        return current_price
 
     def weeks_to_start(self):
         days_to_start_date = self.start_date - datetime.date.today()
