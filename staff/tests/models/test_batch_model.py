@@ -225,7 +225,7 @@ def test_current_price_method_returns_original_price_under_two_weeks():
 
     assert current_price == 199
 
-def test_current_price_method_returns_discounted_price_at_two_weeks():
+def test_current_price_method_returns_first_tier_discounted_price_at_two_weeks():
     start_date = datetime.date.today() + datetime.timedelta(days=14)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
@@ -239,9 +239,9 @@ def test_current_price_method_returns_discounted_price_at_two_weeks():
 
     current_price = batch.current_price()
 
-    assert current_price == 189
+    assert current_price == settings.CODING_BASICS_REGISTRATION_FEE_SGD - settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
 
-def test_current_price_method_returns_capped_discounted_price_at_40_dollars():
+def test_current_price_method_returns_capped_discounted_price():
     start_date = datetime.date.today() + datetime.timedelta(weeks=8)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
@@ -255,7 +255,7 @@ def test_current_price_method_returns_capped_discounted_price_at_40_dollars():
 
     current_price = batch.current_price()
 
-    assert current_price == 159
+    assert current_price == settings.CODING_BASICS_REGISTRATION_FEE_SGD - settings.CODING_BASICS_TIERED_DISCOUNT_CAP
 
 
 def test_html_formatted_batch_price_returns_base_price_formatting_under_two_weeks(course):

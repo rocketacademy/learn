@@ -80,9 +80,9 @@ class Batch(SafeDeleteModel):
         original_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
         current_price = original_price
         if self.weeks_to_start() >= 2:
-            discount = (self.weeks_to_start() - 1) * 10
-            if discount > 40:
-                discount = 40
+            discount = (self.weeks_to_start() - 1) * settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
+            if discount > settings.CODING_BASICS_TIERED_DISCOUNT_CAP:
+                discount = settings.CODING_BASICS_TIERED_DISCOUNT_CAP
             current_price = original_price - discount
 
         return current_price
