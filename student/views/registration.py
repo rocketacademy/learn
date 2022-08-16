@@ -96,7 +96,7 @@ class PaymentPreviewView(View):
                 'payable_type': Registration.__name__,
                 'payable_id': registration_id,
                 'payable_line_item_name': 'Registration for Coding Basics',
-                'payable_line_item_amount_in_cents': original_payable_amount * 100,
+                'payable_line_item_amount_in_cents': early_bird_discounted_amount * 100,
                 'original_payable_amount': original_payable_amount,
                 'stripe_coupon_id': stripe_coupon_id,
                 'final_payable_amount': early_bird_discounted_amount - discount,
