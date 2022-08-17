@@ -88,7 +88,7 @@ class PaymentPreviewView(View):
 
         stripe_coupon_id = None
         if total_discount > 0:
-            stripe_coupon = Stripe().create_coupon(coupon_discount)
+            stripe_coupon = Stripe().create_coupon(total_discount)
             stripe_coupon_id = stripe_coupon['id']
 
         return render(
