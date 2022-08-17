@@ -33,10 +33,16 @@ def logged_in_existing_user():
     yield logged_in_existing_user
 
 @pytest.fixture()
-def course():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+def coding_basics_course():
+    coding_basics_course = Course.objects.create(name=settings.CODING_BASICS)
 
-    yield course
+    yield coding_basics_course
+
+@pytest.fixture()
+def coding_bootcamp_course():
+    coding_bootcamp_course = Course.objects.create(name=settings.CODING_BOOTCAMP)
+
+    yield coding_bootcamp_course
 
 def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/coupon-effects/new/')
@@ -54,7 +60,7 @@ def test_get_renders_with_form_when_user_logged_in(logged_in_existing_user):
     assert 'coupon_effect/new.html' in (template.name for template in response.templates)
     assert 'coupon_effect_form' in response.context
 
-def test_post_saves_coupon_effect_for_dollars_discount_type(course, logged_in_existing_user):
+def test_post_saves_coupon_effect_for_dollars_discount_type(coding_basics_course, logged_in_existing_user):
     discount = {
         'type': 'dollars',
         'amount': 15
@@ -63,6 +69,7 @@ def test_post_saves_coupon_effect_for_dollars_discount_type(course, logged_in_ex
     response = client.post(
         reverse('coupon_effect_new'),
         {
+            'name': coding_basics_course.name,
             'discount_type': discount['type'],
             'discount_amount': discount['amount'],
         }
@@ -71,12 +78,12 @@ def test_post_saves_coupon_effect_for_dollars_discount_type(course, logged_in_ex
     coupon_effect = CouponEffect.objects.first()
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/coupon-effects/{coupon_effect.id}/" in response.url
-    assert coupon_effect.couponable_type == type(course).__name__
-    assert coupon_effect.couponable_id == course.id
+    assert coupon_effect.couponable_type == type(coding_basics_course).__name__
+    assert coupon_effect.couponable_id == coding_basics_course.id
     assert coupon_effect.discount_amount == discount['amount']
     assert coupon_effect.discount_type == discount['type']
 
-def test_post_saves_coupon_effect_for_percent_discount_type(course, logged_in_existing_user):
+def test_post_saves_coupon_effect_for_percent_discount_type(coding_basics_course, logged_in_existing_user):
     discount = {
         'type': 'percent',
         'amount': 15
@@ -85,6 +92,7 @@ def test_post_saves_coupon_effect_for_percent_discount_type(course, logged_in_ex
     response = client.post(
         reverse('coupon_effect_new'),
         {
+            'name': coding_basics_course.name,
             'discount_type': discount['type'],
             'discount_amount': discount['amount'],
         }
@@ -93,7 +101,30 @@ def test_post_saves_coupon_effect_for_percent_discount_type(course, logged_in_ex
     coupon_effect = CouponEffect.objects.first()
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/coupon-effects/{coupon_effect.id}/" in response.url
-    assert coupon_effect.couponable_type == type(course).__name__
-    assert coupon_effect.couponable_id == course.id
+    assert coupon_effect.couponable_type == type(coding_basics_course).__name__
+    assert coupon_effect.couponable_id == coding_basics_course.id
+    assert coupon_effect.discount_amount == discount['amount']
+    assert coupon_effect.discount_type == discount['type']
+
+def test_post_saves_coupon_effect_for_coding_bootcamp_couponable(coding_bootcamp_course, logged_in_existing_user):
+    discount = {
+        'type': 'dollars',
+        'amount': 15
+    }
+
+    response = client.post(
+        reverse('coupon_effect_new'),
+        {
+            'name': coding_bootcamp_course.name,
+            'discount_type': discount['type'],
+            'discount_amount': discount['amount'],
+        }
+    )
+
+    coupon_effect = CouponEffect.objects.first()
+    assert response.status_code == HttpResponseRedirect.status_code
+    assert f"staff/coupon-effects/{coupon_effect.id}/" in response.url
+    assert coupon_effect.couponable_type == type(coding_bootcamp_course).__name__
+    assert coupon_effect.couponable_id == coding_bootcamp_course.id
     assert coupon_effect.discount_amount == discount['amount']
     assert coupon_effect.discount_type == discount['type']

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.html import format_html
@@ -6,7 +5,6 @@ from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
 
 from payment.models.coupon_effect import CouponEffect
-from staff.models import Course
 
 
 class Coupon(SafeDeleteModel):

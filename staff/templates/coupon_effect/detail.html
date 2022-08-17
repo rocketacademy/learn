@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block coupon_effect_content %}
 <div class="py-4">
-    <h5>Coupon effect for Coding Basics</h5>
+    <h5>Coupon effect for {{ couponable.get_name_display }}</h5>
         <div class="row mt-4">
             <div class="col-md-6 col-lg-3 my-2">
                 <h6>Discount amount</h6>
