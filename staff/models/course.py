@@ -7,7 +7,8 @@ class Course(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
     NAME_CHOICES = [
-        (settings.CODING_BASICS, 'Coding Basics')
+        (settings.CODING_BASICS, 'Coding Basics'),
+        (settings.CODING_BOOTCAMP, 'Coding Bootcamp')
     ]
 
     name = models.CharField(max_length=255, choices=NAME_CHOICES)
