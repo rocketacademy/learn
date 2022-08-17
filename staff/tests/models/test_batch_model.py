@@ -209,7 +209,7 @@ def test_weeks_to_start_method_returns_zero_weeks_if_days_under_7():
 
     assert result == 0
 
-def test_current_price_method_returns_original_price_under_two_weeks():
+def test_early_bird_method_returns_0_under_two_weeks():
     start_date = datetime.date.today() + datetime.timedelta(days=13)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
@@ -221,11 +221,11 @@ def test_current_price_method_returns_original_price_under_two_weeks():
         sections=2
     )
 
-    current_price = batch.current_price()
+    early_bird_discount = batch.early_bird_discount()
 
-    assert current_price == 199
+    assert early_bird_discount == 0
 
-def test_current_price_method_returns_first_tier_discounted_price_at_two_weeks():
+def test_early_bird_method_returns_first_tier_discounted_price_at_two_weeks():
     start_date = datetime.date.today() + datetime.timedelta(days=14)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
@@ -237,11 +237,11 @@ def test_current_price_method_returns_first_tier_discounted_price_at_two_weeks()
         sections=2
     )
 
-    current_price = batch.current_price()
+    early_bird_discount = batch.early_bird_discount()
 
-    assert current_price == settings.CODING_BASICS_REGISTRATION_FEE_SGD - settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
+    assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
 
-def test_current_price_method_returns_capped_discounted_price():
+def test_early_bird_method_returns_capped_discounted_price():
     start_date = datetime.date.today() + datetime.timedelta(weeks=8)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
@@ -253,9 +253,9 @@ def test_current_price_method_returns_capped_discounted_price():
         sections=2
     )
 
-    current_price = batch.current_price()
+    early_bird_discount = batch.early_bird_discount()
 
-    assert current_price == settings.CODING_BASICS_REGISTRATION_FEE_SGD - settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+    assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_CAP
 
 
 def test_html_formatted_batch_price_returns_base_price_formatting_under_two_weeks(course):
