@@ -70,7 +70,7 @@ class Batch(SafeDeleteModel):
         html_formatted_price = f"<span class='float-end d-none d-xl-block'>${original_price}</span>"
         html_formatted_price += f"<div class='lh-lg d-xl-none my-10'>${original_price}<div>"
 
-        early_bird_discounted_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD - self.early_bird_discount()
+        early_bird_discounted_price = original_price - self.early_bird_discount()
         if early_bird_discounted_price is not original_price:
             html_formatted_price = f"<span class='float-end d-none d-xl-block'>${early_bird_discounted_price}  <span class='text-secondary'><s>${original_price}</s></span></span>"
             html_formatted_price += f"<div class='lh-lg d-xl-none'>${early_bird_discounted_price}  <span class='text-secondary'><s>${original_price}</s></span></div>"
