@@ -79,6 +79,33 @@ def registration():
 
     yield registration
 
+@pytest.fixture()
+def early_bird_registration():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    start_date = datetime.date.today() + datetime.timedelta(days=14)
+    end_date = start_date + datetime.timedelta(days=1)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=end_date,
+        capacity=1,
+        sections=1,
+    )
+    Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+    early_bird_registration = Registration.objects.create(
+        course=course,
+        batch=batch,
+        first_name='FirstName',
+        last_name='LastName',
+        email='user@email.com',
+        country_of_residence='SG',
+        referral_channel='word_of_mouth',
+    )
+    return early_bird_registration
 
 def test_registration_form_does_not_render_batch_on_start_date():
     course = Course.objects.create(name=settings.CODING_BASICS)
@@ -153,7 +180,7 @@ def test_payment_preview_get_renders_original_price_if_no_valid_referral_code_no
     assert response.context['stripe_coupon_id'] is None
     assert response.context['final_payable_amount'] == 199
 
-def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_valid(registration, mocker):
+def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_valid_no_early_bird(registration, mocker):
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(registration.batch.course).__name__,
         couponable_id=registration.batch.course.id,
@@ -199,42 +226,84 @@ def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_
     assert response.context['stripe_coupon_id'] == stripe_coupon_id
     assert response.context['final_payable_amount'] == 189
 
-def test_payment_preview_get_renders_early_bird_price_without_valid_referral_code():
-    course = Course.objects.create(name=settings.CODING_BASICS)
-    start_date = datetime.date.today() + datetime.timedelta(days=14)
-    end_date = start_date + datetime.timedelta(days=1)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=end_date,
-        capacity=1,
-        sections=1,
-    )
-    Section.objects.create(
-        batch=batch,
-        number=1,
-        capacity=1
-    )
-    registration = Registration.objects.create(
-        course=course,
-        batch=batch,
-        first_name='FirstName',
-        last_name='LastName',
-        email='user@email.com',
-        country_of_residence='SG',
-        referral_channel='word_of_mouth',
+def test_payment_preview_get_renders_early_bird_price_without_valid_referral_code(early_bird_registration, mocker):
+    stripe_coupon_id = 'Z4OV52SU'
+    mocker.patch(
+        'payment.library.stripe.Stripe.create_coupon',
+        return_value={
+            'id': stripe_coupon_id,
+            'object': 'coupon',
+            'amount_off': 10,
+            'created': 1660146918,
+            'currency': 'sgd',
+            'duration': 'forever',
+            'livemode': False,
+            'max_redemptions': None,
+            'metadata': {},
+            'name': 'SGD 10.00 off',
+            'percent_off': None,
+            'redeem_by': None,
+            'times_redeemed': 0,
+            'valid': True
+        }
     )
 
     response = client.get(
         reverse(
             'basics_register_payment_preview',
             kwargs={
-                'registration_id': registration.id
+                'registration_id': early_bird_registration.id
             }
         )
     )
 
     assert response.status_code == 200
     assert response.context['original_payable_amount'] == 199
-    assert response.context['stripe_coupon_id'] is None
+    assert response.context['stripe_coupon_id'] == stripe_coupon_id
     assert response.context['final_payable_amount'] == 189
+
+def test_payment_preview_get_renders_early_bird_price_with_valid_referral_code(early_bird_registration, mocker):
+    coupon_effect = CouponEffect.objects.create(
+        couponable_type=type(early_bird_registration.batch.course).__name__,
+        couponable_id=early_bird_registration.batch.course.id,
+        discount_type='dollars',
+        discount_amount=10
+    )
+    coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()),)
+    coupon.effects.set([coupon_effect])
+    early_bird_registration.referral_code = coupon.code
+    early_bird_registration.save()
+    stripe_coupon_id = 'Z4OV52SU'
+    mocker.patch(
+        'payment.library.stripe.Stripe.create_coupon',
+        return_value={
+            'id': stripe_coupon_id,
+            'object': 'coupon',
+            'amount_off': 20,
+            'created': 1660146918,
+            'currency': 'sgd',
+            'duration': 'forever',
+            'livemode': False,
+            'max_redemptions': None,
+            'metadata': {},
+            'name': 'SGD 10.00 off',
+            'percent_off': None,
+            'redeem_by': None,
+            'times_redeemed': 0,
+            'valid': True
+        }
+    )
+
+    response = client.get(
+        reverse(
+            'basics_register_payment_preview',
+            kwargs={
+                'registration_id': early_bird_registration.id
+            }
+        )
+    )
+
+    assert response.status_code == 200
+    assert response.context['original_payable_amount'] == 199
+    assert response.context['stripe_coupon_id'] == stripe_coupon_id
+    assert response.context['final_payable_amount'] == 179
