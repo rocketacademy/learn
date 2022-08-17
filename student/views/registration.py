@@ -79,14 +79,16 @@ class PaymentPreviewView(View):
     def get(self, request, registration_id):
         registration = Registration.objects.get(pk=registration_id)
         original_payable_amount = settings.CODING_BASICS_REGISTRATION_FEE_SGD
-        early_bird_discounted_amount = registration.batch.current_price()
-        discount = 0
-        stripe_coupon_id = None
-
+        early_bird_discount = registration.batch.early_bird_discount()
+        coupon_discount = 0
         if registration.referral_code:
             coupon = Coupon.objects.get(code=registration.referral_code)
-            discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
-            stripe_coupon = Stripe().create_coupon(discount)
+            coupon_discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
+        total_discount = coupon_discount + early_bird_discount
+
+        stripe_coupon_id = None
+        if total_discount > 0:
+            stripe_coupon = Stripe().create_coupon(coupon_discount)
             stripe_coupon_id = stripe_coupon['id']
 
         return render(
@@ -96,10 +98,10 @@ class PaymentPreviewView(View):
                 'payable_type': Registration.__name__,
                 'payable_id': registration_id,
                 'payable_line_item_name': 'Registration for Coding Basics',
-                'payable_line_item_amount_in_cents': early_bird_discounted_amount * 100,
+                'payable_line_item_amount_in_cents': original_payable_amount * 100,
                 'original_payable_amount': original_payable_amount,
                 'stripe_coupon_id': stripe_coupon_id,
-                'final_payable_amount': early_bird_discounted_amount - discount,
+                'final_payable_amount': original_payable_amount - total_discount,
                 'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
                 'payment_cancel_path': '/student/basics/register/',
             }
