@@ -17,6 +17,7 @@ urlpatterns = [
     path('basics/batches/<int:batch_id>/sections/', section.ListView.as_view(), name='section_list'),
     path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.DetailView.as_view(), name='section_detail'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
+    path('coupons/csv-upload/', coupon.CsvUploadView.as_view(), name='csv_upload'),
     path('coupons/new/', coupon.NewView.as_view(), name='coupon_new'),
     path('coupons/<int:coupon_id>/', coupon.DetailView.as_view(), name='coupon_detail'),
     path('coupons/<int:coupon_id>/edit/', coupon.EditView.as_view(), name='coupon_edit'),

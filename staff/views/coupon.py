@@ -5,6 +5,7 @@ from django.views import View
 
 from payment.models import Coupon
 from staff.forms.coupon import CouponForm
+from staff.forms.csv_upload import CsvUploadForm
 
 
 class ListView(LoginRequiredMixin, View):
@@ -106,3 +107,18 @@ class EditView(LoginRequiredMixin, View):
                 'coupon_form': coupon_form,
             }
         )
+
+class CsvUploadView(LoginRequiredMixin, View):
+    def get(self, request):
+        csv_upload_form = CsvUploadForm(None)
+        return render(
+            request,
+            'coupon/csv_upload.html',
+            {
+                'csv_upload_form': csv_upload_form
+            }
+        )
+
+    def post(self, request):
+
+        return redirect('csv_upload')
