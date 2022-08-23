@@ -1,10 +1,10 @@
 {% extends './base.html' %}
 {% block batch_content %}
 <div class="row">
-    <div class="col-9">
+    <div class="col-10">
         <h4>Overview</h4>
     </div>
-    <div class="col-3 d-none d-md-block">
+    <div class="col-2 d-none d-lg-block">
         <a 
         type="link"
         href="{% url 'batch_edit' batch_id=batch.id %}"
