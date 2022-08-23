@@ -6,3 +6,12 @@
 .sidebar-link-active {
     border-width: 4px !important;
 }
+
+.topbar a {
+    font-size: small;
+    margin: 0px 10px 0px 10px !important;
+}
+
+.topbar-link-active {
+    border-width: 4px !important;
+}
