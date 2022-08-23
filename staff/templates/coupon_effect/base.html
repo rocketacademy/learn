@@ -2,8 +2,10 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="row">
-    <div class="d-flex flex-row justify-content-between py-2 border-bottom">
+    <div class="py-2 border-bottom">
         <h3>Coupon effect</h3>
     </div>
-    {% block coupon_effect_content %}{% endblock %}
+    <div class="container p-4">
+        {% block coupon_effect_content %}{% endblock %}
+    </div>
 {% endblock %}

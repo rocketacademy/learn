@@ -1,9 +1,20 @@
 {% extends './base.html' %}
 {% load crispy_forms_tags %}
 {% block coupon_content %}
-<div class="d-flex flex-row justify-content-between p-4">
-    <h4>Coupon - {{ coupon.code }}</h4>
-    <div>
+<div class="row">
+    <div class="col-10">
+        <h4>Coupon - {{ coupon.code }}</h4>
+    </div>
+    <div class="col-2 d-none d-lg-block">
+        <a
+        type="link"
+        href="{% url 'coupon_edit' coupon_id=coupon.id %}"
+        role="button"
+        class="btn btn-outline-primary btn-sm px-4">
+            Edit coupon details
+        </a>
+    </div>
+    <div class="col-10 my-3 d-lg-none">
         <a 
         type="link"
         href="{% url 'coupon_edit' coupon_id=coupon.id %}"
@@ -13,39 +24,36 @@
         </a>
     </div>
 </div>
-<div class="px-4">
-    <div class="row">
-        <div class="col-md-6 col-lg-3 my-2">
-            <h6>Start date</h6>
-            {{ coupon.start_date|date:"d M, Y" }}
-        </div>
-        <div class="col-md-6 col-lg-3 my-2">
-            <h6>End date</h6>
-            {% if coupon.end_date %}
-                {{ coupon.end_date|date:"d M, Y" }}
-            {% else %}
-                -
-            {% endif %}
-        </div>
+<div class="row">
+    <div class="col-md-6 col-lg-3 my-3">
+        <h6>Start date</h6>
+        {{ coupon.start_date|date:"d M, Y" }}
     </div>
-    <div class="row mt-4">
-        <div class="col-md-6 col-lg-3 my-2">
-            <h6>Effects</h6>
-            {% for coupon_effect in coupon_effects %}
-                <p class="my-2">{{ coupon_effect }}</p>
-            {% endfor %}
-        </div>
-        <div class="col-md-6 col-lg-3 my-2">
-            <h6>Code</h6>
-            {{ coupon.code }}
-        </div>
+    <div class="col-md-6 col-lg-3 my-3">
+        <h6>End date</h6>
+        {% if coupon.end_date %}
+            {{ coupon.end_date|date:"d M, Y" }}
+        {% else %}
+            -
+        {% endif %}
     </div>
-    <div class="row mt-4">
-        <div class="col-md-6 col-lg-3 my-2">
-            <h6>Description</h6>
-            {{ coupon.description }}
-        </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-3 my-3">
+        <h6>Effects</h6>
+        {% for coupon_effect in coupon_effects %}
+            <p class="my-2">{{ coupon_effect }}</p>
+        {% endfor %}
     </div>
-
+    <div class="col-md-6 col-lg-3 my-3">
+        <h6>Code</h6>
+        {{ coupon.code }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-3 my-3">
+        <h6>Description</h6>
+        {{ coupon.description }}
+    </div>
 </div>
 {% endblock %}
