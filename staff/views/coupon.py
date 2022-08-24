@@ -120,5 +120,16 @@ class CsvUploadView(LoginRequiredMixin, View):
         )
 
     def post(self, request):
+        form = CsvUploadForm(request.POST, request.FILES)
 
-        return redirect('csv_upload')
+        if not form.is_valid():
+            return render(request, 'coupon/csv_upload.html', {'csv_upload_form': form})
+        csv_file = form.cleaned_data.get('csv_file')
+
+        for row in csv_file:
+            row_data = str(row.decode('utf-8')).split(",")
+            first_name = row_data[0]
+            # replace to remove csv formatting for new row
+            email = row_data[1].replace('\\r\\n', '')
+            
+        return redirect('coupon_csv_upload')

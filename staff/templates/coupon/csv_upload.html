@@ -6,7 +6,10 @@
     <form id="csv-upload-form" enctype="multipart/form-data" action="/staff/coupons/csv-upload/" method="post">
         {% csrf_token %}
         <div class="row mt-4">
-            {{ csv_upload_form.csv_file|as_crispy_field }}
+            {{ csv_upload_form.csv_file }}
+            <small class="text-danger">
+                {{ csv_upload_form.csv_file.errors|striptags }}
+            </small>
         </div>
         <div class="row">
             <div class="d-flex flex-row py-5">
