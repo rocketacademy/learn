@@ -1,3 +1,5 @@
+import codecs
+import csv
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
@@ -125,11 +127,15 @@ class CsvUploadView(LoginRequiredMixin, View):
         if not form.is_valid():
             return render(request, 'coupon/csv_upload.html', {'csv_upload_form': form})
         csv_file = form.cleaned_data.get('csv_file')
+        csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
+        csv_rows = []
+        for row in csvreader:
+            csv_rows.append(row)
 
-        for row in csv_file:
-            row_data = str(row.decode('utf-8')).split(",")
-            first_name = row_data[0]
-            # replace to remove csv formatting for new row
-            email = row_data[1].replace('\\r\\n', '')
-            
-        return redirect('coupon_csv_upload')
+        return render(
+            request,
+            'coupon/csv_upload_success.html',
+            {
+                'csv_rows': csv_rows
+            }
+        )

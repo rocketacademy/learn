@@ -1,0 +1,29 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% block coupon_content %}
+<div class="py-4">
+    <h5 class=""text-success>.csv File Uploaded Successfully</h5>
+        {% csrf_token %}
+        <table class="table table-hover my-4">
+            <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in csv_rows %}
+                <tr>
+                    <td>{{ row.first_name }}</td>
+                    <td>{{ row.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="d-flex flex-row py-5">
+            <a type="link" href="/staff/coupons/" role="button" class="btn btn-outline-secondary px-4">Back to Coupons List</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

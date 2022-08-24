@@ -13,11 +13,11 @@ class CsvUploadForm(forms.Form):
                 'Please ensure you uploaded a .csv file!'
             )
             return self
-            
+
         if not csv_file.name.endswith('.csv'):
             self.add_error(
                 'csv_file',
-                'The file you uploaded was is not a .csv file!'
+                'The file you uploaded is not a .csv file!'
             )
             return self.cleaned_data
 
@@ -30,7 +30,7 @@ class CsvUploadForm(forms.Form):
                 if "first_name" not in first_name and "email" not in email:
                     self.add_error(
                         'csv_file',
-                        'The file you uploaded has the wrong headers!'
+                        'The file you uploaded requires the headers "first_name" and "email!'
                     )
                     return self.cleaned_data
 

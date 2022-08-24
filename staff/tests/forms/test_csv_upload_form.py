@@ -14,10 +14,10 @@ class TestCsvUploadForm:
         assert outcome is False
 
     def test_file_uploaded_field_accepts_csv(self):
-        file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
-
-        csv_file = open(file_path, 'r')
+        test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
+        csv_file = open(test_file_path, 'r')
         content = csv_file.read()
+
         csv_upload_form = CsvUploadForm(files={'csv_file': SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")})
 
         assert csv_upload_form.is_valid()
