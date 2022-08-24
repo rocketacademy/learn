@@ -30,7 +30,7 @@ class CsvUploadForm(forms.Form):
                 if "first_name" not in first_name and "email" not in email:
                     self.add_error(
                         'csv_file',
-                        'The file you uploaded requires the headers "first_name" and "email!'
+                        'The file you uploaded requires the headers "first_name" and "email" !'
                     )
                     return self.cleaned_data
 
