@@ -3,39 +3,39 @@
   <h3>Batch {{ batch.number }}</h3>
 </div>
 {% block batch_content %}
-<div class="d-flex flex-row justify-content-between px-4">
-  <h5>Sections</h5>
+<div class="row">
+  <div class="col-10">
+      <h4>Sections</h4>
+  </div>
 </div>
-<div class="p-4">
-  <div class="row">
-    <div class="col-md-6">
-      {% if sections.exists %}
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Section</th>
-            <th scope="col">Capacity</th>
-            <th scope="col">No. of students</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for section in sections %}
-          <tr
-            class="clickable-row"
-            data-url="{% url 'section_detail' batch_id=batch.id section_id=section.id %}"
-            role="button"
-          >
-            <td>{{ section.number }}</td>
-            <td>{{ section.capacity }}</td>
-            <td>{{ section.enrolment_set.count }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <div>There aren't any sections yet</div>
-      {% endif %}
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    {% if sections.exists %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Section</th>
+          <th scope="col">Capacity</th>
+          <th scope="col">No. of students</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for section in sections %}
+        <tr
+          class="clickable-row"
+          data-url="{% url 'section_detail' batch_id=batch.id section_id=section.id %}"
+          role="button"
+        >
+          <td>{{ section.number }}</td>
+          <td>{{ section.capacity }}</td>
+          <td>{{ section.enrolment_set.count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div>There aren't any sections yet</div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

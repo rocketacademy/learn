@@ -1,28 +1,26 @@
 {% extends './base.html' %}
 {% load crispy_forms_tags %}
 {% block coupon_effect_content %}
-<div class="py-4">
-    <h5>Create new coupon effect</h5>
-    <form id="create-coupon-effect-form" action="/staff/coupon-effects/new/" method="post">
-        {% csrf_token %}
-        <div class="row mt-4">
-            <div class="col-md-6 col-lg-3 my-2">
-                {{ course_form.name|as_crispy_field }}
-            </div>
+<h5>Create new coupon effect</h5>
+<form id="create-coupon-effect-form" action="/staff/coupon-effects/new/" method="post">
+    {% csrf_token %}
+    <div class="row mt-4">
+        <div class="col-md-6 col-lg-3 my-2">
+            {{ course_form.name|as_crispy_field }}
         </div>
-        <div class="row mt-4">
-            <div class="col-md-6 col-lg-3 my-2">
-                {{ coupon_effect_form.discount_amount|as_crispy_field }}
-            </div>
-            <div class="col-md-6 col-lg-3 my-2">
-                {{ coupon_effect_form.discount_type|as_crispy_field }}
-            </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6 col-lg-3 my-2">
+            {{ coupon_effect_form.discount_amount|as_crispy_field }}
         </div>
-        <div class="row">
-            <div class="d-flex flex-row py-5">
-            <a type="link" href="/staff/coupons/" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
-            <button class="btn btn-primary mx-2 px-4" type="submit">Create coupon effect</button>
+        <div class="col-md-6 col-lg-3 my-2">
+            {{ coupon_effect_form.discount_type|as_crispy_field }}
         </div>
-    </form>
-</div>
+    </div>
+    <div class="row">
+        <div class="d-flex flex-row py-5">
+        <a type="link" href="/staff/coupons/" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
+        <button class="btn btn-primary mx-2 px-4" type="submit">Create coupon effect</button>
+    </div>
+</form>
 {% endblock %}
