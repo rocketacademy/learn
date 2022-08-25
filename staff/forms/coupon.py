@@ -8,12 +8,14 @@ class CouponForm(forms.ModelForm):
         fields = [
             'start_date',
             'end_date',
+            'code',
             'effects',
             'description'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'code': forms.TextInput(),
             'effects': forms.SelectMultiple(),
             'description': forms.Textarea(attrs={'rows': 2})
         }
