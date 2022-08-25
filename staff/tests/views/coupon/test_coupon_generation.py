@@ -26,7 +26,7 @@ def logged_in_existing_user():
 
     yield logged_in_existing_user
 
-def test_csv_upload_anonymous_user_redirected_to_login():
+def test_coupon_generation_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/coupons/csv-upload/')
     request.user = AnonymousUser()
 
@@ -35,45 +35,49 @@ def test_csv_upload_anonymous_user_redirected_to_login():
     assert response.status_code == HttpResponseRedirect.status_code
     assert 'staff/login/?next=/coupons/csv-upload/' in response.url
 
-def test_csv_upload_template_rendered_for_logged_in_user(logged_in_existing_user):
-    response = client.get(reverse('coupon_csv_upload'))
+def test_coupon_generation_template_rendered_for_logged_in_user(logged_in_existing_user):
+    response = client.get(reverse('coupon_coupon_generation'))
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coupon/csv_upload.html' in (template.name for template in response.templates)
+    assert 'coupon/coupon_generation.html' in (template.name for template in response.templates)
 
-def test_csv_upload_success_renders_page_with_list_of(logged_in_existing_user):
+def test_coupon_generation_success_renders_page_with_list_of(logged_in_existing_user):
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
     uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
-    assert_result = [{'first_name': 'tester', 'email': 'test1@test.com'}, {'first_name': 'tester2', 'email': 'test2@gmail.com'}]
 
-    response = client.post(reverse('coupon_csv_upload'), {'csv_file': uploaded_file})
-
-    assert response.status_code == HttpResponse.status_code
-    assert 'coupon/csv_upload_success.html' in (template.name for template in response.templates)
-    assert response.context['csv_rows'] == assert_result
-
-def test_csv_upload_no_upload_rerenders_form_page(logged_in_existing_user):
-    response = client.post(reverse('coupon_csv_upload'))
+    response = client.post(reverse('coupon_coupon_generation'), {'csv_file': uploaded_file})
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coupon/csv_upload.html' in (template.name for template in response.templates)
+    assert 'coupon/coupon_generation_success.html' in (template.name for template in response.templates)
+    assert response.context['csv_rows'] == [{'first_name': 'tester', 'email': 'test1@test.com'}, {'first_name': 'tester2', 'email': 'test2@gmail.com'}]
 
-def test_csv_upload_not_csv_rerenders_form_page(logged_in_existing_user):
+def test_coupon_generation_no_upload_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
+    response = client.post(reverse('coupon_coupon_generation'))
+
+    assert response.status_code == HttpResponse.status_code
+    assert 'coupon/coupon_generation.html' in (template.name for template in response.templates)
+    assert 'This field is required.' in response.context['errors'][0]
+
+def test_coupon_generation_not_csv_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
     uploaded_file = SimpleUploadedFile(name='test.txt', content=bytes('test content', 'utf-8'), content_type="multipart/form-data")
 
-    response = client.post(reverse('coupon_csv_upload'), {'csv_file': uploaded_file})
+    response = client.post(reverse('coupon_coupon_generation'), {'csv_file': uploaded_file})
 
     assert response.status_code == HttpResponse.status_code
-    assert 'coupon/csv_upload.html' in (template.name for template in response.templates)
+    assert 'coupon/coupon_generation.html' in (template.name for template in response.templates)
+    assert 'The file you uploaded is not a .csv file!' in response.context['errors'][0]
 
-def test_csv_upload_incorrect_headers_rerenders_form_page(logged_in_existing_user):
+def test_coupon_generation_incorrect_headers_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
     test_file_path = "./staff/tests/forms/csv_files/incorrect_headers_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
     uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
 
-    response = client.post(reverse('coupon_csv_upload'), {'csv_file': uploaded_file})
+    response = client.post(reverse('coupon_coupon_generation'), {'csv_file': uploaded_file})
+    print(response.context['errors'])
 
-    assert 'coupon/csv_upload.html' in (template.name for template in response.templates)
+    assert response.status_code == HttpResponse.status_code
+    assert 'coupon/coupon_generation.html' in (template.name for template in response.templates)
+    assert 'The file you uploaded requires the specific headers "first_name" and "email"!' in response.context['errors'][0]

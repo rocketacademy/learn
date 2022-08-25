@@ -2,19 +2,20 @@
 {% load crispy_forms_tags %}
 {% block coupon_content %}
 <div class="py-4">
-    <h5>Upload .csv File</h5>
-    <form id="csv-upload-form" enctype="multipart/form-data" action="/staff/coupons/csv-upload/" method="post">
+    <h5>Generate coupons by batch</h5>
+    <form id="csv-upload-form" enctype="multipart/form-data" action="/staff/coupons/new/batch/" method="post">
         {% csrf_token %}
         <div class="row mt-4">
-            {{ csv_upload_form.csv_file }}
+            <label>Upload a .csv file</label>
+            {{ coupon_generation_form.csv_file }}
             <small class="text-danger">
-                {{ csv_upload_form.csv_file.errors|striptags }}
+                {{ coupon_generation_form.csv_file.errors|striptags }}
             </small>
         </div>
         <div class="row">
             <div class="d-flex flex-row py-5">
             <a type="link" href="/staff/coupons/" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
-            <button class="btn btn-primary mx-2 px-4" type="submit">Upload File</button>
+            <button class="btn btn-primary mx-2 px-4" type="submit">Upload file</button>
         </div>
     </form>
 </div>

@@ -7,7 +7,7 @@ from django.views import View
 
 from payment.models import Coupon
 from staff.forms.coupon import CouponForm
-from staff.forms.csv_upload import CsvUploadForm
+from staff.forms.coupon_generation import CouponGenerationForm
 
 
 class ListView(LoginRequiredMixin, View):
@@ -112,29 +112,31 @@ class EditView(LoginRequiredMixin, View):
 
 class CsvUploadView(LoginRequiredMixin, View):
     def get(self, request):
-        csv_upload_form = CsvUploadForm(None)
+        coupon_generation_form = CouponGenerationForm(None)
         return render(
             request,
-            'coupon/csv_upload.html',
+            'coupon/coupon_generation.html',
             {
-                'csv_upload_form': csv_upload_form
+                'coupon_generation_form': coupon_generation_form
             }
         )
 
     def post(self, request):
-        form = CsvUploadForm(request.POST, request.FILES)
+        form = CouponGenerationForm(request.POST, request.FILES)
 
         if not form.is_valid():
-            return render(request, 'coupon/csv_upload.html', {'csv_upload_form': form})
+            return render(request, 'coupon/coupon_generation.html', {'coupon_generation_form': form})
+
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
         csv_rows = []
         for row in csvreader:
+            print('!! row in csv_file !!', row)
             csv_rows.append(row)
 
         return render(
             request,
-            'coupon/csv_upload_success.html',
+            'coupon/coupon_generation_success.html',
             {
                 'csv_rows': csv_rows
             }
