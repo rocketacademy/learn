@@ -30,3 +30,14 @@ class CouponForm(forms.ModelForm):
             self.add_error('end_date', message)
 
         return self.cleaned_data
+
+    def clean_code(self):
+        code = self.cleaned_data.get('code')
+
+        if Coupon.objects.filter(code=code).exists:
+            raise forms.ValidationError(
+                (f"Coupon with code {code} already exists"),
+                code='invalid_code'
+            )
+
+        return code
