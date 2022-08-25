@@ -33,38 +33,30 @@ class NewView(LoginRequiredMixin, View):
 
     def post(self, request):
         coupon_form = CouponForm(request.POST)
+        code = request.POST['code']
 
-        if not coupon_form.is_valid():
-            return render(
-                request,
-                'coupon/new.html',
-                {
-                    'coupon_form': coupon_form
-                }
-            )
-
-        code = coupon_form.cleaned_data.get('code')
         if Coupon.objects.filter(code=code).exists():
             coupon_form.add_error(
                 'code',
                 f"Coupon with code {code} already exists"
             )
 
-            return render(
-                request,
-                'coupon/new.html',
-                {
-                    'coupon_form': coupon_form
-                }
-            )
+        if coupon_form.is_valid():
+            try:
+                with transaction.atomic():
+                    coupon = coupon_form.save()
 
-        try:
-            with transaction.atomic():
-                coupon = coupon_form.save()
+                    return redirect('coupon_detail', coupon_id=coupon.id)
+            except IntegrityError:
+                return redirect('coupon_new')
 
-                return redirect('coupon_detail', coupon_id=coupon.id)
-        except IntegrityError:
-            return redirect('coupon_new')
+        return render(
+            request,
+            'coupon/new.html',
+            {
+                'coupon_form': coupon_form
+            }
+        )
 
 class DetailView(LoginRequiredMixin, View):
     def get(self, request, coupon_id):
