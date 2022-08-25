@@ -55,25 +55,15 @@ def test_custom_coupon_code_not_saved_if_already_exists():
 
     assert str(exception_info.value) == f"Coupon with code {custom_code} already exists"
 
-def test_new_code_generated_if_code_already_exists():
+def test_existing_coupon_can_be_saved_without_changing_code_if_object_already_existed():
     existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))
+    changed_description = 'Changed description'
     existing_code = existing_coupon.code
 
-    with pytest.raises(ValueError) as exception_info:
-        Coupon.objects.create(
-            code=existing_code,
-            start_date=make_aware(datetime.datetime.now())
-        )
-
-    assert str(exception_info.value) == f"Coupon with code {existing_code} already exists"
-
-def test_existing_code_saved_if_object_already_existed():
-    existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))
-    existing_code = existing_coupon.code
-
-    existing_coupon.description = 'Test description'
+    existing_coupon.description = changed_description
     existing_coupon.save()
 
+    assert existing_coupon.description == changed_description
     assert existing_coupon.code == existing_code
 
 def test_get_effects_display():

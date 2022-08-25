@@ -19,16 +19,21 @@ class Coupon(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        if not self.pk and not self.code:
-            random_code = get_random_string(length=6)
-
-            while Coupon.objects.filter(code=random_code).exists():
+        # only validate if object is new
+        # because we should not validate the coupon's code when users update other attributes
+        if not self.pk:
+            # generate a random code if user did not provide one
+            if not self.code:
                 random_code = get_random_string(length=6)
 
-            self.code = random_code
+                # ensure that generated code is not already being used by existing coupons
+                while Coupon.objects.filter(code=random_code).exists():
+                    random_code = get_random_string(length=6)
 
-        if not self.pk and self.code and Coupon.objects.filter(code=self.code).exists():
-            raise ValueError(f"Coupon with code {self.code} already exists")
+                self.code = random_code
+            # disallow users from creating coupons with codes that already exist
+            if self.code and Coupon.objects.filter(code=self.code).exists():
+                raise ValueError(f"Coupon with code {self.code} already exists")
 
         if self.end_date and self.start_date >= self.end_date:
             raise ValueError('Coupon end date should be after start date')
