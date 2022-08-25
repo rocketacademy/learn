@@ -27,8 +27,8 @@ class Coupon(SafeDeleteModel):
 
             self.code = random_code
 
-        if self.code and Coupon.objects.filter(code=self.code).exists():
-            raise ValueError('Coupon with specified code already exists')
+        if not self.pk and self.code and Coupon.objects.filter(code=self.code).exists():
+            raise ValueError(f"Coupon with code {self.code} already exists")
 
         if self.end_date and self.start_date >= self.end_date:
             raise ValueError('Coupon end date should be after start date')

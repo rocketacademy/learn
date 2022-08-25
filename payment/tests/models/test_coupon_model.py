@@ -40,7 +40,7 @@ def test_custom_coupon_code_saved(coupon_effect):
 
     assert coupon.code == custom_code
 
-def test_custom_coupon_code_not_saved_if_already_exists(coupon_effect):
+def test_custom_coupon_code_not_saved_if_already_exists():
     custom_code = 'CUSTOMCODE'
     existing_coupon = Coupon.objects.create(
         code=custom_code,
@@ -53,9 +53,9 @@ def test_custom_coupon_code_not_saved_if_already_exists(coupon_effect):
             start_date=make_aware(datetime.datetime.now())
         )
 
-    assert str(exception_info.value) == 'Coupon with specified code already exists'
+    assert str(exception_info.value) == f"Coupon with code {custom_code} already exists"
 
-def test_new_code_generated_if_code_already_exists(coupon_effect):
+def test_new_code_generated_if_code_already_exists():
     existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))
     existing_code = existing_coupon.code
 
@@ -65,7 +65,16 @@ def test_new_code_generated_if_code_already_exists(coupon_effect):
             start_date=make_aware(datetime.datetime.now())
         )
 
-    assert str(exception_info.value) == 'Coupon with specified code already exists'
+    assert str(exception_info.value) == f"Coupon with code {existing_code} already exists"
+
+def test_existing_code_saved_if_object_already_existed():
+    existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))
+    existing_code = existing_coupon.code
+
+    existing_coupon.description = 'Test description'
+    existing_coupon.save()
+
+    assert existing_coupon.code == existing_code
 
 def test_get_effects_display():
     first_coupon_effect = CouponEffect.objects.create(

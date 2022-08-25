@@ -20,6 +20,13 @@ class CouponForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 2})
         }
 
+    def __init__(self, *args, **kwargs):
+        super(CouponForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+
+        if instance and instance.pk:
+            self.fields['code'].widget.attrs['readonly'] = True
+
     def clean(self):
         start_date = self.cleaned_data.get('start_date')
         end_date = self.cleaned_data.get('end_date')
@@ -30,14 +37,3 @@ class CouponForm(forms.ModelForm):
             self.add_error('end_date', message)
 
         return self.cleaned_data
-
-    def clean_code(self):
-        code = self.cleaned_data.get('code')
-
-        if Coupon.objects.filter(code=code).exists:
-            raise forms.ValidationError(
-                (f"Coupon with code {code} already exists"),
-                code='invalid_code'
-            )
-
-        return code
