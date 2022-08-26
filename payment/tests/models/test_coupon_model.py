@@ -29,6 +29,43 @@ def test_coupon_create(coupon_effect):
     assert coupon.code is not None
     assert coupon.effects.first() == coupon_effect
 
+def test_custom_coupon_code_saved(coupon_effect):
+    custom_code = 'CUSTOMCODE'
+
+    coupon = Coupon.objects.create(
+        code=custom_code,
+        start_date=make_aware(datetime.datetime.now())
+    )
+    coupon.effects.set([coupon_effect])
+
+    assert coupon.code == custom_code
+
+def test_custom_coupon_code_not_saved_if_already_exists():
+    custom_code = 'CUSTOMCODE'
+    existing_coupon = Coupon.objects.create(
+        code=custom_code,
+        start_date=make_aware(datetime.datetime.now())
+    )
+
+    with pytest.raises(ValueError) as exception_info:
+        Coupon.objects.create(
+            code=custom_code,
+            start_date=make_aware(datetime.datetime.now())
+        )
+
+    assert str(exception_info.value) == f"Coupon with code {custom_code} already exists"
+
+def test_existing_coupon_can_be_saved_without_changing_code_if_object_already_existed():
+    existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))
+    changed_description = 'Changed description'
+    existing_code = existing_coupon.code
+
+    existing_coupon.description = changed_description
+    existing_coupon.save()
+
+    assert existing_coupon.description == changed_description
+    assert existing_coupon.code == existing_code
+
 def test_get_effects_display():
     first_coupon_effect = CouponEffect.objects.create(
         discount_type='dollars',

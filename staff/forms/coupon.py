@@ -8,15 +8,24 @@ class CouponForm(forms.ModelForm):
         fields = [
             'start_date',
             'end_date',
+            'code',
             'effects',
             'description'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'code': forms.TextInput(),
             'effects': forms.SelectMultiple(),
             'description': forms.Textarea(attrs={'rows': 2})
         }
+
+    def __init__(self, *args, **kwargs):
+        super(CouponForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+
+        if instance and instance.pk:
+            self.fields['code'].widget.attrs['readonly'] = True
 
     def clean(self):
         start_date = self.cleaned_data.get('start_date')

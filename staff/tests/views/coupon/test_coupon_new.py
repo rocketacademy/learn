@@ -1,10 +1,14 @@
+from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.urls import reverse
+from django.utils.timezone import make_aware
 import pytest
 
+from payment.models import Coupon
+from payment.models import CouponEffect
 from staff.views.coupon import NewView
 
 pytestmark = pytest.mark.django_db
@@ -38,3 +42,21 @@ def test_coupon_new_template_rendered_for_logged_in_user(logged_in_existing_user
 
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new.html' in (template.name for template in response.templates)
+
+def test_coupon_not_created_if_coupon_with_code_exists(logged_in_existing_user):
+    existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.today()))
+    coupon_effect = CouponEffect.objects.create(
+        discount_type='dollars',
+        discount_amount=10
+    )
+
+    response = client.post(
+        reverse('coupon_new'),
+        {
+            'start_date': make_aware(datetime.today()),
+            'code': existing_coupon.code,
+            'effects': [coupon_effect.id]
+        }
+    )
+
+    assert f"Coupon with code {existing_coupon.code} already exists" in response.context['coupon_form'].errors['code']
