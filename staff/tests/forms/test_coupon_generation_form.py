@@ -3,18 +3,18 @@ import os
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from staff.forms.coupon_generation import CouponGenerationForm
+from staff.forms.coupon_generation import CouponBatchForm
 
-class TestCouponGenerationForm:
+class TestCouponBatchForm:
     def test_empty_form_is_invalid(self):
-        coupon_generation_form = CouponGenerationForm(data={})
+        coupon_batch_form = CouponBatchForm(data={})
 
-        outcome = coupon_generation_form.is_valid()
+        outcome = coupon_batch_form.is_valid()
 
         assert outcome is False
 
-    def test_file_uploaded_field_accepts_csv(self):
-        coupon_generation_form = CouponGenerationForm(
+    def test_file_upload_field_validates_for_only_csv_extension(self):
+        coupon_batch_form = CouponBatchForm(
             files={
                 'csv_file': SimpleUploadedFile(
                     name="wrongname.cs",
@@ -24,7 +24,7 @@ class TestCouponGenerationForm:
             }
         )
 
-        outcome = coupon_generation_form.is_valid()
+        outcome = coupon_batch_form.is_valid()
 
         assert outcome is False
-        assert not coupon_generation_form.__dict__['files']['csv_file'].name.endswith('.csv')
+        assert "The file you uploaded is not a .csv file!" in coupon_batch_form.errors['csv_file']

@@ -7,7 +7,7 @@ from django.views import View
 
 from payment.models import Coupon
 from staff.forms.coupon import CouponForm
-from staff.forms.coupon_generation import CouponGenerationForm
+from staff.forms.coupon_generation import CouponBatchForm
 
 
 class ListView(LoginRequiredMixin, View):
@@ -110,33 +110,32 @@ class EditView(LoginRequiredMixin, View):
             }
         )
 
-class CsvUploadView(LoginRequiredMixin, View):
+class NewBatchView(LoginRequiredMixin, View):
     def get(self, request):
-        coupon_generation_form = CouponGenerationForm(None)
+        form = CouponBatchForm(None)
         return render(
             request,
-            'coupon/coupon_generation.html',
+            'coupon/new_batch.html',
             {
-                'coupon_generation_form': coupon_generation_form
+                'coupon_batch_form': form
             }
         )
 
     def post(self, request):
-        form = CouponGenerationForm(request.POST, request.FILES)
+        form = CouponBatchForm(request.POST, request.FILES)
 
         if not form.is_valid():
-            return render(request, 'coupon/coupon_generation.html', {'coupon_generation_form': form})
+            return render(request, 'coupon/new_batch.html', {'coupon_batch_form': form})
 
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
         csv_rows = []
         for row in csvreader:
-            print('!! row in csv_file !!', row)
             csv_rows.append(row)
 
         return render(
             request,
-            'coupon/coupon_generation_success.html',
+            'coupon/new_batch_success.html',
             {
                 'csv_rows': csv_rows
             }

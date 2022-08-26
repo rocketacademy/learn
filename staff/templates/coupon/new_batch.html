@@ -7,15 +7,17 @@
         {% csrf_token %}
         <div class="row mt-4">
             <label>Upload a .csv file</label>
-            {{ coupon_generation_form.csv_file }}
+            <div class="p-3 mx-2">
+                {{ coupon_batch_form.csv_file }}
+            </div>
             <small class="text-danger">
-                {{ coupon_generation_form.csv_file.errors|striptags }}
+                {{ coupon_batch_form.csv_file.errors|striptags }}
             </small>
         </div>
         <div class="row">
             <div class="d-flex flex-row py-5">
             <a type="link" href="/staff/coupons/" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
-            <button class="btn btn-primary mx-2 px-4" type="submit">Upload file</button>
+            <button class="btn btn-primary mx-2 px-4" type="submit">Generate coupons</button>
         </div>
     </form>
 </div>

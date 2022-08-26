@@ -3,7 +3,7 @@ import csv
 from django import forms
 from django.core.exceptions import ValidationError
 
-class CouponGenerationForm(forms.Form):
+class CouponBatchForm(forms.Form):
     csv_file = forms.FileField()
 
     def clean_csv_file(self):
