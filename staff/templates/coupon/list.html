@@ -10,6 +10,9 @@
             <a type="link" href="{% url 'coupon_new' %}" class="btn btn-outline-primary btn-sm my-1">
                 + Coupon
             </a>
+            <a type="link" href="{% url 'coupon_new_batch' %}" class="btn btn-outline-primary btn-sm my-1">
+                + Coupons by batch
+            </a>
         </div>
         {% if coupons.exists %}
         <div class="table-responsive my-3">
@@ -49,6 +52,11 @@
         <div class="row">
             <a type="link" href="{% url 'coupon_new' %}" class="btn btn-outline-primary btn-sm my-1">
                 + Coupon
+            </a>
+        </div>
+        <div class="row">
+            <a type="link" href="{% url 'coupon_new_batch' %}" class="btn btn-outline-primary btn-sm my-1">
+                + Coupons by batch
             </a>
         </div>
     </div>

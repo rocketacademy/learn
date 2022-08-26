@@ -1,3 +1,5 @@
+import codecs
+import csv
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
@@ -5,6 +7,7 @@ from django.views import View
 
 from payment.models import Coupon
 from staff.forms.coupon import CouponForm
+from staff.forms.coupon_generation import CouponBatchForm
 
 
 class ListView(LoginRequiredMixin, View):
@@ -113,5 +116,36 @@ class EditView(LoginRequiredMixin, View):
                 'coupon': coupon,
                 'coupon_effects': coupon.effects.all(),
                 'coupon_form': coupon_form,
+            }
+        )
+
+class NewBatchView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = CouponBatchForm(None)
+        return render(
+            request,
+            'coupon/new_batch.html',
+            {
+                'coupon_batch_form': form
+            }
+        )
+
+    def post(self, request):
+        form = CouponBatchForm(request.POST, request.FILES)
+
+        if not form.is_valid():
+            return render(request, 'coupon/new_batch.html', {'coupon_batch_form': form})
+
+        csv_file = form.cleaned_data.get('csv_file')
+        csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
+        csv_rows = []
+        for row in csvreader:
+            csv_rows.append(row)
+
+        return render(
+            request,
+            'coupon/new_batch_success.html',
+            {
+                'csv_rows': csv_rows
             }
         )

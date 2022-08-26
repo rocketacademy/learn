@@ -1,0 +1,24 @@
+{% extends './base.html' %}
+{% load crispy_forms_tags %}
+{% block coupon_content %}
+<div class="py-4">
+    <h5>Generate coupons by batch</h5>
+    <form id="csv-upload-form" enctype="multipart/form-data" action="/staff/coupons/new/batch/" method="post">
+        {% csrf_token %}
+        <div class="row mt-4">
+            <label>Upload a .csv file</label>
+            <div class="p-3 mx-2">
+                {{ coupon_batch_form.csv_file }}
+            </div>
+            <small class="text-danger">
+                {{ coupon_batch_form.csv_file.errors|striptags }}
+            </small>
+        </div>
+        <div class="row">
+            <div class="d-flex flex-row py-5">
+            <a type="link" href="/staff/coupons/" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
+            <button class="btn btn-primary mx-2 px-4" type="submit">Generate coupons</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
