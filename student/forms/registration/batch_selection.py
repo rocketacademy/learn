@@ -26,6 +26,7 @@ class BatchSelectionForm(forms.ModelForm):
         enrollable_batches = Batch.objects.filter(id__in=enrollable_batches_ids)
 
         self.fields['batch'].queryset = enrollable_batches
+        self.fields['batch'].initial = enrollable_batches.first()
         self.fields['batch'].label_from_instance = lambda item: format_html(
             "<h6>{} - {} to {}{}</h6>{}",
             item,
