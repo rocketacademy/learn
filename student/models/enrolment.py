@@ -14,9 +14,15 @@ from staff.models.section import Section
 class Enrolment(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
+    STATUS_CHOICES = [
+        ('COMPLETED', 'Completed'),
+        ('NOT_COMPLETED', 'Not completed')
+    ]
+
     registration = models.ForeignKey('student.Registration', on_delete=models.CASCADE, null=True)
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     student_user = models.ForeignKey(StudentUser, on_delete=models.CASCADE, null=True)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
