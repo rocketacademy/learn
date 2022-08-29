@@ -1,4 +1,4 @@
-import csv
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -7,6 +7,9 @@ from django.test import Client, RequestFactory
 from django.urls import reverse
 import pytest
 
+from payment.models import Coupon
+from payment.models.coupon_effect import CouponEffect
+from staff.models import Course
 from staff.views.coupon import NewBatchView
 
 pytestmark = pytest.mark.django_db
@@ -26,6 +29,37 @@ def logged_in_existing_user():
 
     yield logged_in_existing_user
 
+@pytest.fixture()
+def course_basics():
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    yield course
+
+@pytest.fixture()
+def course_bootcamp():
+    course = Course.objects.create(name=settings.CODING_BOOTCAMP)
+    yield course
+
+@pytest.fixture()
+def coupon_effect_basics(course_basics):
+    coupon_effect_basics = CouponEffect.objects.create(
+        couponable_type=course_basics.__class__.__name__,
+        couponable_id=course_basics.id,
+        discount_type='dollars',
+        discount_amount=20
+    )
+    yield coupon_effect_basics
+
+@pytest.fixture()
+def coupon_effect_bootcamp(course_bootcamp):
+    coupon_effect_bootcamp = CouponEffect.objects.create(
+        couponable_type=course_bootcamp.__class__.__name__,
+        couponable_id=course_bootcamp.id,
+        discount_type='dollars',
+        discount_amount=200
+    )
+    yield coupon_effect_bootcamp
+
+
 def test_coupon_generation_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/coupons/csv-upload/')
     request.user = AnonymousUser()
@@ -41,7 +75,7 @@ def test_coupon_generation_template_rendered_for_logged_in_user(logged_in_existi
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
 
-def test_coupon_generation_success_renders_page_with_list_of(logged_in_existing_user):
+def test_coupon_generation_success_renders_page_with_list_of(logged_in_existing_user, course_basics, course_bootcamp):
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
@@ -76,8 +110,21 @@ def test_coupon_generation_incorrect_headers_rerenders_form_page_with_appropriat
     uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
 
     response = client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
-    print(response.context['errors'])
 
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
     assert 'The file you uploaded requires the specific headers "first_name" and "email"!' in response.context['errors'][0]
+
+def test_coupon_generation_creates_correct_coupons(logged_in_existing_user, coupon_effect_basics, coupon_effect_bootcamp):
+    test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
+    csv_file = open(test_file_path, 'r')
+    content = csv_file.read()
+    uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
+
+    client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
+    coupons = Coupon.objects.all()
+
+    assert len(coupons) == 2
+    assert coupons.first().effects.all()[0] == coupon_effect_basics
+    assert coupons.first().effects.all()[1] == coupon_effect_bootcamp
+    assert coupons.first().description == 'test1@test.com'
