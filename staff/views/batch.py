@@ -197,6 +197,18 @@ class EditView(LoginRequiredMixin, View):
             }
         )
 
+class GraduateView(LoginRequiredMixin, View):
+    def get(self, request, batch_id):
+        batch = Batch.objects.get(pk=batch_id)
+
+        return render(
+            request,
+            'basics/batch/graduate.html',
+            {
+                'batch': batch,
+            }
+        )
+
 def validate_batch_sections(batch_form, new_number_of_sections, current_number_of_sections):
     if new_number_of_sections < current_number_of_sections:
         batch_form.add_error(

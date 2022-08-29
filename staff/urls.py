@@ -14,6 +14,7 @@ urlpatterns = [
         enrolment.create_zoom_breakout_csv,
         name='create_zoom_breakout_csv'
     ),
+    path('basics/batches/<int:batch_id>/graduate/', batch.GraduateView.as_view(), name='batch_graduate'),
     path('basics/batches/<int:batch_id>/sections/', section.ListView.as_view(), name='section_list'),
     path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.DetailView.as_view(), name='section_detail'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),

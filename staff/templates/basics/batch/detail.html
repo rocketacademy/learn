@@ -1,10 +1,76 @@
 {% extends './base.html' %}
 {% block batch_content %}
 <div class="row">
-    <div class="col-10">
+    <div class="col-9 p-4">
         <h4>Overview</h4>
+        <div class="my-3 d-lg-none">
+            <a
+            type="link"
+            href="{% url 'batch_edit' batch_id=batch.id %}"
+            role="button"
+            class="btn btn-outline-primary btn-sm px-4">
+                Edit batch details
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-lg-3 my-2">
+                <h6>No. of enrollments</h6>
+                {{ batch.enrolment_set.count }}
+            </div>
+            <div class="col-md-5 col-lg-3 my-2">
+                <h6>Batch capacity</h6>
+                {{ batch.capacity }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-lg-3 my-2">
+                <h6>Start date</h6>
+                {{ batch.start_date }}
+            </div>
+            <div class="col-md-5 col-lg-3 my-2">
+                <h6>End date</h6>
+                {{ batch.end_date }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-lg-3 my-2">
+                <h6>Sections</h6>
+                {{ batch.sections }}
+            </div>
+            <div class="col-md-5 col-lg-3 my-2">
+                <h6>Section capacity</h6>
+                {{ section_capacity }}
+            </div>
+        </div>
+        <div class="mt-5"><h5>Schedule</h5></div>
+        <div class="row mt-4">
+            <div class="col-md-3 col-lg-2">
+                <h6>Day</h6>
+            </div>
+            <div class="col-md-3 col-lg-2">
+                <h6>Start time</h6>
+            </div>
+            <div class="col-md-3 col-lg-2">
+                <h6>End time</h6>
+            </div>
+        </div>
+        {% for batch_schedule in batch_schedules %}
+        <div id="batch-schedule-formset-row">
+            <div class="row my-2">
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    {{ batch_schedule.get_day_display }}
+                </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    {{ batch_schedule.start_time|time:"h:i A" }}
+                </div>
+                <div class="col-sm-4 col-md-3 col-lg-2">
+                    {{ batch_schedule.end_time|time:"h:i A" }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    <div class="col-2 d-none d-lg-block">
+    <div class="col-3 border-start p-4 d-none d-lg-block">
         <a 
         type="link"
         href="{% url 'batch_edit' batch_id=batch.id %}"
@@ -12,72 +78,13 @@
         class="btn btn-outline-primary btn-sm px-4">
             Edit batch details
         </a>
-    </div>
-    <div class="col-10 my-3 d-lg-none">
         <a
         type="link"
-        href="{% url 'batch_edit' batch_id=batch.id %}"
+        href="{% url 'batch_graduate' batch_id=batch.id %}"
         role="button"
-        class="btn btn-outline-primary btn-sm px-4">
-            Edit batch details
+        class="btn btn-outline-primary btn-sm my-1 px-4">
+            Process graduation
         </a>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-5 col-lg-3 my-2">
-        <h6>No. of enrollments</h6>
-        {{ batch.enrolment_set.count }}
-    </div>
-    <div class="col-md-5 col-lg-3 my-2">
-        <h6>Batch capacity</h6>
-        {{ batch.capacity }}
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-5 col-lg-3 my-2">
-        <h6>Start date</h6>
-        {{ batch.start_date }}
-    </div>
-    <div class="col-md-5 col-lg-3 my-2">
-        <h6>End date</h6>
-        {{ batch.end_date }}
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-5 col-lg-3 my-2">
-        <h6>Sections</h6>
-        {{ batch.sections }}
-    </div>
-    <div class="col-md-5 col-lg-3 my-2">
-        <h6>Section capacity</h6>
-        {{ section_capacity }}
-    </div>
-</div>
-<div class="mt-5"><h5>Schedule</h5></div>
-<div class="row mt-4">
-    <div class="col-md-3 col-lg-2">
-        <h6>Day</h6>
-    </div>
-    <div class="col-md-3 col-lg-2">
-        <h6>Start time</h6>
-    </div>
-    <div class="col-md-3 col-lg-2">
-        <h6>End time</h6>
-    </div>
-</div>
-{% for batch_schedule in batch_schedules %}
-<div id="batch-schedule-formset-row">
-    <div class="row my-2">
-        <div class="col-sm-4 col-md-3 col-lg-2">
-            {{ batch_schedule.get_day_display }}
-        </div>
-        <div class="col-sm-4 col-md-3 col-lg-2">
-            {{ batch_schedule.start_time|time:"h:i A" }}
-        </div>
-        <div class="col-sm-4 col-md-3 col-lg-2">
-            {{ batch_schedule.end_time|time:"h:i A" }}
-        </div>
-    </div>
-</div>
-{% endfor %}
 {% endblock %}
