@@ -3,6 +3,19 @@
 <div class="row">
     <div class="col-10 p-4">
         <h4>Process graduation</h4>
+        <form id="basics-graduation-form" action="{% url 'batch_graduate' batch_id=batch.id %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 col-lg-3 my-2">
+                    {{ basics_graduation_form.student_user }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex flex-row py-5">
+                <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
+                <button class="btn btn-primary mx-2 px-4" type="submit">Process graduation</button>
+            </div>
+        </form>
     </div>
 </div>
 

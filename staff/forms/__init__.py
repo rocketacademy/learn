@@ -1,4 +1,5 @@
 from .login import LoginForm
+from .basics_graduation import BasicsGraduationForm
 from .batch import BatchForm
 from .batch_schedule import BatchScheduleForm, BaseBatchScheduleFormSet, BatchScheduleFormSet
 from .coupon import CouponForm

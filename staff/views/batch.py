@@ -3,11 +3,12 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 
 from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
+from staff.forms.basics_graduation import BasicsGraduationForm
 from staff.models import Batch, BatchSchedule, Course, Section
 from student.library.slack import Slack
 
@@ -200,14 +201,22 @@ class EditView(LoginRequiredMixin, View):
 class GraduateView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         batch = Batch.objects.get(pk=batch_id)
+        basics_graduation_form = BasicsGraduationForm(batch_id=batch_id)
 
-        return render(
-            request,
-            'basics/batch/graduate.html',
-            {
-                'batch': batch,
-            }
-        )
+        if batch.has_ended():
+            return render(
+                request,
+                'basics/batch/graduate.html',
+                {
+                    'batch': batch,
+                    'basics_graduation_form': basics_graduation_form
+                }
+            )
+
+        return redirect('batch_detail', batch_id=batch_id)
+
+    def post(self, request, batch_id):
+        return HttpResponse()
 
 def validate_batch_sections(batch_form, new_number_of_sections, current_number_of_sections):
     if new_number_of_sections < current_number_of_sections:
