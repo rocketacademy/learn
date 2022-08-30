@@ -137,13 +137,11 @@ class NewBatchView(LoginRequiredMixin, View):
 
     def post(self, request):
         form = CouponBatchForm(request.POST, request.FILES)
-
         if not form.is_valid():
             return render(request, 'coupon/new_batch.html', {'coupon_batch_form': form})
 
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
-        csv_rows = []
         course_basics = Course.objects.get(name=settings.CODING_BASICS)
         course_bootcamp = Course.objects.get(name=settings.CODING_BOOTCAMP)
         coupon_effect_basics = CouponEffect.objects.filter(
@@ -165,12 +163,5 @@ class NewBatchView(LoginRequiredMixin, View):
             )
             coupon.effects.set([coupon_effect_basics, coupon_effect_bootcamp])
             coupon.save()
-            csv_rows.append(row)
 
-        return render(
-            request,
-            'coupon/new_batch_success.html',
-            {
-                'csv_rows': csv_rows
-            }
-        )
+        return redirect('coupon_list')

@@ -75,7 +75,7 @@ def test_coupon_generation_template_rendered_for_logged_in_user(logged_in_existi
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
 
-def test_coupon_generation_success_renders_page_with_list_of(logged_in_existing_user, course_basics, course_bootcamp):
+def test_coupon_generation_success_redirects_page(logged_in_existing_user, course_basics, course_bootcamp):
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
@@ -83,9 +83,7 @@ def test_coupon_generation_success_renders_page_with_list_of(logged_in_existing_
 
     response = client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
 
-    assert response.status_code == HttpResponse.status_code
-    assert 'coupon/new_batch_success.html' in (template.name for template in response.templates)
-    assert response.context['csv_rows'] == [{'first_name': 'tester', 'email': 'test1@test.com'}, {'first_name': 'tester2', 'email': 'test2@gmail.com'}]
+    assert response.status_code == HttpResponseRedirect.status_code
 
 def test_coupon_generation_no_upload_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
     response = client.post(reverse('coupon_new_batch'))
@@ -122,9 +120,9 @@ def test_coupon_generation_creates_correct_coupons(logged_in_existing_user, coup
     uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
 
     client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
-    coupons = Coupon.objects.all()
+    test_coupon = Coupon.objects.first()
+    test_coupon_effects = list(test_coupon.effects.all())
 
-    assert len(coupons) == 2
-    assert coupons.first().effects.all()[0] == coupon_effect_basics
-    assert coupons.first().effects.all()[1] == coupon_effect_bootcamp
-    assert coupons.first().description == 'test1@test.com'
+    assert Coupon.objects.count() == 2
+    assert test_coupon_effects == [coupon_effect_basics, coupon_effect_bootcamp]
+    assert test_coupon.description == 'test1@test.com'
