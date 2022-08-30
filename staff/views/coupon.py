@@ -1,13 +1,18 @@
 import codecs
 import csv
+import datetime
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
+from django.utils.timezone import make_aware
 from django.views import View
 
 from payment.models import Coupon
+from payment.models.coupon_effect import CouponEffect
 from staff.forms.coupon import CouponForm
 from staff.forms.coupon_generation import CouponBatchForm
+from staff.models import Course
 
 
 class ListView(LoginRequiredMixin, View):
@@ -132,20 +137,31 @@ class NewBatchView(LoginRequiredMixin, View):
 
     def post(self, request):
         form = CouponBatchForm(request.POST, request.FILES)
-
         if not form.is_valid():
             return render(request, 'coupon/new_batch.html', {'coupon_batch_form': form})
 
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
-        csv_rows = []
-        for row in csvreader:
-            csv_rows.append(row)
+        course_basics = Course.objects.get(name=settings.CODING_BASICS)
+        course_bootcamp = Course.objects.get(name=settings.CODING_BOOTCAMP)
+        coupon_effect_basics = CouponEffect.objects.filter(
+            couponable_id=course_basics.id,
+            discount_type='dollars',
+            discount_amount='20'
+        ).first()
+        coupon_effect_bootcamp = CouponEffect.objects.filter(
+            couponable_id=course_bootcamp.id,
+            discount_type='dollars',
+            discount_amount='200'
+        ).first()
 
-        return render(
-            request,
-            'coupon/new_batch_success.html',
-            {
-                'csv_rows': csv_rows
-            }
-        )
+        for row in csvreader:
+            coupon = Coupon.objects.create(
+                start_date=make_aware(datetime.datetime.now()),
+                end_date=None,
+                description=row['email']
+            )
+            coupon.effects.set([coupon_effect_basics, coupon_effect_bootcamp])
+            coupon.save()
+
+        return redirect('coupon_list')
