@@ -1,7 +1,6 @@
 import codecs
 import csv
 from django import forms
-from django.core.exceptions import ValidationError
 
 class CouponBatchForm(forms.Form):
     csv_file = forms.FileField()
