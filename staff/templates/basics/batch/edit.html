@@ -5,9 +5,9 @@
 <form id="edit-batch-form" action="{% url 'batch_edit' batch_id=batch.id %}" method="post">
     {% csrf_token %}
     <div class="row">
-        <div class="col-10">
+        <div class="col-9 p-4">
             <h4>Overview</h4>
-            <div class="col-12 my-3 d-md-none">
+            <div class="my-3 d-lg-none">
                 <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
                 <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
             </div>
@@ -73,9 +73,9 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-2 d-none d-md-block">
-            <button class="btn btn-primary btn-sm my-2 px-4" type="submit">Save changes</button>
-            <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
+        <div class="col-3 border-start p-4 d-none d-lg-block">
+            <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
+            <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm my-1 px-4">Cancel</a>
         </div>
     </div>
 </form>
