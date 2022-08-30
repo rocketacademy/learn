@@ -66,9 +66,7 @@ class Batch(SafeDeleteModel):
         return False
 
     def has_ended(self):
-        if self.end_date < datetime.date.today():
-            return True
-        return False
+        return self.end_date < datetime.date.today()
 
     def html_formatted_batch_price(self):
         original_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
