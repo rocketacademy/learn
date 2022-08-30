@@ -49,4 +49,4 @@ class TestUser:
 
         full_name = user.full_name()
 
-        assert full_name == f'{first_name.upper()} {last_name.upper()}'
+        assert full_name == f'{first_name.capitalize()} {last_name.capitalize()}'
