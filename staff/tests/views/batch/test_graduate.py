@@ -103,7 +103,7 @@ def test_post_enrolment_statuses_updated(batch, existing_user):
         batch=batch,
         section=section,
         student_user=first_student_user,
-        status=Enrolment.NOT_COMPLETED
+        status=Enrolment.ENROLLED
     )
     second_student_user = StudentUser.objects.create_user(
         first_name='Second',
@@ -125,7 +125,7 @@ def test_post_enrolment_statuses_updated(batch, existing_user):
         batch=batch,
         section=section,
         student_user=second_student_user,
-        status=Enrolment.NOT_COMPLETED
+        status=Enrolment.ENROLLED
     )
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
@@ -144,5 +144,5 @@ def test_post_enrolment_statuses_updated(batch, existing_user):
 
     first_enrolment.refresh_from_db()
     second_enrolment.refresh_from_db()
-    assert first_enrolment.status == Enrolment.COMPLETED
-    assert second_enrolment.status == Enrolment.COMPLETED
+    assert first_enrolment.status == Enrolment.PASSED
+    assert second_enrolment.status == Enrolment.PASSED

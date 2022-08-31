@@ -221,8 +221,7 @@ class GraduateView(LoginRequiredMixin, View):
 
         if basics_graduation_form.is_valid():
             enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
-
-            enrolment_queryset.update(status=Enrolment.COMPLETED)
+            enrolment_queryset.update(status=Enrolment.PASSED)
 
         return HttpResponse()
 
