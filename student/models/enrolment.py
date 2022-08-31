@@ -14,6 +14,9 @@ from staff.models.section import Section
 class Enrolment(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
+    COMPLETED = 'COMPLETED'
+    NOT_COMPLETED = 'NOT_COMPLETED'
+
     STATUS_CHOICES = [
         ('COMPLETED', 'Completed'),
         ('NOT_COMPLETED', 'Not completed')

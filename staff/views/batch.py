@@ -11,6 +11,7 @@ from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
 from staff.forms.basics_graduation import BasicsGraduationForm
 from staff.models import Batch, BatchSchedule, Course, Section
 from student.library.slack import Slack
+from student.models.enrolment import Enrolment
 
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -216,6 +217,13 @@ class GraduateView(LoginRequiredMixin, View):
         return redirect('batch_detail', batch_id=batch_id)
 
     def post(self, request, batch_id):
+        basics_graduation_form = BasicsGraduationForm(request.POST, batch_id=batch_id)
+
+        if basics_graduation_form.is_valid():
+            enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
+
+            enrolment_queryset.update(status=Enrolment.COMPLETED)
+
         return HttpResponse()
 
 def validate_batch_sections(batch_form, new_number_of_sections, current_number_of_sections):

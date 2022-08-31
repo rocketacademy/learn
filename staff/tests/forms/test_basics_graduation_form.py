@@ -84,7 +84,7 @@ class TestBasicsGraduationForm:
 
         basics_graduation_form = BasicsGraduationForm(batch_id=batch.id)
 
-        assert basics_graduation_form.fields['student_user'].choices == [
+        assert basics_graduation_form.fields['enrolment'].choices == [
             (first_student_user.id, first_student_user),
             (second_student_user.id, second_student_user)
         ]
