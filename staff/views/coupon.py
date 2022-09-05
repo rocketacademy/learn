@@ -7,11 +7,13 @@ from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.utils.timezone import make_aware
 from django.views import View
+from sendgrid.helpers.mail import Mail
 
+from emails.library.sendgrid import Sendgrid
 from payment.models import Coupon
 from payment.models.coupon_effect import CouponEffect
 from staff.forms.coupon import CouponForm
-from staff.forms.coupon_generation import CouponBatchForm
+from staff.forms.coupon_batch import CouponBatchForm
 from staff.models import Course
 
 
@@ -155,6 +157,9 @@ class NewBatchView(LoginRequiredMixin, View):
             discount_amount='200'
         ).first()
 
+        from_email = settings.ROCKET_COMMUNITY_EMAIL
+        template_id = settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID
+
         for row in csvreader:
             coupon = Coupon.objects.create(
                 start_date=make_aware(datetime.datetime.now()),
@@ -163,5 +168,26 @@ class NewBatchView(LoginRequiredMixin, View):
             )
             coupon.effects.set([coupon_effect_basics, coupon_effect_bootcamp])
             coupon.save()
+
+            to_email = row['email']
+            message = Mail(
+                from_email=from_email,
+                to_emails=to_email,
+            )
+            message.dynamic_template_data = {
+                'first_name': row['first_name'],
+                'referral_code': coupon.code,
+            }
+            message.template_id = template_id
+
+            sendgrid_client = Sendgrid()
+            sendgrid_client.send(
+                coupon.id,
+                type(coupon).__name__,
+                from_email,
+                to_email,
+                template_id,
+                message
+            )
 
         return redirect('coupon_list')

@@ -7,6 +7,7 @@ from django.test import Client, RequestFactory
 from django.urls import reverse
 import pytest
 
+from emails.library.sendgrid import Sendgrid
 from payment.models import Coupon
 from payment.models.coupon_effect import CouponEffect
 from staff.models import Course
@@ -126,3 +127,15 @@ def test_coupon_generation_creates_correct_coupons(logged_in_existing_user, coup
     assert Coupon.objects.count() == 2
     assert test_coupon_effects == [coupon_effect_basics, coupon_effect_bootcamp]
     assert test_coupon.description == 'test1@test.com'
+
+def test_send_cooupon_email_batch(logged_in_existing_user, mocker, course_basics, course_bootcamp):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
+    test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
+    csv_file = open(test_file_path, 'r')
+    content = csv_file.read()
+    uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
+
+    client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
+
+    Sendgrid.send.assert_called()
+    Sendgrid.send.call_count == 2
