@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.urls import reverse
+from unittest.mock import ANY
 import pytest
 
 from emails.library.sendgrid import Sendgrid
@@ -136,6 +137,15 @@ def test_send_cooupon_email_batch(logged_in_existing_user, mocker, course_basics
     uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
 
     client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
+    coupon = Coupon.objects.last()
 
-    Sendgrid.send.assert_called()
+    Sendgrid.send.assert_called_with(
+        coupon.id,
+        type(coupon).__name__,
+        'community@rocketacademy.co',
+        'test2@gmail.com',
+        settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID,
+        # Using ANY because cannot recreate sendgrid.helper.mail object
+        ANY
+    )
     Sendgrid.send.call_count == 2
