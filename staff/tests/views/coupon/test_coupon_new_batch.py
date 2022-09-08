@@ -77,7 +77,8 @@ def test_coupon_generation_template_rendered_for_logged_in_user(logged_in_existi
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
 
-def test_coupon_generation_success_redirects_page(logged_in_existing_user, course_basics, course_bootcamp):
+def test_coupon_generation_success_redirects_page(mocker, logged_in_existing_user, course_basics, course_bootcamp):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
@@ -87,14 +88,16 @@ def test_coupon_generation_success_redirects_page(logged_in_existing_user, cours
 
     assert response.status_code == HttpResponseRedirect.status_code
 
-def test_coupon_generation_no_upload_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
+def test_coupon_generation_no_upload_rerenders_form_page_with_appropriate_error_text(mocker, logged_in_existing_user):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
     response = client.post(reverse('coupon_new_batch'))
 
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
     assert 'This field is required.' in response.context['errors'][0]
 
-def test_coupon_generation_not_csv_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
+def test_coupon_generation_not_csv_rerenders_form_page_with_appropriate_error_text(mocker, logged_in_existing_user):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
     uploaded_file = SimpleUploadedFile(name='test.txt', content=bytes('test content', 'utf-8'), content_type="multipart/form-data")
 
     response = client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
@@ -103,7 +106,8 @@ def test_coupon_generation_not_csv_rerenders_form_page_with_appropriate_error_te
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
     assert 'The file you uploaded is not a .csv file!' in response.context['errors'][0]
 
-def test_coupon_generation_incorrect_headers_rerenders_form_page_with_appropriate_error_text(logged_in_existing_user):
+def test_coupon_generation_incorrect_headers_rerenders_form_page_with_appropriate_error_text(mocker, logged_in_existing_user):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
     test_file_path = "./staff/tests/forms/csv_files/incorrect_headers_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
@@ -115,7 +119,8 @@ def test_coupon_generation_incorrect_headers_rerenders_form_page_with_appropriat
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
     assert 'The file you uploaded requires the specific headers "first_name" and "email"!' in response.context['errors'][0]
 
-def test_coupon_generation_creates_correct_coupons(logged_in_existing_user, coupon_effect_basics, coupon_effect_bootcamp):
+def test_coupon_generation_creates_correct_coupons(mocker, logged_in_existing_user, coupon_effect_basics, coupon_effect_bootcamp):
+    mocker.patch('emails.library.sendgrid.Sendgrid.send')
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
@@ -129,7 +134,7 @@ def test_coupon_generation_creates_correct_coupons(logged_in_existing_user, coup
     assert test_coupon_effects == [coupon_effect_basics, coupon_effect_bootcamp]
     assert test_coupon.description == 'test1@test.com'
 
-def test_send_cooupon_email_batch(logged_in_existing_user, mocker, course_basics, course_bootcamp):
+def test_send_cooupon_email_batch(mocker, logged_in_existing_user, course_basics, course_bootcamp):
     mocker.patch('emails.library.sendgrid.Sendgrid.send')
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
@@ -143,7 +148,7 @@ def test_send_cooupon_email_batch(logged_in_existing_user, mocker, course_basics
         coupon.id,
         type(coupon).__name__,
         'community@rocketacademy.co',
-        'test2@gmail.com',
+        'test2@test.com',
         settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID,
         # Using ANY because cannot recreate sendgrid.helper.mail object
         ANY
