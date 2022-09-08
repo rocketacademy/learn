@@ -1,7 +1,7 @@
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from staff.forms.coupon_generation import CouponBatchForm
+from staff.forms.coupon_batch import CouponBatchForm
 
 class TestCouponBatchForm:
     def test_empty_form_is_invalid(self):

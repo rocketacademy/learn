@@ -26,4 +26,4 @@ class Sendgrid:
                 template_id=template_id,
             )
         except Exception as error:
-            return HttpResponseServerError(f'Could not send registration confirmation email: {str(error)}')
+            return HttpResponseServerError(f'Could not send email for {emailable_class_name} - {emailable_id}: {str(error)}')
