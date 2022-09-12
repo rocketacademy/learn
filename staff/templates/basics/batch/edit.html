@@ -5,78 +5,78 @@
 <form id="edit-batch-form" action="{% url 'batch_edit' batch_id=batch.id %}" method="post">
     {% csrf_token %}
     <div class="row">
-        <div class="col-10">
+        <div class="col-9 p-4">
             <h4>Overview</h4>
-        </div>
-        <div class="col-4 d-none d-md-block">
-            <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
-            <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
-        </div>
-        <div class="col-12 my-3 d-md-none">
-            <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
-            <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-5 col-lg-3 my-2">
-            <h6>No. of enrollments</h6>
-            {{ batch.enrolment_set.count }}
-        </div>
-        <div class="col-md-5 col-lg-3 my-2">
-            <h6>Batch capacity</h6>
-            {{ batch.capacity }}
-        </div>
-    </div>
-    <div class="row">
-        <h6 class="col-md-5 col-lg-3 my-2">
-            {{ batch_form.start_date|as_crispy_field }}
-        </h6>
-        <h6 class="col-md-5 col-lg-3 my-2">
-            {{ batch_form.end_date|as_crispy_field }}
-        </h6>
-    </div>
-    <div class="row">
-        <h6 class="col-md-5 col-lg-3 my-2">
-            {{ batch_form.sections|as_crispy_field }}
-        </h6>
-        <h6 class="col-md-5 col-lg-3 my-2">
-            {{ section_form.capacity|as_crispy_field }}
-        </h6>
-    </div>
-    <div class="mt-5"><h5>Schedule</h5></div>
-    <div class="row mt-4">
-        <div class="col-md-3 col-lg-2">
-            <h6>Day*</h6>
-        </div>
-        <div class="col-md-3 col-lg-2">
-            <h6>Start time*</h6>
-        </div>
-        <div class="col-md-3 col-lg-2">
-            <h6>End time*</h6>
-        </div>
-    </div>
-    {{ batch_schedule_formset.management_form }}
-    <div class="batch-schedule-formset-container">
-        {% for batch_schedule_form in batch_schedule_formset %}
-        <div class="batch-schedule-formset">
-            <div class="row my-3">
-                <div class="col-md-3 col-lg-2">
-                    {{ batch_schedule_form.day|as_crispy_field }}
+            <div class="my-3 d-lg-none">
+                <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
+                <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-lg-3 my-2">
+                    <h6>No. of enrollments</h6>
+                    {{ batch.enrolment_set.count }}
                 </div>
-                <div class="col-md-3 col-lg-2">
-                    {{ batch_schedule_form.start_time|as_crispy_field }}
-                </div>
-                <div class="col-md-3 col-lg-2">
-                    {{ batch_schedule_form.end_time|as_crispy_field }}
-                </div>
-                <div class="remove-row-container col-md-3 col-lg-3">
-                    {% if batch_schedule_form.instance.pk %}
-                        {{ batch_schedule_form.DELETE }}
-                    {% endif %}
+                <div class="col-md-5 col-lg-3 my-2">
+                    <h6>Batch capacity</h6>
+                    {{ batch.capacity }}
                 </div>
             </div>
+            <div class="row">
+                <h6 class="col-md-5 col-lg-3 my-2">
+                    {{ batch_form.start_date|as_crispy_field }}
+                </h6>
+                <h6 class="col-md-5 col-lg-3 my-2">
+                    {{ batch_form.end_date|as_crispy_field }}
+                </h6>
+            </div>
+            <div class="row">
+                <h6 class="col-md-5 col-lg-3 my-2">
+                    {{ batch_form.sections|as_crispy_field }}
+                </h6>
+                <h6 class="col-md-5 col-lg-3 my-2">
+                    {{ section_form.capacity|as_crispy_field }}
+                </h6>
+            </div>
+            <div class="mt-5"><h5>Schedule</h5></div>
+            <div class="row mt-4">
+                <div class="col-md-3 col-lg-2">
+                    <h6>Day*</h6>
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <h6>Start time*</h6>
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <h6>End time*</h6>
+                </div>
+            </div>
+            {{ batch_schedule_formset.management_form }}
+            <div class="batch-schedule-formset-container">
+                {% for batch_schedule_form in batch_schedule_formset %}
+                <div class="batch-schedule-formset">
+                    <div class="row my-3">
+                        <div class="col-md-3 col-lg-2">
+                            {{ batch_schedule_form.day|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            {{ batch_schedule_form.start_time|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            {{ batch_schedule_form.end_time|as_crispy_field }}
+                        </div>
+                        <div class="remove-row-container col-md-3 col-lg-3">
+                            {% if batch_schedule_form.instance.pk %}
+                                {{ batch_schedule_form.DELETE }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
+        <div class="col-3 border-start p-4 d-none d-lg-block">
+            <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
+            <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm my-1 px-4">Cancel</a>
+        </div>
     </div>
 </form>
 <script src="{% static 'js/jquery.formset.js' %}"></script>

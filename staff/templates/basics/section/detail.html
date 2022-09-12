@@ -14,7 +14,7 @@
             </ul>
         </nav>
     </div>
-    <div class="col-10 pt-4 border-start">
+    <div class="col-10 p-4 border-start">
         <h5>Overview</h5>
         <div class="row mt-4">
             <div class="col-md-3 col-lg-3 my-2">
@@ -50,35 +50,33 @@
         <div class="row mt-4">
             <h5 class="my-4">Students enrolled in this section</h5>
             {% if students.exists %}
-            <div class="px-4">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">First name</th>
-                            <th scope="col">Last name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Slack invitation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in students %}
-                        <tr>
-                            <td>{{ student.first_name|title }}</td>
-                            <td>{{ student.last_name|title }}</td>
-                            <td>{{ student.email }}</td>
-                            {% if student.slack_user_id %}
-                                <td>Accepted</td>
-                            {% else %}
-                                <td>Has not accepted</td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <div>There aren't any students enrolled in this batch yet</div>
-                {% endif %}
-            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">First name</th>
+                        <th scope="col">Last name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Slack invitation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.first_name|title }}</td>
+                        <td>{{ student.last_name|title }}</td>
+                        <td>{{ student.email }}</td>
+                        {% if student.slack_user_id %}
+                            <td>Accepted</td>
+                        {% else %}
+                            <td>Has not accepted</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div>There aren't any students enrolled in this batch yet</div>
+            {% endif %}
         </div>
     </div>
 </div>
