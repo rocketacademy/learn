@@ -1,6 +1,7 @@
 from django.urls import path
 
 from student.forms import BatchSelectionForm, StudentInfoForm
+from student.views import certificate
 from student.views import index
 from student.views import registration
 from student.views import slack
@@ -12,6 +13,7 @@ FORMS = [
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
+    path('basics/certificates/<str:certificate_credential>/', certificate.DetailView.as_view(), name='basics_certificate'),
     path('basics/register/', registration.RegistrationWizard.as_view(FORMS), name='basics_register'),
     path('basics/register/<int:registration_id>/payment/',
          registration.PaymentPreviewView.as_view(),
