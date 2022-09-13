@@ -4,14 +4,14 @@ from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
 from authentication.models import StudentUser
-from staff.models.course import Course
+from student.models.enrolment import Enrolment
 
 
 class Certificate(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
     credential = models.CharField(max_length=12, unique=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    enrolment = models.ForeignKey(Enrolment, on_delete=models.CASCADE)
     student_user = models.ForeignKey(StudentUser, on_delete=models.CASCADE)
     graduation_date = models.DateField()
 
