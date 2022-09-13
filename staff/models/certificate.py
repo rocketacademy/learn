@@ -12,7 +12,6 @@ class Certificate(SafeDeleteModel):
 
     credential = models.CharField(max_length=12, unique=True)
     enrolment = models.ForeignKey(Enrolment, on_delete=models.CASCADE)
-    student_user = models.ForeignKey(StudentUser, on_delete=models.CASCADE)
     graduation_date = models.DateField()
 
     def save(self, *args, **kwargs):

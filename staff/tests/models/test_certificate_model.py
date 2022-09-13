@@ -56,7 +56,6 @@ def enrolment():
 def test_credential_generated_if_new_object(enrolment):
     certificate = Certificate(
         enrolment=enrolment,
-        student_user=enrolment.student_user,
         graduation_date=date.today()
     )
 

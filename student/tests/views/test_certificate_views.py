@@ -56,7 +56,6 @@ def certificate():
     )
     certificate = Certificate.objects.create(
         enrolment=enrolment,
-        student_user=student_user,
         graduation_date=date.today()
     )
 
