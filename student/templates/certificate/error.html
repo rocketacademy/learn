@@ -1,0 +1,12 @@
+{% extends 'student_base.html' %}
+{% load static %}
+{% block content %}
+<div class="bg-primary p-5">
+    <div class="row my-5 py-5">
+        <h5 class="text-center text-light">We could not find a certificate with credential {{ credential }}.</h5><br>
+        <div class="text-center text-light">
+            Please <a class="text-light" href="mailto:basics@rocketacademy.co">contact us</a> if you need assistance.
+        </div>
+    </div>
+</div>
+{% endblock %}

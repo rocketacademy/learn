@@ -61,7 +61,7 @@ def certificate():
 
     yield certificate
 
-def test_get_detail_renders_template(certificate):
+def test_get_detail_renders_certificate_if_exists(certificate):
     response = client.get(
         reverse(
             'basics_certificate',
@@ -72,3 +72,17 @@ def test_get_detail_renders_template(certificate):
     assert response.status_code == HttpResponse.status_code
     assert response.context['certificate'] == certificate
     assert 'certificate/detail.html' in (template.name for template in response.templates)
+
+def test_get_detail_renders_error_if_certificate_does_not_exist():
+    incorrect_credential = 'ABCDEF'
+
+    response = client.get(
+        reverse(
+            'basics_certificate',
+            kwargs={'certificate_credential': incorrect_credential}
+        )
+    )
+
+    assert response.status_code == HttpResponse.status_code
+    assert response.context['certificate_credential'] == incorrect_credential
+    assert 'certificate/error.html' in (template.name for template in response.templates)
