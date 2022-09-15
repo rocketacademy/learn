@@ -1,0 +1,58 @@
+{% extends 'student_base.html' %}
+{% load static %}
+{% block content %}
+<div class="bg-primary p-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 col-lg-4 offset-lg-4 bg-light p-5">
+            <img src="{% static 'student/images/rocket_academy_stamp.png' %}" alt="rocket_academy_stamp" width="150px">
+            <div class="row mt-5">
+                <div class="col">
+                    <h4>
+                        Verified Certificate
+                    </h4>
+                    <h6>
+                        Issued on {{ certificate.graduation_date }}
+                    </h6>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col">
+                    <h6>
+                        This certifies that
+                    </h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h3>
+                        {{ certificate.enrolment.student_user }}
+                    </h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h6>
+                        successfully completed
+                    </h6>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col">
+                    <h3>
+                        Rocket Academy's {{ certificate.enrolment.batch.course.get_name_display }}
+                    </h3>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col">
+                    <img class="mb-2" src="{% static 'student/images/kai_signature.png' %}" alt="kai_signature" width="120px">
+                    <h6>
+                        Kai Yuan Neo<br>
+                        CEO, Rocket Academy
+                    </h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
