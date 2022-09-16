@@ -1,13 +1,14 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.html import format_html
+from polymorphic.models import PolymorphicModel
 from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
 
 from payment.models.coupon_effect import CouponEffect
 
 
-class Coupon(SafeDeleteModel):
+class Coupon(PolymorphicModel, SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
 
     code = models.CharField(max_length=15, blank=True)
