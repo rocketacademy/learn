@@ -34,7 +34,7 @@ class Sendgrid:
                   to_emails,
                   template_id):
         message = Mail(
-            from_email=(from_email, settings.ORGANISATION_NAME),
+            from_email=(from_email, settings.ROCKET_ACADEMY),
             to_emails=to_emails,
             is_multiple=True)
         message.template_id = template_id

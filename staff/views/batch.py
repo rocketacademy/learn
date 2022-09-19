@@ -7,6 +7,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from sendgrid.helpers.mail import To
+from urllib.parse import urlencode
 
 from emails.library.sendgrid import Sendgrid
 from payment.models import ReferralCoupon
@@ -237,18 +238,20 @@ class GraduateView(LoginRequiredMixin, View):
                     start_date=date.today(),
                     referrer=enrolment.student_user
                 )
-
+                certificate_url = reverse(
+                    'basics_certificate',
+                    kwargs={'certificate_credential': certificate.credential}
+                )
+                print("!!!!!!!!!!!!!!!!!!!")
+                print(add_to_linkedin_url(certificate, certificate_url))
                 to_emails.append(
                     To(
                         email=student_user.email,
                         name=student_user.first_name,
                         dynamic_template_data={
-                            'name': student_user.first_name,
-                            'certificate_url': reverse(
-                                'basics_certificate',
-                                kwargs={'certificate_credential': certificate.credential}
-                            ),
-                            'add_to_linkedin_url': 'add_to_linkedin_url',
+                            'first_name': student_user.first_name.capitalize(),
+                            'certificate_url': certificate_url,
+                            'add_to_linkedin_url': add_to_linkedin_url(certificate, certificate_url),
                             'referral_coupon_code': referral_coupon.code
                         }
                     )
@@ -302,3 +305,17 @@ def create_batch_slack_channel(batch):
     slack_channel_id = slack_client.create_channel(slack_channel_name)
     batch.slack_channel_id = slack_channel_id
     batch.save()
+
+def add_to_linkedin_url(certificate, certificate_url):
+    params = {
+        'startTask': certificate.enrolment.batch.course.name,
+        'name': certificate.enrolment.batch.course.get_name_display(),
+        'organizationName': settings.ROCKET_ACADEMY,
+        'issueYear': certificate.graduation_date.year,
+        'issueMonth': certificate.graduation_date.month,
+        'certUrl': certificate_url
+    }
+
+    url_encoded_params = urlencode(params, doseq=True)
+
+    return f"https://www.linkedin.com/profile/add?{url_encoded_params}"
