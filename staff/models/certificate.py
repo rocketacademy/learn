@@ -3,7 +3,6 @@ from django.utils.crypto import get_random_string
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
-from authentication.models import StudentUser
 from student.models.enrolment import Enrolment
 
 

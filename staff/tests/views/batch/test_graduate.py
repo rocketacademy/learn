@@ -8,13 +8,16 @@ from django.urls import reverse
 import pytest
 
 from authentication.models import StudentUser
-from staff.models import Batch, Course, Section
+from emails.library.sendgrid import Sendgrid
+from payment.models.referral_coupon import ReferralCoupon
+from staff.models import Batch, Certificate, Course, Section
 from staff.views.batch import GraduateView
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
 client = Client()
+
 
 @pytest.fixture()
 def existing_user():
@@ -41,7 +44,6 @@ def batch():
     )
 
     yield batch
-
 
 def test_get_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate/")
@@ -77,7 +79,7 @@ def test_get_redirection_if_batch_has_not_ended(batch, existing_user):
 
     assert response.status_code == HttpResponseRedirect.status_code
 
-def test_post_enrolment_statuses_updated(batch, existing_user):
+def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existing_user):
     section = Section.objects.create(
         batch=batch,
         number=1,
@@ -128,8 +130,9 @@ def test_post_enrolment_statuses_updated(batch, existing_user):
         status=Enrolment.ENROLLED
     )
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
+    mocker.patch('emails.library.sendgrid.Sendgrid.send_bulk')
 
-    client.post(
+    response = client.post(
         reverse(
             'batch_graduate',
             kwargs={'batch_id': batch.id}
@@ -144,5 +147,22 @@ def test_post_enrolment_statuses_updated(batch, existing_user):
 
     first_enrolment.refresh_from_db()
     second_enrolment.refresh_from_db()
+    first_certificate = Certificate.objects.first()
+    second_certificate = Certificate.objects.last()
+    first_referral_coupon = ReferralCoupon.objects.first()
+    second_referral_coupon = ReferralCoupon.objects.last()
     assert first_enrolment.status == Enrolment.PASSED
     assert second_enrolment.status == Enrolment.PASSED
+    assert first_certificate.enrolment == first_enrolment
+    assert second_certificate.enrolment == second_enrolment
+    assert first_referral_coupon.referrer.email == first_enrolment.student_user.email
+    assert second_referral_coupon.referrer.email == second_enrolment.student_user.email
+    Sendgrid.send_bulk.assert_called_once_with(
+        settings.ROCKET_CODING_BASICS_EMAIL,
+        [
+            mocker.ANY,
+            mocker.ANY,
+        ],
+        settings.CODING_BASICS_GRADUATION_NOTIFICATION_TEMPLATE_ID
+    )
+    assert response.status_code == HttpResponseRedirect.status_code

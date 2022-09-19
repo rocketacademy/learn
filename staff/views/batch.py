@@ -2,14 +2,17 @@ from datetime import date, timedelta
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
-from django.shortcuts import redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views import View
+from sendgrid.helpers.mail import To
 
+from emails.library.sendgrid import Sendgrid
+from payment.models import ReferralCoupon
 from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
 from staff.forms.basics_graduation import BasicsGraduationForm
-from staff.models import Batch, BatchSchedule, Course, Section
+from staff.models import Batch, BatchSchedule, Certificate, Course, Section
 from student.library.slack import Slack
 from student.models.enrolment import Enrolment
 
@@ -221,9 +224,42 @@ class GraduateView(LoginRequiredMixin, View):
 
         if basics_graduation_form.is_valid():
             enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
-            enrolment_queryset.update(status=Enrolment.PASSED)
+            to_emails = []
 
-        return HttpResponse()
+            enrolment_queryset.update(status=Enrolment.PASSED)
+            for enrolment in enrolment_queryset:
+                student_user = enrolment.student_user
+                certificate = Certificate.objects.create(
+                    enrolment=enrolment,
+                    graduation_date=date.today()
+                )
+                referral_coupon = ReferralCoupon.objects.create(
+                    start_date=date.today(),
+                    referrer=enrolment.student_user
+                )
+
+                to_emails.append(
+                    To(
+                        email=student_user.email,
+                        name=student_user.first_name,
+                        dynamic_template_data={
+                            'name': student_user.first_name,
+                            'certificate_url': reverse(
+                                'basics_certificate',
+                                kwargs={'certificate_credential': certificate.credential}
+                            ),
+                            'add_to_linkedin_url': 'add_to_linkedin_url',
+                            'referral_coupon_code': referral_coupon.code
+                        }
+                    )
+                )
+            sendgrid_client = Sendgrid()
+            sendgrid_client.send_bulk(
+                settings.ROCKET_CODING_BASICS_EMAIL,
+                to_emails,
+                settings.CODING_BASICS_GRADUATION_NOTIFICATION_TEMPLATE_ID
+            )
+        return redirect('batch_detail', batch_id=batch_id)
 
 def validate_batch_sections(batch_form, new_number_of_sections, current_number_of_sections):
     if new_number_of_sections < current_number_of_sections:

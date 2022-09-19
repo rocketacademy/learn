@@ -3,7 +3,6 @@ from django.conf import settings
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
-from authentication.models import StudentUser
 from staff.models.batch import Batch
 from staff.models.section import Section
 
@@ -27,7 +26,7 @@ class Enrolment(SafeDeleteModel):
     registration = models.ForeignKey('student.Registration', on_delete=models.CASCADE, null=True)
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
-    student_user = models.ForeignKey(StudentUser, on_delete=models.CASCADE, null=True)
+    student_user = models.ForeignKey('authentication.StudentUser', on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=ENROLLED)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
