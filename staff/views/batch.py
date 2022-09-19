@@ -242,8 +242,7 @@ class GraduateView(LoginRequiredMixin, View):
                     'basics_certificate',
                     kwargs={'certificate_credential': certificate.credential}
                 )
-                print("!!!!!!!!!!!!!!!!!!!")
-                print(add_to_linkedin_url(certificate, certificate_url))
+
                 to_emails.append(
                     To(
                         email=student_user.email,
