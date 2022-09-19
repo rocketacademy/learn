@@ -82,7 +82,7 @@ def registration():
 @pytest.fixture()
 def early_bird_registration():
     course = Course.objects.create(name=settings.CODING_BASICS)
-    start_date = datetime.date.today() + datetime.timedelta(days=14)
+    start_date = datetime.date.today() + datetime.timedelta(days=21)
     end_date = start_date + datetime.timedelta(days=1)
     batch = Batch.objects.create(
         course=course,

@@ -225,8 +225,8 @@ def test_early_bird_method_returns_0_under_two_weeks():
 
     assert early_bird_discount == 0
 
-def test_early_bird_method_returns_first_tier_discounted_price_at_two_weeks():
-    start_date = datetime.date.today() + datetime.timedelta(days=14)
+def test_early_bird_method_returns_first_tier_discounted_price_at_three_weeks():
+    start_date = datetime.date.today() + datetime.timedelta(days=21)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
@@ -258,8 +258,8 @@ def test_early_bird_method_returns_capped_discounted_price():
     assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_CAP
 
 
-def test_html_formatted_batch_price_returns_base_price_formatting_under_two_weeks(course):
-    start_date = datetime.date.today() + datetime.timedelta(days=13)
+def test_html_formatted_batch_price_returns_base_price_formatting_under_three_weeks(course):
+    start_date = datetime.date.today() + datetime.timedelta(days=20)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
@@ -274,8 +274,8 @@ def test_html_formatted_batch_price_returns_base_price_formatting_under_two_week
 
     assert html_formatted_batch_price == "<span class='float-end d-none d-xl-block'>$199</span><div class='lh-lg d-xl-none my-10'>$199<div>"
 
-def test_html_formatted_batch_price_returns_discounted_price_formatting_after_13_days(course):
-    start_date = datetime.date.today() + datetime.timedelta(days=14)
+def test_html_formatted_batch_price_returns_discounted_price_formatting_after_20_days(course):
+    start_date = datetime.date.today() + datetime.timedelta(days=21)
     end_date = start_date + datetime.timedelta(weeks=6)
     course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
