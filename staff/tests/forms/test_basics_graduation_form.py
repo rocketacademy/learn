@@ -3,7 +3,7 @@ from django.conf import settings
 import pytest
 from authentication.models.student_user import StudentUser
 
-from staff.forms import BasicsGraduationForm, basics_graduation
+from staff.forms import BasicsGraduationForm
 from staff.models import Batch, Course, Section
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration

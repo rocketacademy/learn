@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponseServerError
 from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from emails.models import SendgridEmail
 
@@ -27,3 +28,18 @@ class Sendgrid:
             )
         except Exception as error:
             return HttpResponseServerError(f'Could not send email for {emailable_class_name} - {emailable_id}: {str(error)}')
+
+    def send_bulk(self,
+                  from_email,
+                  to_emails,
+                  template_id):
+        message = Mail(
+            from_email=(from_email, settings.ROCKET_ACADEMY),
+            to_emails=to_emails,
+            is_multiple=True)
+        message.template_id = template_id
+
+        try:
+            self.client.send(message)
+        except Exception as error:
+            return HttpResponseServerError(f'Error sending bulk email: {str(error)}')
