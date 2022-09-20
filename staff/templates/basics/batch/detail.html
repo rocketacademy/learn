@@ -11,7 +11,7 @@
             class="btn btn-outline-primary btn-sm px-4">
                 Edit batch details
             </a>
-            {% if batch.has_ended %}
+            {% if batch.ready_for_graduation %}
                 <a
                 type="link"
                 href="{% url 'batch_graduate' batch_id=batch.id %}"
@@ -87,7 +87,7 @@
         class="btn btn-outline-primary btn-sm px-4">
             Edit batch details
         </a>
-        {% if batch.has_ended %}
+        {% if batch.ready_for_graduation %}
             <a
             type="link"
             href="{% url 'batch_graduate' batch_id=batch.id %}"

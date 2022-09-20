@@ -210,7 +210,7 @@ class GraduateView(LoginRequiredMixin, View):
         batch = Batch.objects.get(pk=batch_id)
         basics_graduation_form = BasicsGraduationForm(batch_id=batch_id)
 
-        if batch.has_ended():
+        if batch.ready_for_graduation():
             return render(
                 request,
                 'basics/batch/graduate.html',
@@ -268,7 +268,7 @@ class GraduateView(LoginRequiredMixin, View):
             except Exception as error:
                 capture_message(f"Exception when processing graduation for Batch {batch_id}")
                 capture_exception(error)
-        return redirect('batch_detail', batch_id=batch_id)
+        return redirect('enrolment_list', batch_id=batch_id)
 
 def validate_batch_sections(batch_form, new_number_of_sections, current_number_of_sections):
     if new_number_of_sections < current_number_of_sections:

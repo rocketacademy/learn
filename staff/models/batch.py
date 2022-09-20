@@ -6,6 +6,8 @@ from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
 
 from staff.models.course import Course
+from student.models.enrolment import Enrolment
+
 
 class Batch(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
@@ -65,8 +67,10 @@ class Batch(SafeDeleteModel):
             return True
         return False
 
-    def has_ended(self):
-        return self.end_date < datetime.date.today()
+    def ready_for_graduation(self):
+        enrolments_pending_graduation = self.enrolment_set.filter(status=Enrolment.ENROLLED)
+
+        return (self.end_date < datetime.date.today()) and enrolments_pending_graduation.exists()
 
     def html_formatted_batch_price(self):
         original_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD

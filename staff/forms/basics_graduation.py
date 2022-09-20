@@ -15,5 +15,5 @@ class BasicsGraduationForm(forms.Form):
         super(BasicsGraduationForm, self).__init__(*args, **kwargs)
 
         self.fields['enrolment'].choices = [
-            (enrolment.id, enrolment.student_user) for enrolment in Enrolment.objects.filter(batch__pk=batch_id)
+            (enrolment.id, enrolment.student_user) for enrolment in Enrolment.objects.filter(batch__pk=batch_id, status=Enrolment.ENROLLED)
         ]
