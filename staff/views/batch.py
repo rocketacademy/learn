@@ -210,7 +210,7 @@ class GraduateView(LoginRequiredMixin, View):
         batch = Batch.objects.get(pk=batch_id)
         basics_graduation_form = BasicsGraduationForm(batch_id=batch_id)
 
-        if batch.has_ended():
+        if batch.ready_for_graduation():
             return render(
                 request,
                 'basics/batch/graduate.html',

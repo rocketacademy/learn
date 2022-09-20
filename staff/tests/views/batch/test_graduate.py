@@ -11,6 +11,7 @@ from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
 from payment.models.referral_coupon import ReferralCoupon
 from staff.models import Batch, Certificate, Course, Section
+from staff.views import enrolment
 from staff.views.batch import GraduateView
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
@@ -45,6 +46,49 @@ def batch():
 
     yield batch
 
+@pytest.fixture()
+def batch_ready_for_graduation():
+    email = 'studentname@example.com'
+    first_name = 'Student'
+    last_name = 'Name'
+    start_date = datetime.date.today() - datetime.timedelta(days=2)
+    course = Course.objects.create(name=settings.CODING_BASICS)
+    batch = Batch.objects.create(
+        course=course,
+        start_date=start_date,
+        end_date=start_date + datetime.timedelta(days=1),
+        capacity=90,
+        sections=5
+    )
+    section = Section.objects.create(
+        batch=batch,
+        number=1,
+        capacity=1
+    )
+    registration = Registration.objects.create(
+        course=course,
+        batch=batch,
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        country_of_residence='SG',
+        referral_channel='word_of_mouth'
+    )
+    student_user = StudentUser.objects.create_user(
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=settings.PLACEHOLDER_PASSWORD
+    )
+    Enrolment.objects.create(
+        registration=registration,
+        batch=batch,
+        section=section,
+        student_user=student_user
+    )
+
+    yield batch
+
 def test_get_anonymous_user_redirected_to_login(batch):
     request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate/")
     request.user = AnonymousUser()
@@ -60,17 +104,17 @@ def test_get_logged_in_user_can_access(batch, existing_user):
 
     response = GraduateView.as_view()(request, batch.id)
 
-    assert response.status_code == HttpResponse.status_code
+    assert response.status_code == HttpResponseRedirect.status_code
 
-def test_get_template_rendered_if_batch_has_ended(batch, existing_user):
+def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_ready_for_graduation, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch_ready_for_graduation.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/graduate.html' in (template.name for template in response.templates)
 
-def test_get_redirection_if_batch_has_not_ended(batch, existing_user):
+def test_get_redirection_if_batch_is_not_ready_for_graduation(batch, existing_user):
     batch.end_date = datetime.date.today() + datetime.timedelta(days=1)
     batch.save()
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
