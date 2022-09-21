@@ -1,5 +1,6 @@
 import pytest
 
+from payment.models import CouponEffect
 from staff.forms import CouponEffectForm
 
 pytestmark = pytest.mark.django_db
@@ -16,7 +17,7 @@ def test_discount_cannot_exceed_100_percent():
     coupon_effect_form = CouponEffectForm(
         data={
             'discount_amount': 101,
-            'discount_type': 'percent'
+            'discount_type': CouponEffect.PERCENTAGE
         }
     )
 

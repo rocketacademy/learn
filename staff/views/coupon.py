@@ -160,12 +160,12 @@ class NewBatchView(LoginRequiredMixin, View):
         course_bootcamp = Course.objects.get(name=settings.CODING_BOOTCAMP)
         coupon_effect_basics = CouponEffect.objects.filter(
             couponable_id=course_basics.id,
-            discount_type='dollars',
+            discount_type=CouponEffect.DOLLARS,
             discount_amount='20'
         ).first()
         coupon_effect_bootcamp = CouponEffect.objects.filter(
             couponable_id=course_bootcamp.id,
-            discount_type='dollars',
+            discount_type=CouponEffect.DOLLARS,
             discount_amount='200'
         ).first()
 

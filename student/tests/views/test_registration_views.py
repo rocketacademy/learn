@@ -184,7 +184,7 @@ def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(registration.batch.course).__name__,
         couponable_id=registration.batch.course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()),)
@@ -266,7 +266,7 @@ def test_payment_preview_get_renders_early_bird_price_with_valid_referral_code(e
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(early_bird_registration.batch.course).__name__,
         couponable_id=early_bird_registration.batch.course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()),)

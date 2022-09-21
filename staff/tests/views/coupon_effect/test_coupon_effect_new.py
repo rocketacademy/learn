@@ -62,7 +62,7 @@ def test_get_renders_with_form_when_user_logged_in(logged_in_existing_user):
 
 def test_post_saves_coupon_effect_for_dollars_discount_type(coding_basics_course, logged_in_existing_user):
     discount = {
-        'type': 'dollars',
+        'type': CouponEffect.DOLLARS,
         'amount': 15
     }
 
@@ -85,7 +85,7 @@ def test_post_saves_coupon_effect_for_dollars_discount_type(coding_basics_course
 
 def test_post_saves_coupon_effect_for_percent_discount_type(coding_basics_course, logged_in_existing_user):
     discount = {
-        'type': 'percent',
+        'type': CouponEffect.PERCENTAGE,
         'amount': 15
     }
 
@@ -108,7 +108,7 @@ def test_post_saves_coupon_effect_for_percent_discount_type(coding_basics_course
 
 def test_post_saves_coupon_effect_for_coding_bootcamp_couponable(coding_bootcamp_course, logged_in_existing_user):
     discount = {
-        'type': 'dollars',
+        'type': CouponEffect.DOLLARS,
         'amount': 15
     }
 

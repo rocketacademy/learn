@@ -16,7 +16,7 @@ def test_empty_form_is_invalid():
 
 def test_start_date_cannot_be_after_end_date():
     coupon_effect = CouponEffect.objects.create(
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon_form = CouponForm(

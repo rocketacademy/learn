@@ -9,9 +9,8 @@ import pytest
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
-from payment.models.referral_coupon import ReferralCoupon
+from payment.models import CouponEffect, ReferralCoupon
 from staff.models import Batch, Certificate, Course, Section
-from staff.views import enrolment
 from staff.views.batch import GraduateView
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
@@ -52,9 +51,9 @@ def batch_ready_for_graduation():
     first_name = 'Student'
     last_name = 'Name'
     start_date = datetime.date.today() - datetime.timedelta(days=2)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    coding_basics_course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
-        course=course,
+        course=coding_basics_course,
         start_date=start_date,
         end_date=start_date + datetime.timedelta(days=1),
         capacity=90,
@@ -66,7 +65,7 @@ def batch_ready_for_graduation():
         capacity=1
     )
     registration = Registration.objects.create(
-        course=course,
+        course=coding_basics_course,
         batch=batch,
         first_name=first_name,
         last_name=last_name,

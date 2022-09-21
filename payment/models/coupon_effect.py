@@ -3,12 +3,12 @@ from django.db import models
 from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
 
-PERCENTAGE = 'percent'
-DOLLARS = 'dollars'
-
 
 class CouponEffect(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
+
+    PERCENTAGE = 'percent'
+    DOLLARS = 'dollars'
 
     DISCOUNT_TYPE_CHOICES = [
         (PERCENTAGE, 'Percent off'),
@@ -22,9 +22,9 @@ class CouponEffect(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        if self.discount_type == PERCENTAGE:
+        if self.discount_type == self.PERCENTAGE:
             string_representation = f"{self.discount_amount}% off"
-        elif self.discount_type == DOLLARS:
+        elif self.discount_type == self.DOLLARS:
             string_representation = f"${self.discount_amount} off"
 
         if self.couponable_type and self.couponable_id:

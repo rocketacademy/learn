@@ -46,7 +46,7 @@ def coupon_effect_basics(course_basics):
     coupon_effect_basics = CouponEffect.objects.create(
         couponable_type=course_basics.__class__.__name__,
         couponable_id=course_basics.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=20
     )
     yield coupon_effect_basics
@@ -56,7 +56,7 @@ def coupon_effect_bootcamp(course_bootcamp):
     coupon_effect_bootcamp = CouponEffect.objects.create(
         couponable_type=course_bootcamp.__class__.__name__,
         couponable_id=course_bootcamp.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=200
     )
     yield coupon_effect_bootcamp

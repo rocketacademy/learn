@@ -12,7 +12,7 @@ from sentry_sdk import capture_exception, capture_message
 from urllib.parse import urlencode
 
 from emails.library.sendgrid import Sendgrid
-from payment.models import ReferralCoupon
+from payment.models import CouponEffect, ReferralCoupon
 from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
 from staff.forms.basics_graduation import BasicsGraduationForm
 from staff.models import Batch, BatchSchedule, Certificate, Course, Section

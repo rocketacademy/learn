@@ -46,7 +46,7 @@ def test_coupon_new_template_rendered_for_logged_in_user(logged_in_existing_user
 def test_coupon_not_created_if_coupon_with_code_exists(logged_in_existing_user):
     existing_coupon = Coupon.objects.create(start_date=make_aware(datetime.today()))
     coupon_effect = CouponEffect.objects.create(
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
 

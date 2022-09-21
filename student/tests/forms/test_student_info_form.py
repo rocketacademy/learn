@@ -15,7 +15,7 @@ def test_validation_error_shows_when_referral_code_does_not_exist():
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon = Coupon.objects.create(
@@ -45,7 +45,7 @@ def test_validation_error_shows_when_referral_code_premature():
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon = Coupon.objects.create(start_date=now() + timedelta(days=1))
@@ -72,7 +72,7 @@ def test_validation_error_shows_when_referral_code_expired():
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon = Coupon.objects.create(
