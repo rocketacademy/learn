@@ -90,7 +90,8 @@ class Registration(SafeDeleteModel):
             'lastname': student_user.last_name,
             'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
             'basics_batch_number': self.batch.number,
-            'contact_source': settings.PROJECT_NAME
+            'contact_source': settings.PROJECT_NAME,
+            'referral_code': self.referral_code
         }
 
         if student_user.hubspot_contact_id:
