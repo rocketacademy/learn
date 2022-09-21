@@ -33,7 +33,7 @@ def coupon_effect():
     coupon_effect = CouponEffect.objects.create(
         couponable_type=course.__class__.__name__,
         couponable_id=course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
 

@@ -16,7 +16,7 @@ def coupon_effect():
     coupon_effect = CouponEffect.objects.create(
         couponable_type=course.__class__.__name__,
         couponable_id=course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
 
@@ -68,11 +68,11 @@ def test_existing_coupon_can_be_saved_without_changing_code_if_object_already_ex
 
 def test_get_effects_display():
     first_coupon_effect = CouponEffect.objects.create(
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     second_coupon_effect = CouponEffect.objects.create(
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=20
     )
 
@@ -88,19 +88,19 @@ def test_biggest_discount_for_coding_basics():
     discount_for_coding_basics_1 = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     discount_for_coding_basics_2 = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=20
     )
     biggest_discount_for_coding_basics = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,
-        discount_type='percent',
+        discount_type=CouponEffect.PERCENTAGE,
         discount_amount=20
     )
     coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))

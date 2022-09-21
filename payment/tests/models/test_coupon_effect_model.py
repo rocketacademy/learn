@@ -18,7 +18,7 @@ def test_string_representation_when_couponable_exists(course):
     coupon_effect = CouponEffect.objects.create(
         couponable_type=course.__class__.__name__,
         couponable_id=course.id,
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
 
@@ -28,7 +28,7 @@ def test_string_representation_when_couponable_exists(course):
 
 def test_string_representation_when_couponable_does_not_exist():
     coupon_effect = CouponEffect.objects.create(
-        discount_type='dollars',
+        discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
 

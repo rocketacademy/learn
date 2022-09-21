@@ -12,7 +12,7 @@ from sentry_sdk import capture_exception, capture_message
 from urllib.parse import urlencode
 
 from emails.library.sendgrid import Sendgrid
-from payment.models import ReferralCoupon
+from payment.models import CouponEffect, ReferralCoupon
 from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
 from staff.forms.basics_graduation import BasicsGraduationForm
 from staff.models import Batch, BatchSchedule, Certificate, Course, Section
@@ -227,6 +227,20 @@ class GraduateView(LoginRequiredMixin, View):
 
         if basics_graduation_form.is_valid():
             enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
+            coding_basics_course = Course.objects.get(name=settings.CODING_BASICS)
+            coding_basics_coupon_effect = CouponEffect.objects.get(
+                couponable_type=type(coding_basics_course).__name__,
+                couponable_id=coding_basics_course.id,
+                discount_type=CouponEffect.DOLLARS,
+                discount_amount=20
+            )
+            coding_bootcamp_course = Course.objects.get(name=settings.CODING_BOOTCAMP)
+            coding_bootcamp_coupon_effect = CouponEffect.objects.get(
+                couponable_type=type(coding_bootcamp_course).__name__,
+                couponable_id=coding_bootcamp_course.id,
+                discount_type=CouponEffect.DOLLARS,
+                discount_amount=200
+            )
             to_emails = []
 
             try:
@@ -242,10 +256,12 @@ class GraduateView(LoginRequiredMixin, View):
                             start_date=timezone.now(),
                             referrer=enrolment.student_user
                         )
-                        certificate_url = reverse(
+                        referral_coupon.effects.set([coding_basics_coupon_effect, coding_bootcamp_coupon_effect])
+                        referral_coupon.save()
+                        certificate_url = request.build_absolute_uri(reverse(
                             'basics_certificate',
                             kwargs={'certificate_credential': certificate.credential}
-                        )
+                        ))
 
                         to_emails.append(
                             To(
@@ -319,7 +335,8 @@ def add_to_linkedin_url(certificate, certificate_url):
         'organizationName': settings.ROCKET_ACADEMY,
         'issueYear': certificate.graduation_date.year,
         'issueMonth': certificate.graduation_date.month,
-        'certUrl': certificate_url
+        'certUrl': certificate_url,
+        'certId': certificate.credential
     }
 
     url_encoded_params = urlencode(params, doseq=True)

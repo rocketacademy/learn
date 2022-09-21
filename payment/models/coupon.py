@@ -58,12 +58,12 @@ class Coupon(PolymorphicModel, SafeDeleteModel):
         biggest_discount = 0
 
         for coupon_effect in coupon_effects:
-            if coupon_effect.discount_type == 'percent':
+            if coupon_effect.discount_type == CouponEffect.PERCENTAGE:
                 amount = original_price * coupon_effect.discount_amount / 100
 
                 if amount > biggest_discount:
                     biggest_discount = amount
-            elif coupon_effect.discount_type == 'dollars':
+            elif coupon_effect.discount_type == CouponEffect.DOLLARS:
                 if coupon_effect.discount_amount > biggest_discount:
                     biggest_discount = coupon_effect.discount_amount
 

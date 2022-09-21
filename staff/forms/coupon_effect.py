@@ -18,7 +18,7 @@ class CouponEffectForm(forms.ModelForm):
         discount_amount = self.cleaned_data.get('discount_amount')
         discount_type = self.cleaned_data.get('discount_type')
 
-        if discount_type == 'percent' and discount_amount > 100:
+        if discount_type == CouponEffect.PERCENTAGE and discount_amount > 100:
             message = forms.ValidationError(
                 ('Discount should not be more than 100%'),
                 code='invalid_discount'
