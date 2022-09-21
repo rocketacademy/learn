@@ -22,14 +22,14 @@ from staff.models import Course
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
         coupon_queryset = Coupon.objects.all().order_by('-created_at')
-        query = request.GET.get('q')
+        query = request.GET.get('query')
 
         if query:
             coupon_queryset = Coupon.objects.filter(
                 Q(description__icontains=query) | Q(code__icontains=query)
             ).distinct()
 
-        coupon_paginator = Paginator(coupon_queryset, 2)
+        coupon_paginator = Paginator(coupon_queryset, 15)
         page_number = request.GET.get('page')
         coupon_page_obj = coupon_paginator.get_page(page_number)
 
