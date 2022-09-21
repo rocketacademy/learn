@@ -172,6 +172,20 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existin
         student_user=second_student_user,
         status=Enrolment.ENROLLED
     )
+    coding_basics_course = batch.course
+    coding_bootcamp_course = Course.objects.create(name='CODING_BOOTCAMP')
+    basics_coupon_effect = CouponEffect.objects.create(
+        couponable_type=type(coding_basics_course).__name__,
+        couponable_id=coding_basics_course.id,
+        discount_type=CouponEffect.DOLLARS,
+        discount_amount=20
+    )
+    bootcamp_coupon_effect = CouponEffect.objects.create(
+        couponable_type=type(coding_bootcamp_course).__name__,
+        couponable_id=coding_bootcamp_course.id,
+        discount_type=CouponEffect.DOLLARS,
+        discount_amount=200
+    )
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
     mocker.patch('emails.library.sendgrid.Sendgrid.send_bulk')
 
@@ -199,7 +213,9 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existin
     assert first_certificate.enrolment == first_enrolment
     assert second_certificate.enrolment == second_enrolment
     assert first_referral_coupon.referrer.email == first_enrolment.student_user.email
+    assert list(first_referral_coupon.effects.all()) == [basics_coupon_effect, bootcamp_coupon_effect]
     assert second_referral_coupon.referrer.email == second_enrolment.student_user.email
+    assert list(second_referral_coupon.effects.all()) == [basics_coupon_effect, bootcamp_coupon_effect]
     Sendgrid.send_bulk.assert_called_once_with(
         settings.ROCKET_CODING_BASICS_EMAIL,
         [
