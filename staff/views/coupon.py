@@ -3,7 +3,9 @@ import csv
 import datetime
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.utils.timezone import make_aware
 from django.views import View
@@ -20,12 +22,22 @@ from staff.models import Course
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
         coupon_queryset = Coupon.objects.all().order_by('-created_at')
+        query = request.GET.get('q')
+
+        if query:
+            coupon_queryset = Coupon.objects.filter(
+                Q(description__icontains=query) | Q(code__icontains=query)
+            ).distinct()
+
+        coupon_paginator = Paginator(coupon_queryset, 2)
+        page_number = request.GET.get('page')
+        coupon_page_obj = coupon_paginator.get_page(page_number)
 
         return render(
             request,
             'coupon/list.html',
             {
-                'coupons': coupon_queryset
+                'coupon_page_obj': coupon_page_obj
             }
         )
 
