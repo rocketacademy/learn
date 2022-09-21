@@ -181,7 +181,18 @@ def test_update_hubspot_contact_when_hubspot_contact_id_exists_in_learn(mocker, 
 
     registration.create_or_update_hubspot_contact(student_user)
 
-    Hubspot.update_contact.assert_called_once()
+    Hubspot.update_contact.assert_called_once_with(
+        student_user.hubspot_contact_id,
+        {
+            'email': student_user.email,
+            'firstname': student_user.first_name,
+            'lastname': student_user.last_name,
+            'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
+            'basics_batch_number': registration.batch.number,
+            'contact_source': settings.PROJECT_NAME,
+            'referral_code': registration.referral_code
+        }
+    )
 
 def test_create_hubspot_contact_when_hubspot_contact_does_not_exist(mocker, registration):
     student_user = StudentUser.objects.get(email=registration.email)
@@ -223,7 +234,7 @@ def test_update_hubspot_contact_when_contact_created_separately_in_hubspot(mocke
                         {
                             'email': 'user@example.com',
                             'firstname': 'Another',
-                            'hs_object_id': '651',
+                            'hs_object_id': 651,
                             'lastname': 'Name'
                         },
                         'archived': False
@@ -235,7 +246,18 @@ def test_update_hubspot_contact_when_contact_created_separately_in_hubspot(mocke
 
     registration.create_or_update_hubspot_contact(student_user)
 
-    Hubspot.update_contact.assert_called_once()
+    Hubspot.update_contact.assert_called_once_with(
+        student_user.hubspot_contact_id,
+        {
+            'email': student_user.email,
+            'firstname': student_user.first_name,
+            'lastname': student_user.last_name,
+            'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
+            'basics_batch_number': registration.batch.number,
+            'contact_source': settings.PROJECT_NAME,
+            'referral_code': registration.referral_code
+        }
+    )
 
 def test_send_confirmation_email(mocker, registration):
     mocker.patch('emails.library.sendgrid.Sendgrid.send')
