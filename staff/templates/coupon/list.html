@@ -3,6 +3,12 @@
 <div class="row">
     <div class="col-md-10 col-sm-12">
         <h4>Overview</h4>
+        <form method="GET">
+            <div class="input-field">
+                <input type="text" name="query" value="{{ request.GET.query }}" placeholder="Search">
+                <button class="btn btn-primary btn-sm" type="submit" name="action">Search</button>
+            </div>
+        </form>
         <div class="d-lg-none my-3">
             <a type="link" href="{% url 'coupon_effect_new' %}" class="btn btn-outline-primary btn-sm my-1">
                 + Coupon effect
@@ -14,7 +20,7 @@
                 + Coupons by batch
             </a>
         </div>
-        {% if coupons.exists %}
+        {% if coupon_page_obj %}
         <div class="table-responsive my-3">
             <table class="table table-hover">
                 <thead>
@@ -27,7 +33,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for coupon in coupons %}
+                    {% for coupon in coupon_page_obj %}
                     <tr class="clickable-row" data-url="{% url 'coupon_detail' coupon_id=coupon.id %}" role="button">
                         <td>{{ coupon.start_date|date:"d M, Y" }}</td>
                         <td>{{ coupon.end_date|date:"d M, Y" }}</td>
@@ -41,6 +47,23 @@
             {% else %}
                 <div>There aren't any active coupons at the moment</div>
             {% endif %}
+        </div>
+        <div class="pagination">
+            <span class="step-links">
+                {% if coupon_page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ coupon_page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ coupon_page_obj.number }} of {{ coupon_page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if coupon_page_obj.has_next %}
+                    <a href="?page={{ coupon_page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ coupon_page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
         </div>
     </div>
     <div class="col-md-2 d-none d-lg-block border-start px-5">
