@@ -135,22 +135,16 @@ def test_coupon_generation_creates_correct_coupons(mocker, logged_in_existing_us
     assert test_coupon.description == 'test1@test.com'
 
 def test_send_cooupon_email_batch(mocker, logged_in_existing_user, course_basics, course_bootcamp):
-    mocker.patch('emails.library.sendgrid.Sendgrid.send')
+    mocker.patch('emails.library.sendgrid.Sendgrid.send_bulk')
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
     content = csv_file.read()
     uploaded_file = SimpleUploadedFile(name=csv_file.name, content=bytes(content, 'utf-8'), content_type="multipart/form-data")
 
     client.post(reverse('coupon_new_batch'), {'csv_file': uploaded_file})
-    coupon = Coupon.objects.last()
 
-    Sendgrid.send.assert_called_with(
-        coupon.id,
-        type(coupon).__name__,
+    Sendgrid.send_bulk.assert_called_once_with(
         'community@rocketacademy.co',
-        'test2@test.com',
-        settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID,
-        # Using ANY because cannot recreate sendgrid.helper.mail object
-        ANY
+        [ANY, ANY],
+        settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID
     )
-    Sendgrid.send.call_count == 2
