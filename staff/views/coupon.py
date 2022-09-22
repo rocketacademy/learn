@@ -11,9 +11,7 @@ from django.utils.timezone import make_aware
 from django.views import View
 from sendgrid.helpers.mail import To
 
-
 from emails.library.sendgrid import Sendgrid
-from emails.models import SendgridEmail
 from payment.models import Coupon
 from payment.models.coupon_effect import CouponEffect
 from staff.forms.coupon import CouponForm
