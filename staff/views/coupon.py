@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.utils.timezone import make_aware
 from django.views import View
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import To
 
 from emails.library.sendgrid import Sendgrid
 from payment.models import Coupon
@@ -171,6 +171,7 @@ class NewBatchView(LoginRequiredMixin, View):
 
         from_email = settings.ROCKET_COMMUNITY_EMAIL
         template_id = settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID
+        to_emails = []
 
         for row in csvreader:
             coupon = Coupon.objects.create(
@@ -182,24 +183,23 @@ class NewBatchView(LoginRequiredMixin, View):
             coupon.save()
 
             to_email = row['email']
-            message = Mail(
-                from_email=from_email,
-                to_emails=to_email,
-            )
-            message.dynamic_template_data = {
-                'first_name': row['first_name'],
-                'referral_code': coupon.code,
-            }
-            message.template_id = template_id
+            first_name = row['first_name']
 
-            sendgrid_client = Sendgrid()
-            sendgrid_client.send(
-                coupon.id,
-                type(coupon).__name__,
-                from_email,
-                to_email,
-                template_id,
-                message
+            to_emails.append(
+                To(
+                    email=to_email,
+                    name=first_name,
+                    dynamic_template_data={
+                        'first_name': first_name.capitalize(),
+                        'referral_code': coupon.code
+                    }
+                )
             )
 
+        sendgrid_client = Sendgrid()
+        sendgrid_client.send_bulk(
+            from_email,
+            to_emails,
+            template_id
+        )
         return redirect('coupon_list')
