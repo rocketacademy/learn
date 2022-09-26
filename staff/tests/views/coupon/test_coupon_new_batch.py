@@ -32,33 +32,27 @@ def logged_in_existing_user():
     yield logged_in_existing_user
 
 @pytest.fixture()
-def course_basics():
-    course = Course.objects.create(name=settings.CODING_BASICS)
-    yield course
-
-@pytest.fixture()
-def course_bootcamp():
-    course = Course.objects.create(name=settings.CODING_BOOTCAMP)
-    yield course
-
-@pytest.fixture()
-def coupon_effect_basics(course_basics):
+def coupon_effect_basics():
+    coding_basics_course = Course.objects.create(name=settings.CODING_BASICS)
     coupon_effect_basics = CouponEffect.objects.create(
-        couponable_type=course_basics.__class__.__name__,
-        couponable_id=course_basics.id,
+        couponable_type=type(coding_basics_course).__name__,
+        couponable_id=coding_basics_course.id,
         discount_type=CouponEffect.DOLLARS,
         discount_amount=20
     )
+
     yield coupon_effect_basics
 
 @pytest.fixture()
-def coupon_effect_bootcamp(course_bootcamp):
+def coupon_effect_bootcamp():
+    coding_bootcamp_course = Course.objects.create(name=settings.CODING_BOOTCAMP)
     coupon_effect_bootcamp = CouponEffect.objects.create(
-        couponable_type=course_bootcamp.__class__.__name__,
-        couponable_id=course_bootcamp.id,
+        couponable_type=type(coding_bootcamp_course).__name__,
+        couponable_id=coding_bootcamp_course.id,
         discount_type=CouponEffect.DOLLARS,
         discount_amount=200
     )
+
     yield coupon_effect_bootcamp
 
 
@@ -77,7 +71,7 @@ def test_coupon_generation_template_rendered_for_logged_in_user(logged_in_existi
     assert response.status_code == HttpResponse.status_code
     assert 'coupon/new_batch.html' in (template.name for template in response.templates)
 
-def test_coupon_generation_success_redirects_page(mocker, logged_in_existing_user, course_basics, course_bootcamp):
+def test_coupon_generation_success_redirects_page(mocker, logged_in_existing_user, coupon_effect_basics, coupon_effect_bootcamp):
     mocker.patch('emails.library.sendgrid.Sendgrid.send')
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')
@@ -134,7 +128,7 @@ def test_coupon_generation_creates_correct_coupons(mocker, logged_in_existing_us
     assert test_coupon_effects == [coupon_effect_basics, coupon_effect_bootcamp]
     assert test_coupon.description == 'test1@test.com'
 
-def test_send_cooupon_email_batch(mocker, logged_in_existing_user, course_basics, course_bootcamp):
+def test_send_cooupon_email_batch(mocker, logged_in_existing_user, coupon_effect_basics, coupon_effect_bootcamp):
     mocker.patch('emails.library.sendgrid.Sendgrid.send_bulk')
     test_file_path = "./staff/tests/forms/csv_files/correct_test_file.csv"
     csv_file = open(test_file_path, 'r')

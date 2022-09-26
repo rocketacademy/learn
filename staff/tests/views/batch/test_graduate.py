@@ -173,7 +173,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existin
         status=Enrolment.ENROLLED
     )
     coding_basics_course = batch.course
-    coding_bootcamp_course = Course.objects.create(name='CODING_BOOTCAMP')
+    coding_bootcamp_course = Course.objects.create(name=settings.CODING_BOOTCAMP)
     basics_coupon_effect = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,
