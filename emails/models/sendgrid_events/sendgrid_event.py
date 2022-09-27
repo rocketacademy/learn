@@ -23,7 +23,6 @@ class SendgridEvent(PolymorphicModel, SafeDeleteModel):
     emailable_type = models.CharField(max_length=50)
     recipient_email = models.CharField(max_length=255)
     timestamp = models.CharField(max_length=20)
-    smtp_id = models.CharField(max_length=35)
     sg_event_id = models.CharField(max_length=100)
     sg_message_id = models.CharField(max_length=100)
     category = models.CharField(max_length=200)
