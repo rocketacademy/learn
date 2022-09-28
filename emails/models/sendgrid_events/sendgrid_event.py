@@ -1,28 +1,24 @@
 from django.db import models
-from polymorphic.models import PolymorphicModel
 from safedelete import SOFT_DELETE
 from safedelete.models import SafeDeleteModel
 
 
-class SendgridEvent(PolymorphicModel, SafeDeleteModel):
+class SendgridEvent(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
 
     PROCESSED = 'processed'
-    DEFERRED = 'deferred'
-    DELIVERED = 'delivered'
-    OPEN = 'open'
-    CLICK = 'click'
-    BOUNCE = 'bounce'
     DROPPED = 'dropped'
-    SPAM_REPORT = 'spamreport'
-    UNSUBSCRIBE = 'unsubscribe'
-    GROUP_UNSUBSCRIBE = 'group_unsubscribe'
-    GROUP_RESUBSCRIBE = 'group_resubscribe'
+    DELIVERED = 'delivered'
+    DEFERRED = 'deferred'
+    BOUNCE = 'bounce'
 
-    emailable_id = models.IntegerField()
+    emailable_id = models.PositiveIntegerField()
     emailable_type = models.CharField(max_length=50)
     recipient_email = models.CharField(max_length=255)
-    timestamp = models.CharField(max_length=20)
+    timestamp = models.PositiveIntegerField()
     sg_event_id = models.CharField(max_length=100)
     sg_message_id = models.CharField(max_length=100)
-    category = models.CharField(max_length=200)
+    sg_template_id = models.CharField(max_length=34, null=True)
+    sg_template_name = models.CharField(max_length=100, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

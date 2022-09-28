@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -15,20 +16,14 @@ from emails.models.sendgrid_events.processed_sendgrid_event import ProcessedSend
 
 @csrf_exempt
 def event_webhook(request):
-    try:
-        if is_valid_signature(request):
-            event = json.loads(request.body)
+    if is_valid_signature(request):
+        events = json.loads(request.body)
 
-            for event in event:
-                process(event)
+        for event in events:
+            process(event)
 
-            return HttpResponse(status=200)
-        return HttpResponseBadRequest(f"Could not process the request: {request.body.decode('utf-8')}")
-    except Exception as error:
-        capture_message(f"Exception when processing Sendgrid event: {error}")
-        capture_exception(error)
-
-        return HttpResponseServerError(str(error))
+        return HttpResponse(status=200)
+    return HttpResponseBadRequest(f"Could not process the request: {request.body.decode('utf-8')}")
 
 def is_valid_signature(request):
     event_webhook = EventWebhook()
@@ -44,66 +39,163 @@ def is_valid_signature(request):
 def process(event):
     match event['event']:
         case SendgridEvent.PROCESSED:
-            ProcessedSendgridEvent.objects.create(
+            if not ProcessedSendgridEvent.objects.filter(
                 emailable_id=event['emailable_id'],
                 emailable_type=event['emailable_type'],
                 recipient_email=event['email'],
                 timestamp=event['timestamp'],
                 sg_event_id=event['sg_event_id'],
                 sg_message_id=event['sg_message_id'],
-                category=event['category'],
-                smtp_id=event['smtp-id']
-            )
+                sg_template_id=event['sg_template_id'],
+                sg_template_name=event['sg_template_name'],
+            ).exists():
+                try:
+                    with transaction.atomic():
+                        ProcessedSendgridEvent.objects.create(
+                            emailable_id=event['emailable_id'],
+                            emailable_type=event['emailable_type'],
+                            recipient_email=event['email'],
+                            timestamp=event['timestamp'],
+                            sg_event_id=event['sg_event_id'],
+                            sg_message_id=event['sg_message_id'],
+                            sg_template_id=event['sg_template_id'],
+                            sg_template_name=event['sg_template_name'],
+                        )
+
+                    return HttpResponse(status=200)
+                except IntegrityError as error:
+                    capture_message(
+                        f"Error processing Sendgrid {event['event']} event for {event['emailable_type']}-{event['emailable_id']}: {error}"
+                    )
+                    capture_exception(error)
+
+                    return HttpResponseServerError(error)
         case SendgridEvent.DROPPED:
-            DroppedSendgridEvent.objects.create(
+            if not DroppedSendgridEvent.objects.filter(
                 emailable_id=event['emailable_id'],
                 emailable_type=event['emailable_type'],
                 recipient_email=event['email'],
                 timestamp=event['timestamp'],
                 sg_event_id=event['sg_event_id'],
                 sg_message_id=event['sg_message_id'],
-                category=event['category'],
-                smtp_id=event['smtp-id'],
+                sg_template_id=event['sg_template_id'],
+                sg_template_name=event['sg_template_name'],
                 reason=event['reason'],
-                status=event['status']
-            )
+            ).exists():
+                try:
+                    with transaction.atomic():
+                        DroppedSendgridEvent.objects.create(
+                            emailable_id=event['emailable_id'],
+                            emailable_type=event['emailable_type'],
+                            recipient_email=event['email'],
+                            timestamp=event['timestamp'],
+                            sg_event_id=event['sg_event_id'],
+                            sg_message_id=event['sg_message_id'],
+                            sg_template_id=event['sg_template_id'],
+                            sg_template_name=event['sg_template_name'],
+                            reason=event['reason'],
+                        )
+                    return HttpResponse(status=200)
+                except Exception as error:
+                    capture_message(
+                        f"Error processing Sendgrid {event['event']} event for {event['emailable_type']}-{event['emailable_id']}: {error}"
+                    )
+                    capture_exception(error)
+
+                    return HttpResponseServerError(error)
         case SendgridEvent.DELIVERED:
-            DeliveredSendgridEvent.objects.create(
+            if not DeliveredSendgridEvent.objects.filter(
                 emailable_id=event['emailable_id'],
                 emailable_type=event['emailable_type'],
                 recipient_email=event['email'],
                 timestamp=event['timestamp'],
                 sg_event_id=event['sg_event_id'],
                 sg_message_id=event['sg_message_id'],
-                category=event['category'],
-                smtp_id=event['smtp-id'],
-                ip=event['ip']
-            )
+                sg_template_id=event['sg_template_id'],
+                sg_template_name=event['sg_template_name']
+            ).exists():
+                try:
+                    with transaction.atomic():
+                        DeliveredSendgridEvent.objects.create(
+                            emailable_id=event['emailable_id'],
+                            emailable_type=event['emailable_type'],
+                            recipient_email=event['email'],
+                            timestamp=event['timestamp'],
+                            sg_event_id=event['sg_event_id'],
+                            sg_message_id=event['sg_message_id'],
+                            sg_template_id=event['sg_template_id'],
+                            sg_template_name=event['sg_template_name']
+                        )
+                    return HttpResponse(status=200)
+                except Exception as error:
+                    capture_message(
+                        f"Error processing Sendgrid {event['event']} event for {event['emailable_type']}-{event['emailable_id']}: {error}")
+                    capture_exception(error)
+
+                    return HttpResponseServerError(error)
         case SendgridEvent.DEFERRED:
-            DeferredSendgridEvent.objects.create(
+            if not DeferredSendgridEvent.objects.filter(
                 emailable_id=event['emailable_id'],
                 emailable_type=event['emailable_type'],
                 recipient_email=event['email'],
                 timestamp=event['timestamp'],
                 sg_event_id=event['sg_event_id'],
                 sg_message_id=event['sg_message_id'],
-                category=event['category'],
-                smtp_id=event['smtp-id'],
-                ip=event['ip'],
+                sg_template_id=event['sg_template_id'],
+                sg_template_name=event['sg_template_name'],
                 attempt=event['attempt']
-            )
+            ).exists():
+                try:
+                    DeferredSendgridEvent.objects.create(
+                        emailable_id=event['emailable_id'],
+                        emailable_type=event['emailable_type'],
+                        recipient_email=event['email'],
+                        timestamp=event['timestamp'],
+                        sg_event_id=event['sg_event_id'],
+                        sg_message_id=event['sg_message_id'],
+                        sg_template_id=event['sg_template_id'],
+                        sg_template_name=event['sg_template_name'],
+                        attempt=event['attempt']
+                    )
+                except Exception as error:
+                    capture_message(
+                        f"Error processing Sendgrid {event['event']} event for {event['emailable_type']}-{event['emailable_id']}: {error}"
+                    )
+                    capture_exception(error)
+
+                    return HttpResponseServerError(error)
         case SendgridEvent.BOUNCE:
-            BounceSendgridEvent.objects.create(
+            if not BounceSendgridEvent.objects.filter(
                 emailable_id=event['emailable_id'],
                 emailable_type=event['emailable_type'],
                 recipient_email=event['email'],
                 timestamp=event['timestamp'],
                 sg_event_id=event['sg_event_id'],
                 sg_message_id=event['sg_message_id'],
-                category=event['category'],
+                sg_template_id=event['sg_template_id'],
+                sg_template_name=event['sg_template_name'],
                 bounce_classification=event['bounce_classification'],
-                smtp_id=event['smtp-id'],
-                ip=event['ip'],
                 reason=event['reason'],
                 status=event['status']
-            )
+            ).exists():
+                try:
+                    BounceSendgridEvent.objects.create(
+                        emailable_id=event['emailable_id'],
+                        emailable_type=event['emailable_type'],
+                        recipient_email=event['email'],
+                        timestamp=event['timestamp'],
+                        sg_event_id=event['sg_event_id'],
+                        sg_message_id=event['sg_message_id'],
+                        sg_template_id=event['sg_template_id'],
+                        sg_template_name=event['sg_template_name'],
+                        bounce_classification=event['bounce_classification'],
+                        reason=event['reason'],
+                        status=event['status']
+                    )
+                except Exception as error:
+                    capture_message(
+                        f"Error processing Sendgrid {event['event']} event for {event['emailable_type']}-{event['emailable_id']}: {error}"
+                    )
+                    capture_exception(error)
+
+                    return HttpResponseServerError(error)

@@ -3,13 +3,7 @@ from .sendgrid_email import SendgridEmail
 
 from .sendgrid_events.sendgrid_event import SendgridEvent
 from .sendgrid_events.bounce_sendgrid_event import BounceSendgridEvent
-from .sendgrid_events.click_sendgrid_event import ClickSendgridEvent
 from .sendgrid_events.deferred_sendgrid_event import DeferredSendgridEvent
 from .sendgrid_events.delivered_sendgrid_event import DeliveredSendgridEvent
 from .sendgrid_events.dropped_sendgrid_event import DroppedSendgridEvent
-from .sendgrid_events.group_resubscribe_sendgrid_event import GroupResubscribeSendgridEvent
-from .sendgrid_events.group_unsubscribe_sendgrid_event import GroupUnsubscribeSendgridEvent
-from .sendgrid_events.open_sendgrid_event import OpenSendgridEvent
 from .sendgrid_events.processed_sendgrid_event import ProcessedSendgridEvent
-from .sendgrid_events.spam_report_sendgrid_event import SpamReportSendgridEvent
-from .sendgrid_events.unsubscribe_sendgrid_event import UnsubsribeSendgridEvent
