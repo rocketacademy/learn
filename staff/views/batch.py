@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views import View
-from sendgrid.helpers.mail import To
+from sendgrid.helpers.mail import CustomArg, Email, Personalization
 from sentry_sdk import capture_exception, capture_message
 from urllib.parse import urlencode
 
@@ -241,7 +241,7 @@ class GraduateView(LoginRequiredMixin, View):
                 discount_type=CouponEffect.DOLLARS,
                 discount_amount=200
             )
-            to_emails = []
+            personalizations = []
 
             try:
                 with transaction.atomic():
@@ -263,22 +263,21 @@ class GraduateView(LoginRequiredMixin, View):
                             kwargs={'certificate_credential': certificate.credential}
                         ))
 
-                        to_emails.append(
-                            To(
-                                email=student_user.email,
-                                name=student_user.first_name,
-                                dynamic_template_data={
-                                    'first_name': student_user.first_name.capitalize(),
-                                    'certificate_url': certificate_url,
-                                    'add_to_linkedin_url': add_to_linkedin_url(certificate, certificate_url),
-                                    'referral_coupon_code': referral_coupon.code
-                                }
-                            )
-                        )
+                        personalization = Personalization()
+                        personalization.add_to(Email(student_user.email))
+                        personalization.add_custom_arg(CustomArg('emailable_type', type(enrolment).__name__))
+                        personalization.add_custom_arg(CustomArg('emailable_id', enrolment.id))
+                        personalization.dynamic_template_data = {
+                            'first_name': student_user.first_name.capitalize(),
+                            'certificate_url': certificate_url,
+                            'add_to_linkedin_url': add_to_linkedin_url(certificate, certificate_url),
+                            'referral_coupon_code': referral_coupon.code
+                        }
+                        personalizations.append(personalization)
                     sendgrid_client = Sendgrid()
                     sendgrid_client.send_bulk(
                         settings.ROCKET_CODING_BASICS_EMAIL,
-                        to_emails,
+                        personalizations,
                         settings.CODING_BASICS_GRADUATION_NOTIFICATION_TEMPLATE_ID
                     )
             except Exception as error:

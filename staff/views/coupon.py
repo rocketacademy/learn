@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.utils.timezone import make_aware
 from django.views import View
-from sendgrid.helpers.mail import To
+from sendgrid.helpers.mail import CustomArg, Email, Personalization
 
 from emails.library.sendgrid import Sendgrid
 from payment.models import Coupon
@@ -156,50 +156,47 @@ class NewBatchView(LoginRequiredMixin, View):
 
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
-        course_basics = Course.objects.get(name=settings.CODING_BASICS)
-        course_bootcamp = Course.objects.get(name=settings.CODING_BOOTCAMP)
-        coupon_effect_basics = CouponEffect.objects.filter(
-            couponable_id=course_basics.id,
+        coding_basics_course = Course.objects.get(name=settings.CODING_BASICS)
+        coding_basics_coupon_effect = CouponEffect.objects.get(
+            couponable_type=type(coding_basics_course).__name__,
+            couponable_id=coding_basics_course.id,
             discount_type=CouponEffect.DOLLARS,
-            discount_amount='20'
-        ).first()
-        coupon_effect_bootcamp = CouponEffect.objects.filter(
-            couponable_id=course_bootcamp.id,
+            discount_amount=20
+        )
+        coding_bootcamp_course = Course.objects.get(name=settings.CODING_BOOTCAMP)
+        coding_bootcamp_coupon_effect = CouponEffect.objects.get(
+            couponable_type=type(coding_bootcamp_course).__name__,
+            couponable_id=coding_bootcamp_course.id,
             discount_type=CouponEffect.DOLLARS,
-            discount_amount='200'
-        ).first()
-
-        from_email = settings.ROCKET_COMMUNITY_EMAIL
-        template_id = settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID
-        to_emails = []
+            discount_amount=200
+        )
+        personalizations = []
 
         for row in csvreader:
-            coupon = Coupon.objects.create(
-                start_date=make_aware(datetime.datetime.now()),
-                end_date=None,
-                description=row['email']
-            )
-            coupon.effects.set([coupon_effect_basics, coupon_effect_bootcamp])
-            coupon.save()
-
             to_email = row['email']
             first_name = row['first_name']
 
-            to_emails.append(
-                To(
-                    email=to_email,
-                    name=first_name,
-                    dynamic_template_data={
-                        'first_name': first_name.capitalize(),
-                        'referral_code': coupon.code
-                    }
-                )
+            coupon = Coupon.objects.create(
+                start_date=make_aware(datetime.datetime.now()),
+                end_date=None,
+                description=to_email
             )
+            coupon.effects.set([coding_basics_coupon_effect, coding_bootcamp_coupon_effect])
+            coupon.save()
 
+            personalization = Personalization()
+            personalization.add_to(Email(to_email))
+            personalization.add_custom_arg(CustomArg('emailable_type', type(coupon).__name__))
+            personalization.add_custom_arg(CustomArg('emailable_id', coupon.id))
+            personalization.dynamic_template_data = {
+                'first_name': first_name.capitalize(),
+                'referral_code': coupon.code,
+            }
+            personalizations.append(personalization)
         sendgrid_client = Sendgrid()
         sendgrid_client.send_bulk(
-            from_email,
-            to_emails,
-            template_id
+            settings.ROCKET_COMMUNITY_EMAIL,
+            personalizations,
+            settings.COUPON_CODE_NOTIFICATION_TEMPLATE_ID
         )
         return redirect('coupon_list')

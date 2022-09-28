@@ -29,15 +29,12 @@ class Sendgrid:
         except Exception as error:
             return HttpResponseServerError(f'Could not send email for {emailable_class_name} - {emailable_id}: {str(error)}')
 
-    def send_bulk(self,
-                  from_email,
-                  to_emails,
-                  template_id):
-        message = Mail(
-            from_email=(from_email, settings.ROCKET_ACADEMY),
-            to_emails=to_emails,
-            is_multiple=True)
+    def send_bulk(self, from_email, personalizations, template_id):
+        message = Mail(from_email=(from_email, settings.ROCKET_ACADEMY))
         message.template_id = template_id
+
+        for personalization in personalizations:
+            message.add_personalization(personalization)
 
         try:
             self.client.send(message)

@@ -211,6 +211,7 @@ SINGAPORE_DOLLAR_CURRENCY = 'sgd'
 # ------------------------------------------------------------------------------
 
 SENDGRID_API_KEY = env('SENDGRID_API_KEY')
+SENDGRID_EVENT_WEBHOOK_VERIFICATION_KEY = env('SENDGRID_EVENT_WEBHOOK_VERIFICATION_KEY')
 
 # HUBSPOT
 # ------------------------------------------------------------------------------
