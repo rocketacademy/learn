@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'student',
     'payment',
     'emails',
+    'corsheaders',
 ]
 
 # AUTHENTICATION
@@ -117,6 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -126,6 +129,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:3001",
+]
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3001']
 
 # STATIC
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

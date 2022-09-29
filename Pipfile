@@ -24,6 +24,7 @@ gunicorn = "*"
 dj-database-url = "*"
 slack-sdk = "*"
 sentry-sdk = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 pytest = "*"

@@ -5,7 +5,6 @@ from django.views import View
 
 from staff.forms import LoginForm
 
-
 class LoginView(View):
     def get(self, request):
         form = LoginForm(None)
@@ -13,6 +12,8 @@ class LoginView(View):
         return render(request, 'login.html', {'form': form})
 
     def post(self, request):
+        print('username is: ', request.POST['username'])
+        print('password is: ', request.POST['password'])
         form = LoginForm(request.POST)
 
         if not form.is_valid():
