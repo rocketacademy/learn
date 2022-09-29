@@ -176,7 +176,6 @@ def process(event):
                 sg_template_name=event['sg_template_name'],
                 bounce_classification=event['bounce_classification'],
                 reason=event['reason'],
-                status=event['status']
             ).exists():
                 try:
                     BounceSendgridEvent.objects.create(
@@ -190,7 +189,6 @@ def process(event):
                         sg_template_name=event['sg_template_name'],
                         bounce_classification=event['bounce_classification'],
                         reason=event['reason'],
-                        status=event['status']
                     )
                 except Exception as error:
                     capture_message(

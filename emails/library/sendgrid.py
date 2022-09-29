@@ -1,7 +1,8 @@
+from re import template
 from django.conf import settings
 from django.http import HttpResponseServerError
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import CustomArg, Mail
 
 from emails.models import SendgridEmail
 
@@ -15,19 +16,24 @@ class Sendgrid:
              emailable_class_name,
              from_email,
              to_email,
-             template_id,
-             message):
+             dynamic_template_data,
+             template_id):
         try:
-            self.client.send(message)
-            SendgridEmail.objects.create(
-                emailable_id=emailable_id,
-                emailable_type=emailable_class_name,
-                sender_email=from_email,
-                recipient_email=to_email,
-                template_id=template_id,
+            message = Mail(
+                from_email=(from_email, settings.ROCKET_ACADEMY),
+                to_emails=to_email,
             )
+            message.dynamic_template_data = dynamic_template_data
+            message.template_id = template_id
+            message.custom_arg = CustomArg('emailable_id', emailable_id)
+            message.custom_arg = CustomArg('emailable_type', emailable_class_name)
+
+            response = self.client.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
         except Exception as error:
-            return HttpResponseServerError(f'Could not send email for {emailable_class_name} - {emailable_id}: {str(error)}')
+            return HttpResponseServerError(f'Error sending email for {emailable_class_name} - {emailable_id}: {str(error)}')
 
     def send_bulk(self, from_email, personalizations, template_id):
         message = Mail(from_email=(from_email, settings.ROCKET_ACADEMY))
