@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from polymorphic.models import PolymorphicModel, PolymorphicManager
+import string
 
 
 class UserManager(BaseUserManager, PolymorphicManager):
@@ -49,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin, PolymorphicModel):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def full_name(self):
-        return f"{self.first_name.capitalize()} {self.last_name.capitalize()}"
+        return f"{string.capwords(self.first_name)} {string.capwords(self.last_name)}"
 
     def __str__(self):
         return self.full_name()
