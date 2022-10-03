@@ -107,7 +107,7 @@ def early_bird_registration():
     )
     return early_bird_registration
 
-def test_registration_form_does_not_render_batch_on_start_date():
+def test_registration_form_renders_batch_on_start_date():
     course = Course.objects.create(name=settings.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
@@ -125,7 +125,7 @@ def test_registration_form_does_not_render_batch_on_start_date():
     response = client.get(reverse('basics_register'))
 
     assert response.status_code == 200
-    assert 'id="id_batch_selection-batch_0"' not in str(response.content)
+    assert 'id="id_batch_selection-batch_0"' in str(response.content)
 
 
 def test_registration_wizard_form_existing_user(batch, existing_user):
