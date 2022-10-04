@@ -156,14 +156,14 @@ class NewBatchView(LoginRequiredMixin, View):
 
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
-        coding_basics_course = Course.objects.get(name=settings.CODING_BASICS)
+        coding_basics_course = Course.objects.get(name=Course.CODING_BASICS)
         coding_basics_coupon_effect = CouponEffect.objects.get(
             couponable_type=type(coding_basics_course).__name__,
             couponable_id=coding_basics_course.id,
             discount_type=CouponEffect.DOLLARS,
             discount_amount=20
         )
-        coding_bootcamp_course = Course.objects.get(name=settings.CODING_BOOTCAMP)
+        coding_bootcamp_course = Course.objects.get(name=Course.CODING_BOOTCAMP)
         coding_bootcamp_coupon_effect = CouponEffect.objects.get(
             couponable_type=type(coding_bootcamp_course).__name__,
             couponable_id=coding_bootcamp_course.id,

@@ -16,7 +16,7 @@ def enrolment():
     email = 'studentname@example.com'
     first_name = 'Student'
     last_name = 'Name'
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=date.today(),

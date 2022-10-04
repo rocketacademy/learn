@@ -30,7 +30,7 @@ def existing_user():
 
 @pytest.fixture()
 def batch():
-    COURSE_NAME = settings.CODING_BASICS
+    COURSE_NAME = Course.CODING_BASICS
     COURSE_DURATION_IN_DAYS = 35
 
     start_date = datetime.date(2022, 1, 7)

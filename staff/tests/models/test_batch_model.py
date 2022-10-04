@@ -17,13 +17,13 @@ sections = 5
 
 @pytest.fixture()
 def course():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
 
     yield course
 
 @pytest.fixture()
 def batch():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -180,7 +180,7 @@ def test_fully_enrolled_returns_false_when_there_is_still_space(course):
 def test_weeks_to_start_method_returns_calculated_weeks():
     start_date = datetime.date.today() + datetime.timedelta(weeks=7)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -196,7 +196,7 @@ def test_weeks_to_start_method_returns_calculated_weeks():
 def test_weeks_to_start_method_returns_zero_weeks_if_days_under_7():
     start_date = datetime.date.today() + datetime.timedelta(days=6)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -212,7 +212,7 @@ def test_weeks_to_start_method_returns_zero_weeks_if_days_under_7():
 def test_early_bird_method_returns_0_under_two_weeks():
     start_date = datetime.date.today() + datetime.timedelta(days=13)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -228,7 +228,7 @@ def test_early_bird_method_returns_0_under_two_weeks():
 def test_early_bird_method_returns_first_tier_discounted_price_at_three_weeks():
     start_date = datetime.date.today() + datetime.timedelta(days=21)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -244,7 +244,7 @@ def test_early_bird_method_returns_first_tier_discounted_price_at_three_weeks():
 def test_early_bird_method_returns_capped_discounted_price():
     start_date = datetime.date.today() + datetime.timedelta(weeks=8)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -261,7 +261,7 @@ def test_early_bird_method_returns_capped_discounted_price():
 def test_html_formatted_batch_price_returns_base_price_formatting_under_three_weeks(course):
     start_date = datetime.date.today() + datetime.timedelta(days=20)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -277,7 +277,7 @@ def test_html_formatted_batch_price_returns_base_price_formatting_under_three_we
 def test_html_formatted_batch_price_returns_discounted_price_formatting_after_20_days(course):
     start_date = datetime.date.today() + datetime.timedelta(days=21)
     end_date = start_date + datetime.timedelta(weeks=6)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,

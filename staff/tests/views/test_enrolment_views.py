@@ -31,7 +31,7 @@ def logged_in_existing_user():
 
 @pytest.fixture()
 def batch():
-    COURSE_NAME = settings.CODING_BASICS
+    COURSE_NAME = Course.CODING_BASICS
     COURSE_DURATION_IN_DAYS = 35
 
     start_date = date.today()
@@ -64,7 +64,7 @@ def test_enrolment_list_logged_in_user_can_access(batch, logged_in_existing_user
 def test_create_zoom_breakout_csv_outputs_csv_file(mocker):
     student_email = 'bryan@test.com'
     room_name = 'room1'
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=date.today(),
@@ -84,7 +84,7 @@ def test_create_zoom_breakout_csv_outputs_csv_file(mocker):
     assert student_email in response_content and room_name in response_content
 
 def test_prepare_zoom_breakout_csv_data_returns_room_names_student_emails():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=date.today(),

@@ -34,13 +34,13 @@ def logged_in_existing_user():
 
 @pytest.fixture()
 def coding_basics_course():
-    coding_basics_course = Course.objects.create(name=settings.CODING_BASICS)
+    coding_basics_course = Course.objects.create(name=Course.CODING_BASICS)
 
     yield coding_basics_course
 
 @pytest.fixture()
 def coding_bootcamp_course():
-    coding_bootcamp_course = Course.objects.create(name=settings.CODING_BOOTCAMP)
+    coding_bootcamp_course = Course.objects.create(name=Course.CODING_BOOTCAMP)
 
     yield coding_bootcamp_course
 

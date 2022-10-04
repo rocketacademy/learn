@@ -32,7 +32,7 @@ def logged_in_existing_user():
 
 @pytest.fixture()
 def coupon():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     coupon_effect = CouponEffect.objects.create(
         couponable_type=course.__class__.__name__,
         couponable_id=course.id,

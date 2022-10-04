@@ -15,7 +15,7 @@ COURSE_DURATION_IN_DAYS = 35
 
 def test_only_picks_up_batches_starting_in_7_days(mocker):
     today = datetime.date.today()
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     start_date_7_days_from_now = today + datetime.timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS)
     batch_starting_in_7_days = Batch.objects.create(
         course=course,

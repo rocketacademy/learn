@@ -4,7 +4,6 @@ import pytest
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
-from payment.models.stripe_discount import StripeDiscount
 from payment.models.stripe_payment import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course
@@ -24,7 +23,7 @@ def registration():
     email = 'user@example.com'
     start_date = datetime.date.today()
 
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,

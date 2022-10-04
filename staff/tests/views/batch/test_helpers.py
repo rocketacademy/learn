@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 @patch('student.library.slack.Slack.create_channel')
 def test_create_batch_slack_channel(mock_create_channel):
     COURSE_DURATION_IN_DAYS = 35
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     start_date = datetime.date.today()
     end_date = start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS)
     section_capacity = 18

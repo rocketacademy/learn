@@ -1,10 +1,7 @@
-from re import template
 from django.conf import settings
 from django.http import HttpResponseServerError
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import CustomArg, Mail
-
-from emails.models import SendgridEmail
 
 
 class Sendgrid:

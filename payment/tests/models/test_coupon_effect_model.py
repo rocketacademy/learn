@@ -1,5 +1,3 @@
-import string
-from django.conf import settings
 import pytest
 
 from payment.models.coupon_effect import CouponEffect
@@ -10,7 +8,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture()
 def course():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
 
     yield course
 

@@ -3,7 +3,6 @@ from django.db import models
 import pytz
 from safedelete import SOFT_DELETE_CASCADE
 from safedelete.models import SafeDeleteModel
-from sendgrid.helpers.mail import Mail
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid

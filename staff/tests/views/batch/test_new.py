@@ -28,7 +28,7 @@ def existing_user():
 
 @pytest.fixture()
 def course():
-    yield Course.objects.create(name=settings.CODING_BASICS)
+    yield Course.objects.create(name=Course.CODING_BASICS)
 
 
 def test_anonymous_user_redirected_to_login():
@@ -85,7 +85,7 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course, exi
     assert Batch.objects.count() == 1
     batch = Batch.objects.first()
     assert batch.capacity == number_of_sections * section_capacity
-    assert batch.course == Course.objects.get(name=settings.CODING_BASICS)
+    assert batch.course == Course.objects.get(name=Course.CODING_BASICS)
 
     section_queryset = Section.objects.all()
     first_section = section_queryset.first()

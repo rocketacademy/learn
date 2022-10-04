@@ -34,7 +34,7 @@ def existing_user():
 @pytest.fixture()
 def batch():
     start_date = datetime.date.today() - datetime.timedelta(days=2)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -51,7 +51,7 @@ def batch_ready_for_graduation():
     first_name = 'Student'
     last_name = 'Name'
     start_date = datetime.date.today() - datetime.timedelta(days=2)
-    coding_basics_course = Course.objects.create(name=settings.CODING_BASICS)
+    coding_basics_course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=coding_basics_course,
         start_date=start_date,
@@ -173,7 +173,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existin
         status=Enrolment.ENROLLED
     )
     coding_basics_course = batch.course
-    coding_bootcamp_course = Course.objects.create(name=settings.CODING_BOOTCAMP)
+    coding_bootcamp_course = Course.objects.create(name=Course.CODING_BOOTCAMP)
     basics_coupon_effect = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,

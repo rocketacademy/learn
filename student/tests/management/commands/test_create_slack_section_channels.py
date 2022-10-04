@@ -15,7 +15,7 @@ pytestmark = pytest.mark.django_db
 def batch():
     COURSE_DURATION_IN_DAYS = 35
     start_date = datetime.date.today() + datetime.timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_CREATING_SECTION_CHANNELS)
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,

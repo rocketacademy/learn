@@ -15,7 +15,7 @@ def batch():
     capacity = 90
     sections = 5
 
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
