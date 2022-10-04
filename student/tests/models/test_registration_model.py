@@ -4,7 +4,6 @@ import pytest
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
-from payment.models.stripe_discount import StripeDiscount
 from payment.models.stripe_payment import StripePayment
 from staff.models.batch import Batch
 from staff.models.course import Course

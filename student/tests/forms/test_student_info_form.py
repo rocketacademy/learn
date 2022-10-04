@@ -1,6 +1,5 @@
 import pytest
 from django.utils.timezone import now, timedelta
-from django.conf import settings
 
 from payment.models.coupon import Coupon
 from payment.models.coupon_effect import CouponEffect

@@ -1,5 +1,3 @@
-import string
-from django.conf import settings
 import pytest
 
 from payment.models.coupon_effect import CouponEffect
