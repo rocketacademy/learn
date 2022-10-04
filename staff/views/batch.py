@@ -50,7 +50,7 @@ class DetailView(LoginRequiredMixin, View):
 
 class NewView(LoginRequiredMixin, View):
     def get(self, request):
-        course_id = Course.objects.get(name=settings.CODING_BASICS).id
+        course_id = Course.objects.get(name=Course.CODING_BASICS).id
         next_batch_number = Batch.next_number(course_id)
         batch_form = BatchForm(None)
         section_form = SectionForm(None)
@@ -68,7 +68,7 @@ class NewView(LoginRequiredMixin, View):
         )
 
     def post(self, request):
-        course = Course.objects.get(name=settings.CODING_BASICS)
+        course = Course.objects.get(name=Course.CODING_BASICS)
         batch_form = BatchForm(request.POST)
         section_form = SectionForm(request.POST)
         batch_schedule_formset = BatchScheduleFormSet(request.POST, prefix='batch-schedule')
@@ -227,14 +227,14 @@ class GraduateView(LoginRequiredMixin, View):
 
         if basics_graduation_form.is_valid():
             enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
-            coding_basics_course = Course.objects.get(name=settings.CODING_BASICS)
+            coding_basics_course = Course.objects.get(name=Course.CODING_BASICS)
             coding_basics_coupon_effect = CouponEffect.objects.get(
                 couponable_type=type(coding_basics_course).__name__,
                 couponable_id=coding_basics_course.id,
                 discount_type=CouponEffect.DOLLARS,
                 discount_amount=20
             )
-            coding_bootcamp_course = Course.objects.get(name=settings.CODING_BOOTCAMP)
+            coding_bootcamp_course = Course.objects.get(name=Course.CODING_BOOTCAMP)
             coding_bootcamp_coupon_effect = CouponEffect.objects.get(
                 couponable_type=type(coding_bootcamp_course).__name__,
                 couponable_id=coding_bootcamp_course.id,

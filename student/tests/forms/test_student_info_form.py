@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_validation_error_shows_when_referral_code_does_not_exist():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
@@ -41,7 +41,7 @@ def test_validation_error_shows_when_referral_code_does_not_exist():
 
 
 def test_validation_error_shows_when_referral_code_premature():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
@@ -68,7 +68,7 @@ def test_validation_error_shows_when_referral_code_premature():
 
 
 def test_validation_error_shows_when_referral_code_expired():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,

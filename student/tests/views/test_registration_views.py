@@ -36,7 +36,7 @@ def existing_user():
 
 @pytest.fixture()
 def batch():
-    COURSE_NAME = settings.CODING_BASICS
+    COURSE_NAME = Course.CODING_BASICS
     COURSE_DURATION_IN_DAYS = 35
 
     start_date = datetime.date.today() + datetime.timedelta(days=1)
@@ -54,7 +54,7 @@ def batch():
 
 @pytest.fixture()
 def registration():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=datetime.date.today(),
@@ -81,7 +81,7 @@ def registration():
 
 @pytest.fixture()
 def early_bird_registration():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     start_date = datetime.date.today() + datetime.timedelta(days=21)
     end_date = start_date + datetime.timedelta(days=1)
     batch = Batch.objects.create(
@@ -108,7 +108,7 @@ def early_bird_registration():
     return early_bird_registration
 
 def test_registration_form_renders_batch_on_start_date():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=datetime.date.today(),

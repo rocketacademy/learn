@@ -10,7 +10,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture()
 def course():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
 
     yield course
 

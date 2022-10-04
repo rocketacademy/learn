@@ -24,7 +24,7 @@ def registration():
     email = 'user@example.com'
     start_date = datetime.date.today()
 
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,

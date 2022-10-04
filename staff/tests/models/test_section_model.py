@@ -15,7 +15,7 @@ def test_fully_enrolled_returns_true():
     COURSE_DURATION_IN_DAYS = 35
     start_date = datetime.date.today()
 
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,
@@ -48,7 +48,7 @@ def test_fully_enrolled_returns_false():
     COURSE_DURATION_IN_DAYS = 35
     start_date = datetime.date.today()
 
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=start_date,

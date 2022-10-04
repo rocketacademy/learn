@@ -29,7 +29,7 @@ def student_user():
 
 @pytest.fixture()
 def enrolment():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         number=1,

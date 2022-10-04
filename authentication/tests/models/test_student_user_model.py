@@ -30,7 +30,7 @@ def student_user():
 
 @pytest.fixture()
 def enrolment():
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=date.today(),
@@ -77,7 +77,7 @@ def test_current_enrolled_batches_does_not_return_batches_that_have_ended(studen
     assert list(current_enrolled_batches) == []
 
 def test_current_enrolled_batches_returns_empty_if_no_enrolments(student_user):
-    course = Course.objects.create(name=settings.CODING_BASICS)
+    course = Course.objects.create(name=Course.CODING_BASICS)
     batch = Batch.objects.create(
         course=course,
         start_date=date.today(),
