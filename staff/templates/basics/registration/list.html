@@ -41,7 +41,11 @@
         {% else %}
           <td>Not paid</td>
         {% endif %}
-        <td>{{ registration.payment.dollar_amount }}</td>
+        {% if registration.payment.dollar_amount %}
+          <td>{{ registration.payment.dollar_amount }}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
         {% if registration.payment.discount %}
           <td>{{ registration.payment.discount.dollar_amount }}</td>
         {% else %}
