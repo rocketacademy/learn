@@ -1,0 +1,55 @@
+{% extends 'basics/batch/base.html' %}
+<div class="row py-2 border-bottom">
+  <h3>Batch {{ batch.number }}</h3>
+</div>
+{% block batch_content %}
+<div class="row p-4">
+  <div class="col-10">
+      <h4>Registrations</h4>
+  </div>
+</div>
+<div class="row p-4">
+  {% if registrations.exists %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Country of residence</th>
+        <th scope="col">Referral channel</th>
+        <th scope="col">Referral code</th>
+        <th scope="col">Payment status</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Discount</th>
+        <th scope="col">Registration received</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for registration in registrations %}
+      <tr>
+        <td>{{ registration.first_name|title }} {{registration.last_name|title }}</td>
+        <td>{{ registration.email }}</td>
+        <td>{{ registration.get_country_of_residence_display }}</td>
+        <td>{{ registration.get_referral_channel_display }}</td>
+        <td>{{ registration.referral_code }}</td>
+        {% if registration.payment %}
+          <td>Paid</td>
+        {% else %}
+          <td>Not paid</td>
+        {% endif %}
+        <td>{{ registration.payment.dollar_amount }}</td>
+        {% if registration.payment.discount %}
+          <td>{{ registration.payment.discount.dollar_amount }}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+        <td>{{ registration.created_at|date:"d M, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div>There aren't any registrations for this batch yet</div>
+  {% endif %}
+</div>
+{% endblock %}

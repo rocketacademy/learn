@@ -43,7 +43,7 @@ def prepare_zoom_breakout_csv_data(batch_id):
     zoom_rows = [headers]
 
     for enrolment in enrolments:
-        zoom_row = [f"room{enrolment.section.number}",  enrolment.student_user.email]
+        zoom_row = [f"room{enrolment.section.number}", enrolment.student_user.email]
         zoom_rows.append(zoom_row)
 
     return zoom_rows

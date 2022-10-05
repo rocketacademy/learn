@@ -11,6 +11,9 @@
                     <a href="{% url 'batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}topbar-link-active border-bottom border-primary{% endif %}">Overview</a>
                 </li>
                 <li>
+                    <a href="{% url 'registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}topbar-link-active border-bottom border-primary{% endif %}">Registrations</a>
+                </li>
+                <li>
                     <a href="{% url 'enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}topbar-link-active border-bottom border-primary{% endif %}">Enrolments</a>
                 </li>
                 <li>
@@ -24,6 +27,9 @@
             <ul class="navbar-nav sidebar">
                 <li>
                     <a href="{% url 'batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}sidebar-link-active border-start border-primary{% endif %}">Overview</a>
+                </li>
+                <li>
+                    <a href="{% url 'registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}sidebar-link-active border-start border-primary{% endif %}">Registrations</a>
                 </li>
                 <li>
                     <a href="{% url 'enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}sidebar-link-active border-start border-primary{% endif %}">Enrolments</a>

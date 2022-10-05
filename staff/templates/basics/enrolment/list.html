@@ -38,9 +38,8 @@
         <th scope="col">Last name</th>
         <th scope="col">Email</th>
         <th scope="col">Slack invitation</th>
-        <th scope="col">Referral code</th>
         <th scope="col">Status</th>
-        <th scope="col">Enrolled at</th>
+        <th scope="col">Enrolled on</th>
       </tr>
     </thead>
     <tbody>
@@ -54,13 +53,9 @@
         <td>Accepted</td>
         {% else %}
         <td>Has not accepted</td>
-        {% endif %} {% if enrolment.registration.referral_code %}
-        <td>{{ enrolment.registration.referral_code }}</td>
-        {% else %}
-        <td>-</td>
         {% endif %}
         <td>{{ enrolment.get_status_display }}</td>
-        <td>{{ enrolment.created_at }}</td>
+        <td>{{ enrolment.created_at|date:"d M, Y" }}</td>
       </tr>
       {% endfor %}
     </tbody>

@@ -264,3 +264,24 @@ def test_send_confirmation_email(mocker, registration):
     registration.send_confirmation_email()
 
     Sendgrid.send.assert_called_once()
+
+def test_payment_returns_payment_object_if_exists(registration):
+    payment = StripePayment.objects.create(
+        payable_type=type(registration).__name__,
+        payable_id=registration.id,
+        intent='pi_3L65dXHQt5htmvv4176vtmCj',
+        customer='cus_Lnh1zdmxckmUUU',
+        customer_email='customer_email@example.com',
+        amount=settings.CODING_BASICS_REGISTRATION_FEE_SGD * settings.CENTS_PER_DOLLAR,
+        currency=settings.SINGAPORE_DOLLAR_CURRENCY,
+        status='paid'
+    )
+
+    associated_payment = registration.payment()
+
+    assert associated_payment == payment
+
+def test_payment_returns_none_if_does_not_exist(registration):
+    associated_payment = registration.payment()
+
+    assert associated_payment is None
