@@ -1,6 +1,6 @@
 from django.urls import path
 
-from staff.views import batch, coupon, coupon_effect, enrolment, index, login, section
+from staff.views import batch, coupon, coupon_effect, enrolment, index, login, registration, section
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
@@ -15,6 +15,7 @@ urlpatterns = [
         name='create_zoom_breakout_csv'
     ),
     path('basics/batches/<int:batch_id>/graduate/', batch.GraduateView.as_view(), name='batch_graduate'),
+    path('basics/batches/<int:batch_id>/registrations/', registration.ListView.as_view(), name='registration_list'),
     path('basics/batches/<int:batch_id>/sections/', section.ListView.as_view(), name='section_list'),
     path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.DetailView.as_view(), name='section_detail'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
