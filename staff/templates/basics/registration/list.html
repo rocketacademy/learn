@@ -21,6 +21,7 @@
         <th scope="col">Payment status</th>
         <th scope="col">Amount</th>
         <th scope="col">Discount</th>
+        <th scope="col">Registration received</th>
       </tr>
     </thead>
     <tbody>
@@ -31,7 +32,18 @@
         <td>{{ registration.get_country_of_residence_display }}</td>
         <td>{{ registration.get_referral_channel_display }}</td>
         <td>{{ registration.referral_code }}</td>
-        <td>Payment status placeholder</td>
+        {% if registration.payment %}
+          <td>Paid</td>
+        {% else %}
+          <td>Not paid</td>
+        {% endif %}
+        <td>{{ registration.payment.dollar_amount }}</td>
+        {% if registration.payment.discount %}
+          <td>{{ registration.payment.discount.dollar_amount }}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
+        <td>{{ registration.created_at|date:"d M, Y" }}</td>
       </tr>
       {% endfor %}
     </tbody>

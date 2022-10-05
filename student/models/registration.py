@@ -130,3 +130,11 @@ class Registration(SafeDeleteModel):
                              to_email,
                              dynamic_template_data,
                              template_id)
+
+    def payment(self):
+        stripe_payment_queryset = StripePayment.objects.filter(payable_type=type(self).__name__, payable_id=self.id)
+
+        if stripe_payment_queryset:
+            return stripe_payment_queryset.first()
+
+        return None

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from payment.models.payment import Payment
 from payment.models.stripe_discount import StripeDiscount
@@ -11,3 +12,6 @@ class StripePayment(Payment):
     currency = models.CharField(max_length=5)
     status = models.CharField(max_length=20)
     discount = models.OneToOneField(StripeDiscount, on_delete=models.CASCADE, null=True, blank=True)
+
+    def dollar_amount(self):
+        return self.amount / settings.CENTS_PER_DOLLAR
