@@ -31,9 +31,13 @@
         <td>{{ registration.email }}</td>
         <td>{{ registration.get_country_of_residence_display }}</td>
         <td>{{ registration.get_referral_channel_display }}</td>
-        <td>{{ registration.referral_code }}</td>
+        {% if registration.referral_code %}
+          <td>{{ registration.referral_code }}</td>
+        {% else %}
+          <td>-</td>
+        {% endif %}
         {% if registration.payment %}
-          <td>Paid</td>
+          <td>{{ registration.payment.status.capitalize }}</td>
         {% else %}
           <td>Not paid</td>
         {% endif %}
