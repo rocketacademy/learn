@@ -3,45 +3,21 @@
 <div class="row py-2 border-bottom">
     <h3>Batch {{ batch.number }}</h3>
 </div>
-<div class="row">
-    <div class="col-12 d-md-none">
-        <nav>
-            <ul class="list-group list-group-horizontal navbar-nav topbar">
-                <li>
-                    <a href="{% url 'batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}topbar-link-active border-bottom border-primary{% endif %}">Overview</a>
-                </li>
-                <li>
-                    <a href="{% url 'registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}topbar-link-active border-bottom border-primary{% endif %}">Registrations</a>
-                </li>
-                <li>
-                    <a href="{% url 'enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}topbar-link-active border-bottom border-primary{% endif %}">Enrolments</a>
-                </li>
-                <li>
-                    <a href="{% url 'section_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'sections'%}topbar-link-active border-bottom border-primary{% endif %}">Sections</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="col-2 pt-4 border-end d-none d-md-block">
-        <nav>
-            <ul class="navbar-nav sidebar">
-                <li>
-                    <a href="{% url 'batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}sidebar-link-active border-start border-primary{% endif %}">Overview</a>
-                </li>
-                <li>
-                    <a href="{% url 'registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}sidebar-link-active border-start border-primary{% endif %}">Registrations</a>
-                </li>
-                <li>
-                    <a href="{% url 'enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}sidebar-link-active border-start border-primary{% endif %}">Enrolments</a>
-                </li>
-                <li>
-                    <a href="{% url 'section_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'sections'%}sidebar-link-active border-start border-primary{% endif %}">Sections</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="col-12">
-        {% block batch_content %}{% endblock %}
-    </div>
-</div>
+<nav>
+    <ul class="list-group list-group-horizontal navbar-nav topbar">
+        <li>
+            <a href="{% url 'batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}topbar-link-active border-bottom border-primary{% endif %}">Overview</a>
+        </li>
+        <li>
+            <a href="{% url 'registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}topbar-link-active border-bottom border-primary{% endif %}">Registrations</a>
+        </li>
+        <li>
+            <a href="{% url 'enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}topbar-link-active border-bottom border-primary{% endif %}">Enrolments</a>
+        </li>
+        <li>
+            <a href="{% url 'section_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'sections'%}topbar-link-active border-bottom border-primary{% endif %}">Sections</a>
+        </li>
+    </ul>
+</nav>
+{% block batch_content %}{% endblock %}
 {% endblock %}

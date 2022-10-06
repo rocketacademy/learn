@@ -5,16 +5,7 @@
     <h3>Section {{ section.number }}</h3>
 </div>
 <div class="row">
-    <div class="col-2 pt-4 d-none d-md-block">
-        <nav>
-            <ul class="navbar-nav sidebar">
-                <li>
-                    <a href="{% url 'section_detail' batch_id=batch.id section_id=section.id %}" class="nav-link {% if current_tab == 'overview' %}sidebar-link-active border-start border-primary{% endif %}">Overview</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="col-10 p-4 border-start">
+    <div class="col-10 p-4">
         <h5>Overview</h5>
         <div class="row mt-4">
             <div class="col-md-3 col-lg-3 my-2">

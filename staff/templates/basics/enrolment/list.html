@@ -1,34 +1,17 @@
 {% extends 'basics/batch/base.html' %}
-<div class="row py-2 border-bottom">
-  <h3>Batch {{ batch.number }}</h3>
-</div>
 {% block batch_content %}
 <div class="row p-4">
-  <div class="col-10">
-      <h4>Enrolments</h4>
-  </div>
-  <div class="col-2 d-none d-lg-block">
+  <div class="col-12">
+    <h4>Enrolments</h4>
     <a
     type="link"
     href="{% url 'create_zoom_breakout_csv' batch_id=batch.id %}"
     role="button"
-    class="btn btn-primary btn-sm px-4"
+    class="btn btn-primary btn-sm px-4 my-2"
     >
-      Download .csv
+    Download .csv
     </a>
   </div>
-  <div class="col-10 my-3 d-lg-none">
-    <a
-    type="link"
-    href="{% url 'create_zoom_breakout_csv' batch_id=batch.id %}"
-    role="button"
-    class="btn btn-primary btn-sm px-4"
-  >
-    Download .csv
-  </a>
-  </div>
-</div>
-<div class="row px-4">
   {% if enrolments.exists %}
   <div class="table-responsive">
     <table class="table">
