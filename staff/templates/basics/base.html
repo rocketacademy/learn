@@ -4,17 +4,7 @@
     <h3>Coding Basics</h3>
 </div>
 <div class="row">
-    <div class="col-2 pt-4 d-none d-md-block">
-        <nav>
-            <ul class="navbar-nav sidebar">
-                <li>
-                    <a href="{% url 'batch_list' %}"
-                        class="nav-link {% if current_tab == 'batches'%}sidebar-link-active border-start border-primary{% endif %}">Batches</a>
-                </li>             
-            </ul>
-        </nav>
-    </div>
-    <div class="col-12 p-4 border-start">
+    <div class="col-12 p-4">
         {% block overview_content %}{% endblock %}
     </div>
 </div>

@@ -1,9 +1,9 @@
 {% extends './base.html' %}
 {% block batch_content %}
-<div class="row">
-    <div class="col-9 p-4">
+<div class="row p-4">
+    <div class="col-12">
         <h4>Overview</h4>
-        <div class="my-3 d-lg-none">
+        <div class="my-2">
             <a
             type="link"
             href="{% url 'batch_edit' batch_id=batch.id %}"
@@ -78,24 +78,6 @@
             </div>
         </div>
         {% endfor %}
-    </div>
-    <div class="col-3 border-start p-4 d-none d-lg-block">
-        <a 
-        type="link"
-        href="{% url 'batch_edit' batch_id=batch.id %}"
-        role="button"
-        class="btn btn-outline-primary btn-sm px-4">
-            Edit batch details
-        </a>
-        {% if batch.ready_for_graduation %}
-            <a
-            type="link"
-            href="{% url 'batch_graduate' batch_id=batch.id %}"
-            role="button"
-            class="btn btn-outline-primary btn-sm my-1 px-4">
-                Process graduation
-            </a>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
