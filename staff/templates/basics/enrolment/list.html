@@ -28,38 +28,38 @@
   </a>
   </div>
 </div>
-<div class="row p-4">
+<div class="row px-4">
   {% if enrolments.exists %}
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Section</th>
-        <th scope="col">First name</th>
-        <th scope="col">Last name</th>
-        <th scope="col">Email</th>
-        <th scope="col">Slack invitation</th>
-        <th scope="col">Status</th>
-        <th scope="col">Enrolled on</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for enrolment in enrolments %}
-      <tr>
-        <td>{{ enrolment.section.number }}</td>
-        <td>{{ enrolment.registration.first_name|title }}</td>
-        <td>{{ enrolment.registration.last_name|title }}</td>
-        <td>{{ enrolment.registration.email }}</td>
-        {% if enrolment.student_user.slack_user_id %}
-        <td>Accepted</td>
-        {% else %}
-        <td>Has not accepted</td>
-        {% endif %}
-        <td>{{ enrolment.get_status_display }}</td>
-        <td>{{ enrolment.created_at|date:"d M, Y" }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Section</th>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Slack invitation</th>
+          <th scope="col">Status</th>
+          <th scope="col">Enrolled on</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for enrolment in enrolments %}
+        <tr>
+          <td>{{ enrolment.section.number }}</td>
+          <td>{{ enrolment.registration.first_name|title }} {{ enrolment.registration.last_name|title }}</td>
+          <td>{{ enrolment.registration.email }}</td>
+          {% if enrolment.student_user.slack_user_id %}
+          <td>Accepted</td>
+          {% else %}
+          <td>Has not accepted</td>
+          {% endif %}
+          <td>{{ enrolment.get_status_display }}</td>
+          <td>{{ enrolment.created_at|date:"d M, Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
   <div>There aren't any students enrolled in this batch yet</div>
   {% endif %}
