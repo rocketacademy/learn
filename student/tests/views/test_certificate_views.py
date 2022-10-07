@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 from django.conf import settings
 from django.http import HttpResponse
 from django.test import Client
@@ -6,7 +6,7 @@ from django.urls import reverse
 import pytest
 
 from authentication.models import StudentUser
-from staff.models import Batch, Course, Section
+from staff.models import Section
 from staff.models.certificate import Certificate
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
@@ -16,25 +16,18 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture()
-def certificate():
+def certificate(batch_factory):
     email = 'studentname@example.com'
     first_name = 'Student'
     last_name = 'Name'
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=date.today(),
-        end_date=date.today() + timedelta(days=1),
-        capacity=1,
-        sections=1,
-    )
+    batch = batch_factory()
     section = Section.objects.create(
         batch=batch,
         number=1,
         capacity=1
     )
     registration = Registration.objects.create(
-        course=course,
+        course=batch.course,
         batch=batch,
         first_name=first_name,
         last_name=last_name,

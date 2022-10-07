@@ -1,16 +1,14 @@
-import datetime
+from datetime import datetime
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
-from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils.timezone import make_aware
 import pytest
 
 from payment.models.coupon import Coupon
 from payment.models.coupon_effect import CouponEffect
-from staff.models.course import Course
 from staff.views.coupon import DetailView
 
 pytestmark = pytest.mark.django_db
@@ -31,16 +29,16 @@ def logged_in_existing_user():
     yield logged_in_existing_user
 
 @pytest.fixture()
-def coupon():
-    course = Course.objects.create(name=Course.CODING_BASICS)
+def coupon(course_factory):
+    coding_basics_course = course_factory()
     coupon_effect = CouponEffect.objects.create(
-        couponable_type=course.__class__.__name__,
-        couponable_id=course.id,
+        couponable_type=coding_basics_course.__class__.__name__,
+        couponable_id=coding_basics_course.id,
         discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
     coupon = Coupon.objects.create(
-        start_date=make_aware(datetime.datetime.now()),
+        start_date=make_aware(datetime.now()),
         end_date=None,
         description='Some description'
     )

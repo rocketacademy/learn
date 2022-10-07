@@ -1,12 +1,10 @@
-import datetime
-from django.http import HttpResponse, HttpResponseRedirect
-from django.test import RequestFactory
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse, HttpResponseRedirect
+from django.test import RequestFactory
 import pytest
 
-from staff.models import Batch, Course
 from staff.views.batch import ListView
 
 pytestmark = pytest.mark.django_db
@@ -22,23 +20,6 @@ def existing_user():
     )
 
     yield existing_user
-
-@pytest.fixture()
-def batch():
-    COURSE_NAME = Course.CODING_BASICS
-    COURSE_DURATION_IN_DAYS = 35
-
-    start_date = datetime.date.today()
-    course = Course.objects.create(name=COURSE_NAME)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS),
-        capacity=90,
-        sections=5
-    )
-
-    yield batch
 
 def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/basics/batches/')

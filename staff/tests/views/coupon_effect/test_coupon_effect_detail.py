@@ -1,12 +1,11 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 import pytest
 
 from payment.models.coupon_effect import CouponEffect
-from staff.models.course import Course
 from staff.views.coupon_effect import DetailView
 
 pytestmark = pytest.mark.django_db
@@ -27,8 +26,8 @@ def logged_in_existing_user():
     yield logged_in_existing_user
 
 @pytest.fixture()
-def coupon_effect():
-    course = Course.objects.create(name=Course.CODING_BASICS)
+def coupon_effect(course_factory):
+    course = course_factory()
     coupon_effect = CouponEffect.objects.create(
         couponable_type=course.__class__.__name__,
         couponable_id=course.id,

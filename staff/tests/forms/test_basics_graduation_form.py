@@ -10,30 +10,18 @@ from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
 
-@pytest.fixture()
-def batch():
-    start_date = datetime.date.today()
-    end_date = start_date + datetime.timedelta(35)
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=end_date,
-        capacity=90,
-        sections=5
-    )
-
-    yield batch
 
 class TestBasicsGraduationForm:
-    def test_empty_form_is_valid(self, batch):
+    def test_empty_form_is_valid(self, batch_factory):
+        batch = batch_factory()
         basics_graduation_form = BasicsGraduationForm(data={}, batch_id=batch.id)
 
         outcome = basics_graduation_form.is_valid()
 
         assert outcome is True
 
-    def test_form_contains_checkboxes_for_enrolled_student_users(self, batch):
+    def test_form_contains_checkboxes_for_enrolled_student_users(self, batch_factory):
+        batch = batch_factory()
         section = Section.objects.create(
             batch=batch,
             number=1,

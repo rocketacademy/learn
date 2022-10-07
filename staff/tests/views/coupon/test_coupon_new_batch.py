@@ -32,8 +32,8 @@ def logged_in_existing_user():
     yield logged_in_existing_user
 
 @pytest.fixture()
-def coupon_effect_basics():
-    coding_basics_course = Course.objects.create(name=Course.CODING_BASICS)
+def coupon_effect_basics(course_factory):
+    coding_basics_course = course_factory()
     coupon_effect_basics = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,
@@ -44,8 +44,8 @@ def coupon_effect_basics():
     yield coupon_effect_basics
 
 @pytest.fixture()
-def coupon_effect_bootcamp():
-    coding_bootcamp_course = Course.objects.create(name=Course.CODING_BOOTCAMP)
+def coupon_effect_bootcamp(course_factory):
+    coding_bootcamp_course = course_factory(name=Course.CODING_BOOTCAMP)
     coupon_effect_bootcamp = CouponEffect.objects.create(
         couponable_type=type(coding_bootcamp_course).__name__,
         couponable_id=coding_bootcamp_course.id,

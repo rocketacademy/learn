@@ -7,27 +7,9 @@ from staff.models import Batch, BatchSchedule, Course
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture()
-def batch():
-    COURSE_DURATION_IN_DAYS = 35
-    start_date = datetime.date.today()
-    end_date = start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS)
-    capacity = 90
-    sections = 5
-
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=end_date,
-        capacity=capacity,
-        sections=sections
-    )
-
-    yield batch
-
 class TestBatchScheduleCreation:
-    def test_string_representation(self, batch):
+    def test_string_representation(self, batch_factory):
+        batch = batch_factory()
         batch_schedule = BatchSchedule.objects.create(
             batch=batch,
             day='MON',

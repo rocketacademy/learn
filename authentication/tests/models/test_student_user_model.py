@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 import pytest
 
 from authentication.models import StudentUser
-from staff.models import Batch, Course, Section
+from staff.models import Section
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
 
@@ -29,22 +29,15 @@ def student_user():
     yield student_user
 
 @pytest.fixture()
-def enrolment():
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=date.today(),
-        end_date=date.today() + timedelta(days=1),
-        capacity=1,
-        sections=1,
-    )
+def enrolment(batch_factory):
+    batch = batch_factory()
     section = Section.objects.create(
         batch=batch,
         number=1,
         capacity=1
     )
     registration = Registration.objects.create(
-        course=course,
+        course=batch.course,
         batch=batch,
         first_name=first_name,
         last_name=last_name,
@@ -76,15 +69,8 @@ def test_current_enrolled_batches_does_not_return_batches_that_have_ended(studen
 
     assert list(current_enrolled_batches) == []
 
-def test_current_enrolled_batches_returns_empty_if_no_enrolments(student_user):
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=date.today(),
-        end_date=date.today() + timedelta(days=1),
-        capacity=1,
-        sections=1,
-    )
+def test_current_enrolled_batches_returns_empty_if_no_enrolments(student_user, batch_factory):
+    batch_without_enrolments = batch_factory()
 
     current_enrolled_batches = student_user.current_enrolled_batches()
 

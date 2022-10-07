@@ -1,16 +1,15 @@
-import pytest
 from django.utils.timezone import now, timedelta
+import pytest
 
 from payment.models.coupon import Coupon
 from payment.models.coupon_effect import CouponEffect
-from staff.models import Course
 from student.forms import StudentInfoForm
 
 pytestmark = pytest.mark.django_db
 
 
-def test_validation_error_shows_when_referral_code_does_not_exist():
-    course = Course.objects.create(name=Course.CODING_BASICS)
+def test_validation_error_shows_when_referral_code_does_not_exist(course_factory):
+    course = course_factory()
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
@@ -39,8 +38,8 @@ def test_validation_error_shows_when_referral_code_does_not_exist():
     assert 'Referral code is invalid' in student_info_form.errors['referral_code']
 
 
-def test_validation_error_shows_when_referral_code_premature():
-    course = Course.objects.create(name=Course.CODING_BASICS)
+def test_validation_error_shows_when_referral_code_premature(course_factory):
+    course = course_factory()
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
@@ -66,8 +65,8 @@ def test_validation_error_shows_when_referral_code_premature():
     assert 'Referral code is not in effect yet' in student_info_form.errors['referral_code']
 
 
-def test_validation_error_shows_when_referral_code_expired():
-    course = Course.objects.create(name=Course.CODING_BASICS)
+def test_validation_error_shows_when_referral_code_expired(course_factory):
+    course = course_factory()
     coupon_effect = CouponEffect.objects.create(
         couponable_type=type(course).__name__,
         couponable_id=course.id,
