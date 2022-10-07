@@ -33,6 +33,7 @@ psycopg2-binary = "*"
 flake8 = "*"
 freezegun = "*"
 pytest-mock = "*"
+pytest-factoryboy = "*"
 
 [requires]
 python_version = "3.10"

@@ -6,16 +6,11 @@ from staff.models import Course
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture()
-def course():
-    course = Course.objects.create(name=Course.CODING_BASICS)
-
-    yield course
-
-def test_string_representation_when_couponable_exists(course):
+def test_string_representation_when_couponable_exists(course_factory):
+    coding_basics_course = course_factory(name=Course.CODING_BASICS)
     coupon_effect = CouponEffect.objects.create(
-        couponable_type=course.__class__.__name__,
-        couponable_id=course.id,
+        couponable_type=coding_basics_course.__class__.__name__,
+        couponable_id=coding_basics_course.id,
         discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
