@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, datetime, timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
@@ -33,42 +33,16 @@ def existing_user():
 
     yield existing_user
 
-
 @pytest.fixture()
-def batch():
-    COURSE_NAME = Course.CODING_BASICS
-    COURSE_DURATION_IN_DAYS = 35
-
-    start_date = datetime.date.today() + datetime.timedelta(days=1)
-    course = Course.objects.create(name=COURSE_NAME)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS),
-        capacity=90,
-        sections=5
-    )
-
-    yield batch
-
-
-@pytest.fixture()
-def registration():
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=datetime.date.today(),
-        end_date=datetime.date.today() + datetime.timedelta(days=1),
-        capacity=1,
-        sections=1,
-    )
+def registration(batch_factory):
+    batch = batch_factory()
     Section.objects.create(
         batch=batch,
         number=1,
         capacity=1
     )
     registration = Registration.objects.create(
-        course=course,
+        course=batch.course,
         batch=batch,
         first_name='FirstName',
         last_name='LastName',
@@ -80,16 +54,11 @@ def registration():
     yield registration
 
 @pytest.fixture()
-def early_bird_registration():
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    start_date = datetime.date.today() + datetime.timedelta(days=21)
-    end_date = start_date + datetime.timedelta(days=1)
-    batch = Batch.objects.create(
-        course=course,
+def early_bird_registration(batch_factory):
+    start_date = date.today() + timedelta(days=21)
+    batch = batch_factory(
         start_date=start_date,
-        end_date=end_date,
-        capacity=1,
-        sections=1,
+        end_date=start_date + timedelta(days=1)
     )
     Section.objects.create(
         batch=batch,
@@ -97,7 +66,7 @@ def early_bird_registration():
         capacity=1
     )
     early_bird_registration = Registration.objects.create(
-        course=course,
+        course=batch.course,
         batch=batch,
         first_name='FirstName',
         last_name='LastName',
@@ -107,15 +76,8 @@ def early_bird_registration():
     )
     return early_bird_registration
 
-def test_registration_form_renders_batch_on_start_date():
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=datetime.date.today(),
-        end_date=datetime.date.today() + datetime.timedelta(days=35),
-        capacity=1,
-        sections=1,
-    )
+def test_registration_form_renders_batch_on_start_date(batch_factory):
+    batch = batch_factory()
     Section.objects.create(
         batch=batch,
         number=1,
@@ -128,7 +90,8 @@ def test_registration_form_renders_batch_on_start_date():
     assert 'id="id_batch_selection-batch_0"' in str(response.content)
 
 
-def test_registration_wizard_form_existing_user(batch, existing_user):
+def test_registration_wizard_form_existing_user(batch_factory, existing_user):
+    batch = batch_factory()
     batch_selection_form_response = client.post(reverse('basics_register'), {
         'registration_wizard-current_step': 'batch_selection',
         'batch_selection-batch': '1',
@@ -149,7 +112,8 @@ def test_registration_wizard_form_existing_user(batch, existing_user):
     assert User.objects.all().count() == 1
 
 
-def test_registration_wizard_form_new_user(batch, existing_user):
+def test_registration_wizard_form_new_user(batch_factory, existing_user):
+    batch_factory()
     client.post(reverse('basics_register'), {
         'registration_wizard-current_step': 'batch_selection',
         'batch_selection-batch': '1',
@@ -187,7 +151,7 @@ def test_payment_preview_get_passes_stripe_coupon_id_to_render_if_referral_code_
         discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
-    coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()),)
+    coupon = Coupon.objects.create(start_date=make_aware(datetime.now()),)
     coupon.effects.set([coupon_effect])
     registration.referral_code = coupon.code
     registration.save()
@@ -269,7 +233,7 @@ def test_payment_preview_get_renders_early_bird_price_with_valid_referral_code(e
         discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
-    coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()),)
+    coupon = Coupon.objects.create(start_date=make_aware(datetime.now()),)
     coupon.effects.set([coupon_effect])
     early_bird_registration.referral_code = coupon.code
     early_bird_registration.save()

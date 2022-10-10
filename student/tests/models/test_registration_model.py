@@ -1,4 +1,3 @@
-import datetime
 from django.conf import settings
 import pytest
 
@@ -6,7 +5,6 @@ from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
 from payment.models.stripe_payment import StripePayment
 from staff.models.batch import Batch
-from staff.models.course import Course
 from staff.models.section import Section
 from student.library.hubspot import Hubspot
 from student.models.enrolment import Enrolment
@@ -16,21 +14,12 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture()
-def registration():
-    COURSE_DURATION_IN_DAYS = 35
+def registration(batch_factory):
     first_name = 'FirstName'
     last_name = 'LastName'
     email = 'user@example.com'
-    start_date = datetime.date.today()
 
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS),
-        capacity=18,
-        sections=1
-    )
+    batch = batch_factory()
     Section.objects.create(
         batch=batch,
         number=1,
@@ -43,7 +32,7 @@ def registration():
         password=settings.PLACEHOLDER_PASSWORD
     )
     registration = Registration.objects.create(
-        course=course,
+        course=batch.course,
         batch=batch,
         first_name=first_name,
         last_name=last_name,

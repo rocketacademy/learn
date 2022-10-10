@@ -32,18 +32,6 @@ def logged_in_existing_user():
 
     yield logged_in_existing_user
 
-@pytest.fixture()
-def coding_basics_course():
-    coding_basics_course = Course.objects.create(name=Course.CODING_BASICS)
-
-    yield coding_basics_course
-
-@pytest.fixture()
-def coding_bootcamp_course():
-    coding_bootcamp_course = Course.objects.create(name=Course.CODING_BOOTCAMP)
-
-    yield coding_bootcamp_course
-
 def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/coupon-effects/new/')
     request.user = AnonymousUser()
@@ -60,7 +48,8 @@ def test_get_renders_with_form_when_user_logged_in(logged_in_existing_user):
     assert 'coupon_effect/new.html' in (template.name for template in response.templates)
     assert 'coupon_effect_form' in response.context
 
-def test_post_saves_coupon_effect_for_dollars_discount_type(coding_basics_course, logged_in_existing_user):
+def test_post_saves_coupon_effect_for_dollars_discount_type(course_factory, logged_in_existing_user):
+    coding_basics_course = course_factory(name=Course.CODING_BASICS)
     discount = {
         'type': CouponEffect.DOLLARS,
         'amount': 15
@@ -83,7 +72,8 @@ def test_post_saves_coupon_effect_for_dollars_discount_type(coding_basics_course
     assert coupon_effect.discount_amount == discount['amount']
     assert coupon_effect.discount_type == discount['type']
 
-def test_post_saves_coupon_effect_for_percent_discount_type(coding_basics_course, logged_in_existing_user):
+def test_post_saves_coupon_effect_for_percent_discount_type(course_factory, logged_in_existing_user):
+    coding_basics_course = course_factory(name=Course.CODING_BASICS)
     discount = {
         'type': CouponEffect.PERCENTAGE,
         'amount': 15
@@ -106,7 +96,8 @@ def test_post_saves_coupon_effect_for_percent_discount_type(coding_basics_course
     assert coupon_effect.discount_amount == discount['amount']
     assert coupon_effect.discount_type == discount['type']
 
-def test_post_saves_coupon_effect_for_coding_bootcamp_couponable(coding_bootcamp_course, logged_in_existing_user):
+def test_post_saves_coupon_effect_for_coding_bootcamp_couponable(course_factory, logged_in_existing_user):
+    coding_bootcamp_course = course_factory(name=Course.CODING_BOOTCAMP)
     discount = {
         'type': CouponEffect.DOLLARS,
         'amount': 15

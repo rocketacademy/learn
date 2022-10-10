@@ -1,9 +1,9 @@
-import datetime
+from datetime import date, timedelta
 from django.conf import settings
 import pytest
-from authentication.models import StudentUser
 
-from staff.models import Batch, Course, Section
+from authentication.models import StudentUser
+from staff.models import Section
 from student.management.commands.add_students_to_slack_section_channels import Command
 from student.library.slack import Slack
 from student.models.enrolment import Enrolment
@@ -13,30 +13,24 @@ pytestmark = pytest.mark.django_db
 COURSE_DURATION_IN_DAYS = 35
 
 
-def test_only_picks_up_batches_starting_in_7_days(mocker):
-    today = datetime.date.today()
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    start_date_7_days_from_now = today + datetime.timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS)
-    batch_starting_in_7_days = Batch.objects.create(
-        course=course,
+def test_only_picks_up_batches_starting_in_7_days(mocker, batch_factory):
+    start_date_7_days_from_now = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS)
+    batch_starting_in_7_days = batch_factory.create(
         start_date=start_date_7_days_from_now,
-        end_date=start_date_7_days_from_now + datetime.timedelta(COURSE_DURATION_IN_DAYS),
-        capacity=18,
-        sections=1
+        end_date=start_date_7_days_from_now + timedelta(COURSE_DURATION_IN_DAYS)
     )
+    course = batch_starting_in_7_days.course
     section = Section.objects.create(
         batch=batch_starting_in_7_days,
         number=1,
         capacity=18,
         slack_channel_id='C1234B'
     )
-    start_date_8_days_from_now = today + datetime.timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS + 1)
-    batch_starting_in_8_days = Batch.objects.create(
+    start_date_8_days_from_now = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS + 1)
+    batch_starting_in_8_days = batch_factory.create(
         course=course,
         start_date=start_date_8_days_from_now,
-        end_date=start_date_8_days_from_now + datetime.timedelta(COURSE_DURATION_IN_DAYS),
-        capacity=18,
-        sections=1
+        end_date=start_date_8_days_from_now + timedelta(COURSE_DURATION_IN_DAYS)
     )
     registration = Registration.objects.create(
         course=course,

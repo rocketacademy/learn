@@ -11,11 +11,11 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture()
-def coupon_effect():
-    course = Course.objects.create(name=Course.CODING_BASICS)
+def coupon_effect(course_factory):
+    coding_basics_course = course_factory.create(name=Course.CODING_BASICS)
     coupon_effect = CouponEffect.objects.create(
-        couponable_type=course.__class__.__name__,
-        couponable_id=course.id,
+        couponable_type=coding_basics_course.__class__.__name__,
+        couponable_id=coding_basics_course.id,
         discount_type=CouponEffect.DOLLARS,
         discount_amount=10
     )
@@ -83,8 +83,8 @@ def test_get_effects_display():
 
     assert html_formatted_coupon_effects == "$10 off<br>$20 off<br>"
 
-def test_biggest_discount_for_coding_basics():
-    coding_basics_course = Course.objects.create(name=Course.CODING_BASICS)
+def test_biggest_discount_for_coding_basics(course_factory):
+    coding_basics_course = course_factory.create(name=Course.CODING_BASICS)
     discount_for_coding_basics_1 = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,

@@ -1,8 +1,7 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
-from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from freezegun import freeze_time
 import pytest
@@ -26,11 +25,6 @@ def existing_user():
 
     yield existing_user
 
-@pytest.fixture()
-def course():
-    yield Course.objects.create(name=Course.CODING_BASICS)
-
-
 def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/basics/batches/new/')
     request.user = AnonymousUser()
@@ -40,7 +34,8 @@ def test_anonymous_user_redirected_to_login():
     assert response.status_code == HttpResponseRedirect.status_code
     assert 'staff/login/?next=/basics/batches/' in response.url
 
-def test_logged_in_user_can_access(course, existing_user):
+def test_logged_in_user_can_access(course_factory, existing_user):
+    course_factory()
     request = RequestFactory().get('/basics/batches/new/')
     request.user = existing_user
 
@@ -49,7 +44,8 @@ def test_logged_in_user_can_access(course, existing_user):
     assert response.status_code == HttpResponse.status_code
 
 @patch('staff.views.batch.create_batch_slack_channel')
-def test_valid_form_creates_records(mock_create_batch_slack_channel, course, existing_user):
+def test_valid_form_creates_records(mock_create_batch_slack_channel, course_factory, existing_user):
+    course_factory()
     number_of_sections = 6
     section_capacity = 18
     number_of_batch_schedules = 2

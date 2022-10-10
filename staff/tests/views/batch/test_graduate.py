@@ -1,16 +1,16 @@
-import datetime
-from django.http import HttpResponse, HttpResponseRedirect
-from django.test import Client, RequestFactory
+from datetime import date, timedelta
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse, HttpResponseRedirect
+from django.test import Client, RequestFactory
 from django.urls import reverse
 import pytest
 
 from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
 from payment.models import CouponEffect, ReferralCoupon
-from staff.models import Batch, Certificate, Course, Section
+from staff.models import Certificate, Course, Section
 from staff.views.batch import GraduateView
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
@@ -31,33 +31,31 @@ def existing_user():
 
     yield existing_user
 
-@pytest.fixture()
-def batch():
-    start_date = datetime.date.today() - datetime.timedelta(days=2)
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=start_date + datetime.timedelta(days=1),
-        capacity=90,
-        sections=5
-    )
+def test_get_anonymous_user_redirected_to_login(batch_factory):
+    batch = batch_factory()
+    request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate/")
+    request.user = AnonymousUser()
 
-    yield batch
+    response = GraduateView.as_view()(request, batch.id)
 
-@pytest.fixture()
-def batch_ready_for_graduation():
+    assert response.status_code == HttpResponseRedirect.status_code
+    assert f"staff/login/?next=/basics/batches/{batch.id}/graduate/" in response.url
+
+def test_get_logged_in_user_can_access(batch, existing_user):
+    request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate")
+    request.user = existing_user
+
+    response = GraduateView.as_view()(request, batch.id)
+
+    assert response.status_code == HttpResponseRedirect.status_code
+
+def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_factory, existing_user):
     email = 'studentname@example.com'
     first_name = 'Student'
     last_name = 'Name'
-    start_date = datetime.date.today() - datetime.timedelta(days=2)
-    coding_basics_course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=coding_basics_course,
-        start_date=start_date,
-        end_date=start_date + datetime.timedelta(days=1),
-        capacity=90,
-        sections=5
+    batch = batch_factory.create(
+        start_date=date.today() - timedelta(days=2),
+        end_date=date.today() - timedelta(days=1),
     )
     section = Section.objects.create(
         batch=batch,
@@ -65,7 +63,7 @@ def batch_ready_for_graduation():
         capacity=1
     )
     registration = Registration.objects.create(
-        course=coding_basics_course,
+        course=batch.course,
         batch=batch,
         first_name=first_name,
         last_name=last_name,
@@ -86,43 +84,23 @@ def batch_ready_for_graduation():
         student_user=student_user
     )
 
-    yield batch
-
-def test_get_anonymous_user_redirected_to_login(batch):
-    request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate/")
-    request.user = AnonymousUser()
-
-    response = GraduateView.as_view()(request, batch.id)
-
-    assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{batch.id}/graduate/" in response.url
-
-def test_get_logged_in_user_can_access(batch, existing_user):
-    request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate")
-    request.user = existing_user
-
-    response = GraduateView.as_view()(request, batch.id)
-
-    assert response.status_code == HttpResponseRedirect.status_code
-
-def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_ready_for_graduation, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch_ready_for_graduation.id}))
+    response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/graduate.html' in (template.name for template in response.templates)
 
-def test_get_redirection_if_batch_is_not_ready_for_graduation(batch, existing_user):
-    batch.end_date = datetime.date.today() + datetime.timedelta(days=1)
-    batch.save()
+def test_get_redirection_if_batch_is_not_ready_for_graduation(batch_factory, existing_user):
+    batch = batch_factory()
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
     response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponseRedirect.status_code
 
-def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existing_user):
+def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch_factory, course_factory, existing_user):
+    batch = batch_factory()
     section = Section.objects.create(
         batch=batch,
         number=1,
@@ -173,7 +151,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch, existin
         status=Enrolment.ENROLLED
     )
     coding_basics_course = batch.course
-    coding_bootcamp_course = Course.objects.create(name=Course.CODING_BOOTCAMP)
+    coding_bootcamp_course = course_factory.create(name=Course.CODING_BOOTCAMP)
     basics_coupon_effect = CouponEffect.objects.create(
         couponable_type=type(coding_basics_course).__name__,
         couponable_id=coding_basics_course.id,

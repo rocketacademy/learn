@@ -1,9 +1,8 @@
-from datetime import date, timedelta
 from django.conf import settings
 import pytest
 
 from authentication.models import StudentUser
-from staff.models import Batch, Course, Section
+from staff.models import Section
 from student.library.slack import Slack
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
@@ -28,17 +27,8 @@ def student_user():
     yield student_user
 
 @pytest.fixture()
-def enrolment():
-    course = Course.objects.create(name=Course.CODING_BASICS)
-    batch = Batch.objects.create(
-        course=course,
-        number=1,
-        start_date=date.today(),
-        end_date=date.today() + timedelta(days=1),
-        capacity=1,
-        sections=1,
-        slack_channel_id='C987654A',
-    )
+def enrolment(batch_factory):
+    batch = batch_factory(slack_channel_id='C987654A')
     section = Section.objects.create(
         batch=batch,
         number=1,
@@ -46,7 +36,7 @@ def enrolment():
         slack_channel_id='C123456B',
     )
     registration = Registration.objects.create(
-        course=course,
+        course=batch.course,
         batch=batch,
         first_name=first_name,
         last_name=last_name,
