@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
@@ -82,6 +83,8 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
     batch = Batch.objects.first()
     assert batch.capacity == number_of_sections * section_capacity
     assert batch.course == Course.objects.get(name=Course.CODING_BASICS)
+    assert batch.price == settings.CODING_BASICS_REGISTRATION_FEE_SGD
+    assert batch.type == Batch.PART_TIME
 
     section_queryset = Section.objects.all()
     first_section = section_queryset.first()

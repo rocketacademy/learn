@@ -12,6 +12,14 @@ from student.models.enrolment import Enrolment
 class Batch(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
+    PART_TIME = 'part_time'
+    FULL_TIME = 'full_time'
+
+    TYPE_CHOICES = [
+        (PART_TIME, 'Part-time'),
+        (FULL_TIME, 'Full-time')
+    ]
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     number = models.PositiveIntegerField()
     start_date = models.DateField(blank=False)
@@ -19,6 +27,8 @@ class Batch(SafeDeleteModel):
     capacity = models.PositiveIntegerField(blank=False)
     sections = models.PositiveIntegerField(blank=False)
     slack_channel_id = models.CharField(max_length=20, null=True, blank=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    type = models.CharField(max_length=9, choices=TYPE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
