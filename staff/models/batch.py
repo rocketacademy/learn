@@ -27,8 +27,8 @@ class Batch(SafeDeleteModel):
     capacity = models.PositiveIntegerField(blank=False)
     sections = models.PositiveIntegerField(blank=False)
     slack_channel_id = models.CharField(max_length=20, null=True, blank=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    type = models.CharField(max_length=9, choices=TYPE_CHOICES)
+    price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    type = models.CharField(max_length=9, choices=TYPE_CHOICES, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
