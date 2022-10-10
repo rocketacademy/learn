@@ -84,7 +84,9 @@ class NewView(LoginRequiredMixin, View):
                         capacity=sections * section_capacity,
                         start_date=batch_form.cleaned_data.get('start_date'),
                         end_date=batch_form.cleaned_data.get('end_date'),
-                        sections=sections
+                        sections=sections,
+                        price=settings.CODING_BASICS_REGISTRATION_FEE_SGD,
+                        type=Batch.PART_TIME
                     )
                     for section_number in range(1, sections + 1):
                         Section.objects.create(

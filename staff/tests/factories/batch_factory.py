@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from django.conf import settings
 import factory
 
 from staff.models import Batch
@@ -17,3 +18,5 @@ class BatchFactory(factory.django.DjangoModelFactory):
     capacity = 32
     sections = 2
     slack_channel_id = None
+    price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+    type = Batch.PART_TIME

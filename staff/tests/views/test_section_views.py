@@ -1,4 +1,3 @@
-import datetime
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.contrib.auth.models import AnonymousUser
@@ -6,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 import pytest
 
-from staff.models import Batch, Course, Section
+from staff.models import Section
 from staff.views.section import ListView
 
 pytestmark = pytest.mark.django_db
@@ -26,26 +25,10 @@ def logged_in_existing_user():
     yield logged_in_existing_user
 
 @pytest.fixture()
-def batch():
-    COURSE_NAME = 'CODING_BASICS'
-    COURSE_DURATION_IN_DAYS = 35
-
-    start_date = datetime.date.today()
-    course = Course.objects.create(name=COURSE_NAME)
-    batch = Batch.objects.create(
-        course=course,
-        start_date=start_date,
-        end_date=start_date + datetime.timedelta(COURSE_DURATION_IN_DAYS),
-        capacity=90,
-        sections=5
-    )
-
-    yield batch
-
-@pytest.fixture()
-def sections(batch):
+def sections(batch_factory):
     SECTION_CAPACITY = 18
 
+    batch = batch_factory()
     Section.objects.create(
         batch=batch,
         number=1,
