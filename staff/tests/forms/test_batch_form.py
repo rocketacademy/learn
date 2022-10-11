@@ -57,3 +57,15 @@ class TestBatchForm:
 
         assert outcome is False
         assert 'Each batch should have at least one section' in batch_form.errors['sections']
+
+    def test_form_should_require_positive_number_for_price(self):
+        batch_form = BatchForm(
+            data={
+                'price': 0,
+            }
+        )
+
+        outcome = batch_form.is_valid()
+
+        assert outcome is False
+        assert 'Course fees should be greater than 0' in batch_form.errors['price']

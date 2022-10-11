@@ -37,6 +37,14 @@
                     {{ section_form.capacity|as_crispy_field }}
                 </h6>
             </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-3 my-2">
+                    {{ batch_form.type|as_crispy_field }}
+                </div>
+                <div class="col-md-6 col-lg-3 my-2">
+                    {{ batch_form.price|as_crispy_field }}
+                </div>
+            </div>
             <div class="mt-5"><h5>Schedule</h5></div>
             <div class="row mt-4">
                 <div class="col-md-3 col-lg-2">
