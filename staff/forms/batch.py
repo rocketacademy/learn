@@ -9,12 +9,19 @@ class BatchForm(forms.ModelForm):
         fields = [
             'start_date',
             'end_date',
-            'sections'
+            'sections',
+            'price',
+            'type'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'sections': forms.NumberInput()
+            'sections': forms.NumberInput(),
+            'price': forms.NumberInput(),
+            'type': forms.Select()
+        }
+        labels = {
+            'price': 'Course fee per student'
         }
 
     def clean(self):
@@ -49,3 +56,14 @@ class BatchForm(forms.ModelForm):
             )
 
         return sections
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+
+        if not price > 0:
+            raise forms.ValidationError(
+                ('Course fees should be greater than 0'),
+                code='invalid_price'
+            )
+
+        return price
