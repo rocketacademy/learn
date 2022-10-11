@@ -89,8 +89,8 @@ class Batch(SafeDeleteModel):
 
         early_bird_discounted_price = original_price - self.early_bird_discount()
         if early_bird_discounted_price < original_price:
-            html_formatted_price = f"<span class='float-end d-none d-xl-block'>S${early_bird_discounted_price}  <span class='text-white-50'><s>S${original_price}</s></span></span>"
-            html_formatted_price += f"<div class='lh-lg d-xl-none'>S${early_bird_discounted_price}  <span class='text-white-50'><s>S${original_price}</s></span></div>"
+            html_formatted_price = f"<span class='float-end d-none d-xl-block'>S${early_bird_discounted_price}  <span id='original-price'><s>S${original_price}</s></span></span>"
+            html_formatted_price += f"<div class='lh-lg d-xl-none'>S${early_bird_discounted_price}  <span id='original-price'><s>S${original_price}</s></span></div>"
         return format_html(html_formatted_price)
 
     def early_bird_discount(self):

@@ -43,8 +43,16 @@ ul {
     margin: 10px 0px 10px 0px;
 }
 
+.basics-registration-form #original-price{
+    color: grey;
+}
+
 .basics-registration-form input[type="radio"]:checked + label {
     color: white;
     background-color: #00567E;
     border-color: #00567E;
+}
+
+.basics-registration-form input[type="radio"]:checked + label #original-price {
+    color: lightgrey;
 }
