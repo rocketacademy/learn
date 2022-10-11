@@ -27,7 +27,7 @@ class Batch(SafeDeleteModel):
     capacity = models.PositiveIntegerField(blank=False)
     sections = models.PositiveIntegerField(blank=False)
     slack_channel_id = models.CharField(max_length=20, null=True, blank=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    price = models.PositiveIntegerField(null=True)
     type = models.CharField(max_length=9, choices=TYPE_CHOICES, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -83,14 +83,14 @@ class Batch(SafeDeleteModel):
         return (self.end_date <= datetime.date.today()) and enrolments_pending_graduation.exists()
 
     def html_formatted_batch_price(self):
-        original_price = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        original_price = self.price
         html_formatted_price = f"<span class='float-end d-none d-xl-block'>${original_price}</span>"
         html_formatted_price += f"<div class='lh-lg d-xl-none my-10'>${original_price}<div>"
 
         early_bird_discounted_price = original_price - self.early_bird_discount()
-        if early_bird_discounted_price is not original_price:
-            html_formatted_price = f"<span class='float-end d-none d-xl-block'>${early_bird_discounted_price}  <span class='text-secondary'><s>${original_price}</s></span></span>"
-            html_formatted_price += f"<div class='lh-lg d-xl-none'>${early_bird_discounted_price}  <span class='text-secondary'><s>${original_price}</s></span></div>"
+        if early_bird_discounted_price < original_price:
+            html_formatted_price = f"<span class='float-end d-none d-xl-block'>${early_bird_discounted_price}  <span class='text-white-50'><s>${original_price}</s></span></span>"
+            html_formatted_price += f"<div class='lh-lg d-xl-none'>${early_bird_discounted_price}  <span class='text-white-50'><s>${original_price}</s></span></div>"
         return format_html(html_formatted_price)
 
     def early_bird_discount(self):

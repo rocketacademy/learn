@@ -190,6 +190,6 @@ def test_html_formatted_batch_price_returns_discounted_price_formatting_after_20
 
     html_formatted_batch_price = batch.html_formatted_batch_price()
 
-    required_string = "<span class='float-end d-none d-xl-block'>$189  <span class='text-secondary'><s>$199</s></span></span>"
-    required_string += "<div class='lh-lg d-xl-none'>$189  <span class='text-secondary'><s>$199</s></span></div>"
+    required_string = "<span class='float-end d-none d-xl-block'>$189  <span class='text-white-50'><s>$199</s></span></span>"
+    required_string += "<div class='lh-lg d-xl-none'>$189  <span class='text-white-50'><s>$199</s></span></div>"
     assert html_formatted_batch_price == required_string
