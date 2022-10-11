@@ -134,7 +134,9 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
 
     new_sections_count = Section.objects.all().count() + 1
     section = batch_with_section_and_batch_schedule.section_set.first()
-    section_capacity = section.capacity + 1
+    new_section_capacity = section.capacity + 1
+    new_price = batch_with_section_and_batch_schedule.price + 1
+    new_type = Batch.FULL_TIME
 
     new_batch_schedules_count = BatchSchedule.objects.all().count() + 1
     new_batch_schedule_day = 'TUE'
@@ -145,7 +147,9 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
         'start_date': new_start_date,
         'end_date': new_end_date,
         'sections': new_sections_count,
-        'capacity': section_capacity,
+        'capacity': new_section_capacity,
+        'price': new_price,
+        'type': new_type,
         'batch-schedule-TOTAL_FORMS': [f"{new_batch_schedules_count}"],
         'batch-schedule-INITIAL_FORMS': ['1'],
         'batch-schedule-MIN_NUM_FORMS': ['0'],
@@ -179,12 +183,14 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
     assert batch.start_date == new_start_date
     assert batch.end_date == new_end_date
     assert batch.sections == new_sections_count
-    assert batch.capacity == new_sections_count * section_capacity
+    assert batch.capacity == new_sections_count * new_section_capacity
+    assert batch.price == new_price
+    assert batch.type == new_type
 
     section_queryset = Section.objects.all()
     first_section = section_queryset.first()
     new_section = section_queryset.last()
-    assert first_section.capacity == section_capacity
+    assert first_section.capacity == new_section_capacity
     assert section_queryset.count() == batch.sections
     Slack.create_channel.assert_called_once_with(f"{batch.number}-{new_section.number}")
 

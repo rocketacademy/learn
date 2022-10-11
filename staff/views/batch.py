@@ -173,6 +173,8 @@ class EditView(LoginRequiredMixin, View):
                     batch.end_date = batch_form.cleaned_data.get('end_date')
                     batch.sections = sections
                     batch.capacity = sections * section_capacity
+                    batch.price = batch_form.cleaned_data.get('price')
+                    batch.type = batch_form.cleaned_data.get('type')
                     batch.save()
                     slack_client = Slack()
 
