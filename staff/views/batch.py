@@ -76,6 +76,8 @@ class NewView(LoginRequiredMixin, View):
         if batch_form.is_valid() and section_form.is_valid() and batch_schedule_formset.is_valid():
             sections = batch_form.cleaned_data.get('sections')
             section_capacity = section_form.cleaned_data.get('capacity')
+            price = batch_form.cleaned_data.get('price')
+            type = batch_form.cleaned_data.get('type')
 
             try:
                 with transaction.atomic():
@@ -85,8 +87,8 @@ class NewView(LoginRequiredMixin, View):
                         start_date=batch_form.cleaned_data.get('start_date'),
                         end_date=batch_form.cleaned_data.get('end_date'),
                         sections=sections,
-                        price=settings.CODING_BASICS_REGISTRATION_FEE_SGD,
-                        type=Batch.PART_TIME
+                        price=price,
+                        type=type
                     )
                     for section_number in range(1, sections + 1):
                         Section.objects.create(

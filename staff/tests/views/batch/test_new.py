@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
@@ -50,12 +49,16 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
     number_of_sections = 6
     section_capacity = 18
     number_of_batch_schedules = 2
+    price = 199
+    type = Batch.PART_TIME
 
     payload = {
         'start_date': '2022-01-01',
         'end_date': '2022-02-01',
         'sections': number_of_sections,
         'capacity': section_capacity,
+        'price': price,
+        'type': type,
         'batch-schedule-TOTAL_FORMS': number_of_batch_schedules,
         'batch-schedule-INITIAL_FORMS': '0',
         'batch-schedule-MIN_NUM_FORMS': '0',
@@ -83,8 +86,8 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
     batch = Batch.objects.first()
     assert batch.capacity == number_of_sections * section_capacity
     assert batch.course == Course.objects.get(name=Course.CODING_BASICS)
-    assert batch.price == settings.CODING_BASICS_REGISTRATION_FEE_SGD
-    assert batch.type == Batch.PART_TIME
+    assert batch.price == price
+    assert batch.type == type
 
     section_queryset = Section.objects.all()
     first_section = section_queryset.first()
