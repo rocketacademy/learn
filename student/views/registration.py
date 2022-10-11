@@ -78,7 +78,7 @@ class RegistrationWizard(SessionWizardView):
 class PaymentPreviewView(View):
     def get(self, request, registration_id):
         registration = Registration.objects.get(pk=registration_id)
-        original_payable_amount = settings.CODING_BASICS_REGISTRATION_FEE_SGD
+        original_payable_amount = registration.batch.price
         early_bird_discount = registration.batch.early_bird_discount()
         coupon_discount = 0
         if registration.referral_code:
@@ -98,7 +98,7 @@ class PaymentPreviewView(View):
                 'payable_type': Registration.__name__,
                 'payable_id': registration_id,
                 'payable_line_item_name': 'Registration for Coding Basics',
-                'payable_line_item_amount_in_cents': original_payable_amount * 100,
+                'payable_line_item_amount_in_cents': original_payable_amount * settings.CENTS_PER_DOLLAR,
                 'original_payable_amount': original_payable_amount,
                 'stripe_coupon_id': stripe_coupon_id,
                 'final_payable_amount': original_payable_amount - total_discount,
