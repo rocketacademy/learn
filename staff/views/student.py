@@ -10,7 +10,7 @@ from student.models.enrolment import Enrolment
 class ListView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         studentuser_queryset = StudentUser.objects.filter(enrolment__in=Enrolment.objects.filter(batch_id=batch_id))
-        batch = Batch.objects.get(pk=batch_id)
+        batch = Batch.basics_objects.get(pk=batch_id)
 
         return render(
             request,

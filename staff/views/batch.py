@@ -21,7 +21,7 @@ from student.models.enrolment import Enrolment
 
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
-        batch_queryset = Batch.objects.all().order_by('-number')
+        batch_queryset = Batch.basics_objects.all().order_by('-number')
 
         return render(
             request,
@@ -33,7 +33,7 @@ class ListView(LoginRequiredMixin, View):
 
 class DetailView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
-        batch = Batch.objects.get(pk=batch_id)
+        batch = Batch.basics_objects.get(pk=batch_id)
         section_capacity = Section.objects.filter(batch__id=batch_id).first().capacity
         batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
 
@@ -122,7 +122,7 @@ class NewView(LoginRequiredMixin, View):
 
 class EditView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
-        batch = Batch.objects.get(pk=batch_id)
+        batch = Batch.basics_objects.get(pk=batch_id)
         section_queryset = Section.objects.filter(batch__id=batch.id)
         batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch.id)
 
@@ -150,7 +150,7 @@ class EditView(LoginRequiredMixin, View):
         )
 
     def post(self, request, batch_id):
-        batch = Batch.objects.get(pk=batch_id)
+        batch = Batch.basics_objects.get(pk=batch_id)
         section_queryset = Section.objects.filter(batch__id=batch.id)
 
         batch_form = BatchForm(request.POST)
@@ -213,7 +213,7 @@ class EditView(LoginRequiredMixin, View):
 
 class GraduateView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
-        batch = Batch.objects.get(pk=batch_id)
+        batch = Batch.basics_objects.get(pk=batch_id)
         basics_graduation_form = BasicsGraduationForm(batch_id=batch_id)
 
         if batch.ready_for_graduation():

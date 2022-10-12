@@ -47,7 +47,7 @@ class Batch(SafeDeleteModel):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.number = Batch.next_number(self.course_id)
-        elif Batch.objects.count() == 0:
+        elif Batch.basics_objects.count() == 0:
             # 17 because this will be the next batch number when we launch Learn
             self.number = 17
 
