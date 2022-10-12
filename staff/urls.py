@@ -1,23 +1,24 @@
 from django.urls import path
 
-from staff.views import batch, coupon, coupon_effect, enrolment, index, login, registration, section
+from staff.views import coupon, coupon_effect, index, login
+from staff.views.basics import basics_batch, basics_enrolment, basics_registration, basics_section
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
-    path('basics/batches/', batch.ListView.as_view(), name='batch_list'),
-    path('basics/batches/new/', batch.NewView.as_view(), name='batch_new'),
-    path('basics/batches/<int:batch_id>/', batch.DetailView.as_view(), name='batch_detail'),
-    path('basics/batches/<int:batch_id>/edit/', batch.EditView.as_view(), name='batch_edit'),
-    path('basics/batches/<int:batch_id>/enrolments/', enrolment.ListView.as_view(), name='enrolment_list'),
+    path('basics/batches/', basics_batch.ListView.as_view(), name='basics_batch_list'),
+    path('basics/batches/new/', basics_batch.NewView.as_view(), name='basics_batch_new'),
+    path('basics/batches/<int:batch_id>/', basics_batch.DetailView.as_view(), name='basics_batch_detail'),
+    path('basics/batches/<int:batch_id>/edit/', basics_batch.EditView.as_view(), name='basics_batch_edit'),
+    path('basics/batches/<int:batch_id>/enrolments/', basics_enrolment.ListView.as_view(), name='basics_batch_enrolment_list'),
     path(
         'basics/batches/<int:batch_id>/enrolments/create-zoom-breakout-csv/',
-        enrolment.create_zoom_breakout_csv,
-        name='create_zoom_breakout_csv'
+        basics_enrolment.create_zoom_breakout_csv,
+        name='basics_batch_create_zoom_breakout_csv'
     ),
-    path('basics/batches/<int:batch_id>/graduate/', batch.GraduateView.as_view(), name='batch_graduate'),
-    path('basics/batches/<int:batch_id>/registrations/', registration.ListView.as_view(), name='registration_list'),
-    path('basics/batches/<int:batch_id>/sections/', section.ListView.as_view(), name='section_list'),
-    path('basics/batches/<int:batch_id>/sections/<int:section_id>/', section.DetailView.as_view(), name='section_detail'),
+    path('basics/batches/<int:batch_id>/graduate/', basics_batch.GraduateView.as_view(), name='basics_batch_graduate'),
+    path('basics/batches/<int:batch_id>/registrations/', basics_registration.ListView.as_view(), name='basics_batch_registration_list'),
+    path('basics/batches/<int:batch_id>/sections/', basics_section.ListView.as_view(), name='basics_batch_section_list'),
+    path('basics/batches/<int:batch_id>/sections/<int:section_id>/', basics_section.DetailView.as_view(), name='basics_batch_section_detail'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
     path('coupons/new/', coupon.NewView.as_view(), name='coupon_new'),
     path('coupons/new/batch/', coupon.NewBatchView.as_view(), name='coupon_new_batch'),

@@ -6,7 +6,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Section
-from staff.views.batch import DetailView
+from staff.views.basics.basics_batch import DetailView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -54,7 +54,7 @@ def test_logged_in_user_can_access(batch_with_section, existing_user):
 def test_template_rendered_if_batch_exists(batch_with_section, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    response = client.get(reverse('batch_detail', kwargs={'batch_id': batch_with_section.id}))
+    response = client.get(reverse('basics_batch_detail', kwargs={'batch_id': batch_with_section.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/detail.html' in (template.name for template in response.templates)

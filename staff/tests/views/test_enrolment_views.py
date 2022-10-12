@@ -8,7 +8,7 @@ import pytest
 
 from authentication.models import StudentUser
 from staff.models import Section
-from staff.views.enrolment import create_zoom_breakout_csv, ListView, prepare_zoom_breakout_csv_data
+from staff.views.basics.basics_enrolment import create_zoom_breakout_csv, ListView, prepare_zoom_breakout_csv_data
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
 
@@ -28,7 +28,7 @@ def logged_in_existing_user():
 
     yield logged_in_existing_user
 
-def test_enrolment_list_anonymous_user_redirected_to_login(batch_factory):
+def test_basics_batch_enrolment_list_anonymous_user_redirected_to_login(batch_factory):
     batch = batch_factory()
     request = RequestFactory().get(f"/basics/batches/{batch.id}/enrolments/")
     request.user = AnonymousUser()
@@ -38,9 +38,9 @@ def test_enrolment_list_anonymous_user_redirected_to_login(batch_factory):
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/basics/batches/{batch.id}/enrolments/" in response.url
 
-def test_enrolment_list_logged_in_user_can_access(batch_factory, logged_in_existing_user):
+def test_basics_batch_enrolment_list_logged_in_user_can_access(batch_factory, logged_in_existing_user):
     batch = batch_factory()
-    response = client.get(reverse('enrolment_list', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('basics_batch_enrolment_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/enrolment/list.html' in (template.name for template in response.templates)
@@ -50,7 +50,7 @@ def test_create_zoom_breakout_csv_outputs_csv_file(mocker, batch_factory):
     student_email = 'bryan@test.com'
     room_name = 'room1'
     assert_value = [[room_name, student_email]]
-    mocker.patch('staff.views.enrolment.prepare_zoom_breakout_csv_data', return_value=assert_value)
+    mocker.patch('staff.views.basics.basics_enrolment.prepare_zoom_breakout_csv_data', return_value=assert_value)
     request = RequestFactory().get(f"/basics/batches/{batch.id}/enrolments/")
 
     response = create_zoom_breakout_csv(request, batch.id)

@@ -108,7 +108,7 @@ class NewView(LoginRequiredMixin, View):
 
                     return HttpResponseRedirect('/staff/basics/batches/')
             except IntegrityError:
-                return redirect('batch_new')
+                return redirect('basics_batch_new')
         return render(
             request,
             'basics/batch/new.html',
@@ -196,9 +196,9 @@ class EditView(LoginRequiredMixin, View):
                     BatchSchedule.objects.filter(batch__id=batch.id).delete()
                     BatchSchedule.objects.bulk_create(new_batch_schedules(batch, batch_schedule_formset))
 
-                    return redirect('batch_detail', batch_id=batch.id)
+                    return redirect('basics_batch_detail', batch_id=batch.id)
             except IntegrityError:
-                return redirect('batch_edit', batch_id=batch.id)
+                return redirect('basics_batch_edit', batch_id=batch.id)
         return render(
             request,
             'basics/batch/edit.html',
@@ -226,7 +226,7 @@ class GraduateView(LoginRequiredMixin, View):
                 }
             )
 
-        return redirect('batch_detail', batch_id=batch_id)
+        return redirect('basics_batch_detail', batch_id=batch_id)
 
     def post(self, request, batch_id):
         basics_graduation_form = BasicsGraduationForm(request.POST, batch_id=batch_id)
@@ -289,7 +289,7 @@ class GraduateView(LoginRequiredMixin, View):
             except Exception as error:
                 capture_message(f"Exception when processing graduation for Batch {batch_id}")
                 capture_exception(error)
-        return redirect('enrolment_list', batch_id=batch_id)
+        return redirect('basics_batch_enrolment_list', batch_id=batch_id)
 
 def validate_batch_sections(batch_form, new_number_of_sections, current_number_of_sections):
     if new_number_of_sections < current_number_of_sections:

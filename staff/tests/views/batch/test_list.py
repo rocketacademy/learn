@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.test import RequestFactory
 import pytest
 
-from staff.views.batch import ListView
+from staff.views.basics.basics_batch import ListView
 
 pytestmark = pytest.mark.django_db
 
