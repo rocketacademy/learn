@@ -2,14 +2,14 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block batch_content %}
-<form id="edit-batch-form" action="{% url 'batch_edit' batch_id=batch.id %}" method="post">
+<form id="edit-batch-form" action="{% url 'basics_batch_edit' batch_id=batch.id %}" method="post">
     {% csrf_token %}
     <div class="row">
         <div class="col-9 p-4">
             <h4>Overview</h4>
             <div class="my-3 d-lg-none">
                 <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
-                <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
+                <a type="link" href="{% url 'basics_batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm px-4">Cancel</a>
             </div>
             <div class="row">
                 <div class="col-md-5 col-lg-3 my-2">
@@ -83,7 +83,7 @@
         </div>
         <div class="col-3 border-start p-4 d-none d-lg-block">
             <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
-            <a type="link" href="{% url 'batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm my-1 px-4">Cancel</a>
+            <a type="link" href="{% url 'basics_batch_detail' batch_id=batch.id %}" role="button" class="btn btn-outline-secondary btn-sm my-1 px-4">Cancel</a>
         </div>
     </div>
 </form>

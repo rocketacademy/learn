@@ -9,6 +9,14 @@ from staff.models.course import Course
 from student.models.enrolment import Enrolment
 
 
+class BasicsBatchManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(course=Course.objects.get(name=Course.CODING_BASICS))
+
+class BootcampBatchManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(course=Course.objects.get(name=Course.CODING_BOOTCAMP))
+
 class Batch(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
@@ -32,10 +40,14 @@ class Batch(SafeDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = models.Manager()
+    basics_objects = BasicsBatchManager()
+    bootcamp_objects = BootcampBatchManager()
+
     def save(self, *args, **kwargs):
         if not self.pk:
             self.number = Batch.next_number(self.course_id)
-        elif Batch.objects.count() == 0:
+        elif Batch.basics_objects.count() == 0:
             # 17 because this will be the next batch number when we launch Learn
             self.number = 17
 

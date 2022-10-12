@@ -9,7 +9,7 @@ import pytest
 
 from staff.models import Batch, Section
 from staff.models.batch_schedule import BatchSchedule
-from staff.views.batch import EditView
+from staff.views.basics.basics_batch import EditView
 from student.library.slack import Slack
 
 pytestmark = pytest.mark.django_db
@@ -65,7 +65,7 @@ def test_logged_in_user_can_access(batch_with_section_and_batch_schedule, existi
 def test_template_rendered_if_batch_exists(batch_with_section_and_batch_schedule, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    response = client.get(reverse('batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}))
+    response = client.get(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
@@ -93,7 +93,7 @@ def test_template_rendered_again_if_sections_incorrectly_reduced(batch_with_sect
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
@@ -122,7 +122,7 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch_w
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
@@ -173,11 +173,11 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
 
     freezer = freeze_time('2022-1-2')
     freezer.start()
-    response = client.post(reverse('batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert response['Location'] == reverse('batch_detail', kwargs={'batch_id': batch_with_section_and_batch_schedule.id})
+    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': batch_with_section_and_batch_schedule.id})
 
     batch = Batch.objects.first()
     assert batch.start_date == new_start_date
@@ -232,7 +232,7 @@ def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_sta
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    client.post(reverse('batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
     freezer.stop()
 
     Slack.create_channel.assert_not_called()

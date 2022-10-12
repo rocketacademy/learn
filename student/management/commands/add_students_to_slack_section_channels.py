@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         batch_start_date = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS)
-        batch_ids = Batch.objects.filter(start_date=batch_start_date).values_list('pk', flat=True)
+        batch_ids = Batch.basics_objects.filter(start_date=batch_start_date).values_list('pk', flat=True)
         section_ids = Enrolment.objects.filter(batch_id__in=batch_ids).values_list('section_id', flat=True).distinct()
         slack_client = Slack()
 

@@ -11,7 +11,7 @@ from student.models.enrolment import Enrolment
 class ListView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         enrolment_queryset = Enrolment.objects.filter(batch_id=batch_id)
-        batch = Batch.objects.get(pk=batch_id)
+        batch = Batch.basics_objects.get(pk=batch_id)
 
         return render(
             request,
@@ -24,7 +24,7 @@ class ListView(LoginRequiredMixin, View):
         )
 
 def create_zoom_breakout_csv(request, batch_id):
-    batch_number = Batch.objects.get(pk=batch_id).number
+    batch_number = Batch.basics_objects.get(pk=batch_id).number
     response = HttpResponse(
         content_type='text/csv',
         headers={'Content-Disposition': f"attachment; filename=\"{batch_number}-zoom-breakout.csv\""},

@@ -6,7 +6,7 @@ from django.urls import reverse
 import pytest
 
 from staff.models import Section
-from staff.views.section import ListView
+from staff.views.basics.basics_section import ListView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -44,7 +44,7 @@ def sections(batch_factory):
 
     yield section_queryset
 
-def test_section_list_anonymous_user_redirected_to_login(sections):
+def test_basics_batch_section_list_anonymous_user_redirected_to_login(sections):
     batch = sections.first().batch
     request = RequestFactory().get(f"/basics/batches/{batch.id}/sections/")
     request.user = AnonymousUser()
@@ -54,19 +54,19 @@ def test_section_list_anonymous_user_redirected_to_login(sections):
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/basics/batches/{batch.id}/sections/" in response.url
 
-def test_section_list_logged_in_user_can_access(sections, logged_in_existing_user):
+def test_basics_batch_section_list_logged_in_user_can_access(sections, logged_in_existing_user):
     batch = sections.first().batch
 
-    response = client.get(reverse('section_list', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('basics_batch_section_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/section/list.html' in (template.name for template in response.templates)
 
-def test_section_detail_template_rendered_if_batch_and_sections_exists(sections, logged_in_existing_user):
+def test_basics_batch_section_detail_template_rendered_if_batch_and_sections_exists(sections, logged_in_existing_user):
     section_one = sections.first()
     batch = section_one.batch
 
-    response = client.get(reverse('section_detail', kwargs={'batch_id': batch.id, 'section_id': section_one.id}))
+    response = client.get(reverse('basics_batch_section_detail', kwargs={'batch_id': batch.id, 'section_id': section_one.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/section/detail.html' in (template.name for template in response.templates)

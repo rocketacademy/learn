@@ -31,7 +31,7 @@
         </thead>
         <tbody>
             {% for batch in batches %}
-            <tr class="clickable-row" data-url="{% url 'batch_detail' batch_id=batch.id %}" role="button"> 
+            <tr class="clickable-row" data-url="{% url 'basics_batch_detail' batch_id=batch.id %}" role="button">
                 <td>{{ batch.number }}</td>
                 <td>{{ batch.start_date }}</td>
                 <td>{{ batch.end_date }}</td>

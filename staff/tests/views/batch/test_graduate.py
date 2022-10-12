@@ -11,7 +11,7 @@ from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
 from payment.models import CouponEffect, ReferralCoupon
 from staff.models import Certificate, Course, Section
-from staff.views.batch import GraduateView
+from staff.views.basics.basics_batch import GraduateView
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
 
@@ -86,7 +86,7 @@ def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_factory, e
 
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('basics_batch_graduate', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/graduate.html' in (template.name for template in response.templates)
@@ -95,7 +95,7 @@ def test_get_redirection_if_batch_is_not_ready_for_graduation(batch_factory, exi
     batch = batch_factory()
     client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
 
-    response = client.get(reverse('batch_graduate', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('basics_batch_graduate', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponseRedirect.status_code
 
@@ -169,7 +169,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch_factory,
 
     response = client.post(
         reverse(
-            'batch_graduate',
+            'basics_batch_graduate',
             kwargs={'batch_id': batch.id}
         ),
         data={

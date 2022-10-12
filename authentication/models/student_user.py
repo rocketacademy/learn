@@ -12,11 +12,11 @@ class StudentUser(User):
     hubspot_contact_id = models.IntegerField(null=True, blank=True)
     slack_user_id = models.CharField(max_length=20, null=True, blank=True)
 
-    def current_enrolled_batches(self):
+    def current_enrolled_basics_batches(self):
         enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id)
-        current_enrolled_batches = Batch.objects.filter(end_date__gte=datetime.date.today()).filter(enrolment__in=enrolments)
+        current_enrolled_basics_batches = Batch.basics_objects.filter(end_date__gte=datetime.date.today()).filter(enrolment__in=enrolments)
 
-        return current_enrolled_batches
+        return current_enrolled_basics_batches
 
     def current_enrolled_sections(self):
         enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id)

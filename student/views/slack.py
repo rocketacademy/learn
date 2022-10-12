@@ -35,7 +35,7 @@ def team_join_event(event):
             student_user.save()
 
             slack_client = Slack()
-            for batch in student_user.current_enrolled_batches() or []:
+            for batch in student_user.current_enrolled_basics_batches() or []:
                 if batch.slack_channel_id:
                     slack_client.add_users_to_channel([slack_user_id], batch.slack_channel_id)
             for section in student_user.current_enrolled_sections() or []:

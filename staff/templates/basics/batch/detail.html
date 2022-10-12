@@ -6,7 +6,7 @@
         <div class="my-2">
             <a
             type="link"
-            href="{% url 'batch_edit' batch_id=batch.id %}"
+            href="{% url 'basics_batch_edit' batch_id=batch.id %}"
             role="button"
             class="btn btn-outline-primary btn-sm px-4">
                 Edit batch details
@@ -14,7 +14,7 @@
             {% if batch.ready_for_graduation %}
                 <a
                 type="link"
-                href="{% url 'batch_graduate' batch_id=batch.id %}"
+                href="{% url 'basics_batch_graduate' batch_id=batch.id %}"
                 role="button"
                 class="btn btn-outline-primary btn-sm my-1 px-4">
                     Process graduation
