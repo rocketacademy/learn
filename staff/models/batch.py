@@ -11,11 +11,11 @@ from student.models.enrolment import Enrolment
 
 class BasicsBatchManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(course=Course.objects.get(name=Course.CODING_BASICS))
+        return super().get_queryset().filter(deleted_at__isnull=True, course=Course.objects.get(name=Course.CODING_BASICS))
 
 class BootcampBatchManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(course=Course.objects.get(name=Course.CODING_BOOTCAMP))
+        return super().get_queryset().filter(deleted_at__isnull=True, course=Course.objects.get(name=Course.CODING_BOOTCAMP))
 
 class Batch(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
