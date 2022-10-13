@@ -1,5 +1,4 @@
 from datetime import date, datetime, timedelta
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client
@@ -9,29 +8,13 @@ import pytest
 
 from payment.models.coupon import Coupon
 from payment.models.coupon_effect import CouponEffect
-from staff.models import Batch, Course, Section
+from staff.models import Section
 from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
 client = Client()
 User = get_user_model()
 
-existing_user_email = 'existing_user@email.com'
-existing_user_first_name = 'Existing'
-existing_user_last_name = 'User'
-existing_user_password = settings.PLACEHOLDER_PASSWORD
-
-
-@pytest.fixture()
-def existing_user():
-    existing_user = User.objects.create(
-        email=existing_user_email,
-        first_name=existing_user_first_name,
-        last_name=existing_user_last_name,
-        password=existing_user_password
-    )
-
-    yield existing_user
 
 @pytest.fixture()
 def registration(batch_factory):
@@ -90,30 +73,32 @@ def test_registration_form_renders_batch_on_start_date(batch_factory):
     assert 'id="id_batch_selection-batch_0"' in str(response.content)
 
 
-def test_registration_wizard_form_existing_user(batch_factory, existing_user):
+def test_registration_wizard_form_existing_user(batch_factory, user_factory):
     batch = batch_factory()
+    existing_user = user_factory()
     batch_selection_form_response = client.post(reverse('basics_register'), {
         'registration_wizard-current_step': 'batch_selection',
         'batch_selection-batch': '1',
     })
     student_info_form_response = client.post(reverse('basics_register'), {
         'registration_wizard-current_step': 'student_info',
-        'student_info-first_name': existing_user_first_name,
-        'student_info-last_name': existing_user_last_name,
-        'student_info-email': existing_user_email,
+        'student_info-first_name': existing_user.first_name,
+        'student_info-last_name': existing_user.last_name,
+        'student_info-email': existing_user.email,
         'student_info-country_of_residence': 'SG',
         'student_info-referral_channel': 'word_of_mouth',
     })
 
     assert batch_selection_form_response.status_code == HttpResponse.status_code
     assert student_info_form_response.status_code == HttpResponseRedirect.status_code
-    registration = Registration.objects.get(email=existing_user_email)
+    registration = Registration.objects.get(email=existing_user.email)
     assert registration.batch == batch
     assert User.objects.all().count() == 1
 
 
-def test_registration_wizard_form_new_user(batch_factory, existing_user):
+def test_registration_wizard_form_new_user(batch_factory, user_factory):
     batch_factory()
+    existing_user = user_factory()
     client.post(reverse('basics_register'), {
         'registration_wizard-current_step': 'batch_selection',
         'batch_selection-batch': '1',
