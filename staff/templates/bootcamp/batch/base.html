@@ -1,0 +1,14 @@
+{% extends '../base.html' %}
+{% block content %}
+<div class="row py-2 border-bottom">
+    <h3>Batch {{ batch.number }}</h3>
+</div>
+<nav>
+    <ul class="list-group list-group-horizontal navbar-nav topbar">
+        <li>
+            <a href="{% url 'basics_batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}topbar-link-active border-bottom border-primary{% endif %}">Overview</a>
+        </li>
+    </ul>
+</nav>
+{% block batch_content %}{% endblock %}
+{% endblock %}

@@ -2,6 +2,7 @@ from django.urls import path
 
 from staff.views import coupon, coupon_effect, index, login
 from staff.views.basics import basics_batch, basics_enrolment, basics_registration, basics_section
+from staff.views.bootcamp import bootcamp_batch
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('basics/batches/<int:batch_id>/registrations/', basics_registration.ListView.as_view(), name='basics_batch_registration_list'),
     path('basics/batches/<int:batch_id>/sections/', basics_section.ListView.as_view(), name='basics_batch_section_list'),
     path('basics/batches/<int:batch_id>/sections/<int:section_id>/', basics_section.DetailView.as_view(), name='basics_batch_section_detail'),
+    path('bootcamp/batches/', bootcamp_batch.ListView.as_view(), name='bootcamp_batch_list'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
     path('coupons/new/', coupon.NewView.as_view(), name='coupon_new'),
     path('coupons/new/batch/', coupon.NewBatchView.as_view(), name='coupon_new_batch'),
