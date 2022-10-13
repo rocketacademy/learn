@@ -8,6 +8,9 @@ from safedelete.models import SafeDeleteModel
 from staff.models.course import Course
 from student.models.enrolment import Enrolment
 
+class BatchManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted_at__isnull=True)
 
 class BasicsBatchManager(models.Manager):
     def get_queryset(self):
@@ -40,7 +43,7 @@ class Batch(SafeDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = models.Manager()
+    objects = BatchManager()
     basics_objects = BasicsBatchManager()
     bootcamp_objects = BootcampBatchManager()
 
