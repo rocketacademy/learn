@@ -60,7 +60,7 @@ class Batch(SafeDeleteModel):
         return f"Batch {self.number}"
 
     @classmethod
-    def next_number(self, course_id, type=PART_TIME):
+    def next_number(self, course_id, type):
         course = Course.objects.get(pk=course_id)
 
         if course.name == Course.CODING_BASICS:
@@ -70,12 +70,14 @@ class Batch(SafeDeleteModel):
             return self.basics_objects.aggregate(models.Max('number'))['number__max'] + 1
         elif course.name == Course.CODING_BOOTCAMP:
             if type == Batch.PART_TIME:
-                if self.bootcamp_objects.count() == 0:
+                if self.bootcamp_objects.filter(type=Batch.PART_TIME).count() == 0:
+                    print('parttime')
                     # 6 because this will be the first PTBC batch number when we launch bootcamp admin features
                     return 6
                 return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
             elif type == Batch.FULL_TIME:
-                if self.bootcamp_objects.count() == 0:
+                if self.bootcamp_objects.filter(type=Batch.FULL_TIME).count() == 0:
+                    print('fulltime')
                     # 10 because this will be the first FTBC batch number when we launch bootcamp admin features
                     return 10
                 return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1

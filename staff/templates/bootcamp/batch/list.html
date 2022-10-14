@@ -16,19 +16,20 @@
         <table class="table table-hover">
             <thead>
                 <tr>
+                    <th scope="col">Type</th>
                     <th scope="col">Batch</th>
                     <th scope="col">Start date</th>
                     <th scope="col">End date</th>
                     <th scope="col">Course days</th>
                     <th scope="col">No. of sections</th>
                     <th scope="col">Capacity</th>
-                    <th scope="col">Type</th>
                     <th scope="col">Fee per student</th>
                 </tr>
             </thead>
             <tbody>
                 {% for batch in batches %}
                 <tr class="clickable-row" data-url="{% url 'basics_batch_detail' batch_id=batch.id %}" role="button">
+                    <td>{{ batch.get_type_display }}</td>
                     <td>{{ batch.number }}</td>
                     <td>{{ batch.start_date }}</td>
                     <td>{{ batch.end_date }}</td>
@@ -44,7 +45,6 @@
                     </td>
                     <td>{{ batch.sections }}</td>
                     <td>{{ batch.capacity }}</td>
-                    <td>{{ batch.type }}</td>
                     <td>{{ batch.price }}</td>
                 </tr>
                 {% endfor %}
