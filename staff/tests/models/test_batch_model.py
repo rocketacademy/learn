@@ -16,14 +16,65 @@ def test_string_representation(batch_factory):
 
     assert string_representation == 'Batch 17'
 
-def test_batch_number_assigned_if_new_record(batch_factory):
-    first_batch = batch_factory.create()
-    coding_basics_course = first_batch.course
+def test_number_assigned_if_new_basics_batch_record(batch_factory, course_factory):
+    coding_basics_course = course_factory(coding_basics=True)
 
+    first_batch = batch_factory.create(course=coding_basics_course)
     second_batch = batch_factory.create(course=coding_basics_course)
 
     assert first_batch.number == 17
     assert second_batch.number == 18
+
+def test_number_not_reassigned_if_existing_basics_batch_record_saved(batch_factory, course_factory):
+    coding_basics_course = course_factory(coding_basics=True)
+    first_batch = batch_factory(course=coding_basics_course)
+    second_batch = batch_factory(course=coding_basics_course)
+    new_capacity = 100
+
+    first_batch.capacity = new_capacity
+    first_batch.save()
+
+    assert first_batch.number == 17
+
+def test_number_assigned_if_new_fulltime_bootcamp_batch_record(batch_factory, course_factory):
+    coding_bootcamp_course = course_factory(coding_bootcamp=True)
+
+    first_batch = batch_factory.create(course=coding_bootcamp_course, type=Batch.FULL_TIME)
+    second_batch = batch_factory.create(course=coding_bootcamp_course, type=Batch.FULL_TIME)
+
+    assert first_batch.number == 10
+    assert second_batch.number == 11
+
+def test_number_not_reassigned_if_existing_fulltime_bootcamp_batch_record_saved(batch_factory, course_factory):
+    coding_bootcamp_course = course_factory(coding_bootcamp=True)
+    first_batch = batch_factory(course=coding_bootcamp_course, type=Batch.FULL_TIME)
+    second_batch = batch_factory(course=coding_bootcamp_course, type=Batch.FULL_TIME)
+    new_capacity = 100
+
+    first_batch.capacity = new_capacity
+    first_batch.save()
+
+    assert first_batch.number == 10
+
+def test_number_assigned_if_new_parttime_bootcamp_batch_record(batch_factory, course_factory):
+    coding_bootcamp_course = course_factory(coding_bootcamp=True)
+
+    first_batch = batch_factory.create(course=coding_bootcamp_course, type=Batch.PART_TIME)
+    second_batch = batch_factory.create(course=coding_bootcamp_course, type=Batch.PART_TIME)
+
+    assert first_batch.number == 6
+    assert second_batch.number == 7
+
+def test_number_not_reassigned_if_existing_parttime_bootcamp_batch_record_saved(batch_factory, course_factory):
+    coding_bootcamp_course = course_factory(coding_bootcamp=True)
+    first_batch = batch_factory(course=coding_bootcamp_course, type=Batch.PART_TIME)
+    second_batch = batch_factory(course=coding_bootcamp_course, type=Batch.PART_TIME)
+    new_capacity = 100
+
+    first_batch.capacity = new_capacity
+    first_batch.save()
+
+    assert first_batch.number == 6
 
 def test_invalid_start_and_end_dates(batch_factory):
     start_date = date.today()
