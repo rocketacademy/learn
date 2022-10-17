@@ -5,7 +5,7 @@
 <form id="edit-batch-form" action="{% url 'basics_batch_edit' batch_id=batch.id %}" method="post">
     {% csrf_token %}
     <div class="row">
-        <div class="col-9 p-4">
+        <div class="col-9">
             <h4>Overview</h4>
             <div class="my-3 d-lg-none">
                 <button class="btn btn-primary btn-sm px-4" type="submit">Save changes</button>
