@@ -22,6 +22,23 @@ class ListView(LoginRequiredMixin, View):
             }
         )
 
+class DetailView(LoginRequiredMixin, View):
+    def get(self, request, batch_id):
+        batch = Batch.bootcamp_objects.get(pk=batch_id)
+        section_capacity = Section.objects.filter(batch__id=batch_id).first().capacity
+        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
+
+        return render(
+            request,
+            'bootcamp/batch/detail.html',
+            {
+                'current_tab': 'overview',
+                'batch': batch,
+                'section_capacity': section_capacity,
+                'batch_schedules': batchschedule_queryset
+            }
+        )
+
 class NewView(LoginRequiredMixin, View):
     def get(self, request):
         batch_form = BatchForm(None)
