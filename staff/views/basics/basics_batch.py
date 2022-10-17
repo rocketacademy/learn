@@ -51,7 +51,7 @@ class DetailView(LoginRequiredMixin, View):
 class NewView(LoginRequiredMixin, View):
     def get(self, request):
         course_id = Course.objects.get(name=Course.CODING_BASICS).id
-        next_batch_number = Batch.next_number(course_id)
+        next_batch_number = Batch.next_number(course_id, Batch.PART_TIME)
         batch_form = BatchForm(None)
         section_form = SectionForm(None)
         batch_schedule_formset = BatchScheduleFormSet(prefix='batch-schedule')
@@ -113,7 +113,7 @@ class NewView(LoginRequiredMixin, View):
             request,
             'basics/batch/new.html',
             {
-                'next_batch_number': Batch.next_number(course.id),
+                'next_batch_number': Batch.next_number(course.id, Batch.PART_TIME),
                 'batch_form': batch_form,
                 'section_form': section_form,
                 'batch_schedule_formset': batch_schedule_formset

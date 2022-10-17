@@ -21,6 +21,7 @@ urlpatterns = [
     path('basics/batches/<int:batch_id>/sections/', basics_section.ListView.as_view(), name='basics_batch_section_list'),
     path('basics/batches/<int:batch_id>/sections/<int:section_id>/', basics_section.DetailView.as_view(), name='basics_batch_section_detail'),
     path('bootcamp/batches/', bootcamp_batch.ListView.as_view(), name='bootcamp_batch_list'),
+    path('bootcamp/batches/new/', bootcamp_batch.NewView.as_view(), name='bootcamp_batch_new'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
     path('coupons/new/', coupon.NewView.as_view(), name='coupon_new'),
     path('coupons/new/batch/', coupon.NewBatchView.as_view(), name='coupon_new_batch'),

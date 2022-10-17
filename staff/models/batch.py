@@ -49,10 +49,7 @@ class Batch(SafeDeleteModel):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.number = Batch.next_number(self.course_id)
-        elif Batch.basics_objects.count() == 0:
-            # 17 because this will be the next batch number when we launch Learn
-            self.number = 17
+            self.number = Batch.next_number(self.course_id, self.type)
 
         if self.start_date >= self.end_date:
             raise ValueError('Batch end date should be after start date')
@@ -63,11 +60,27 @@ class Batch(SafeDeleteModel):
         return f"Batch {self.number}"
 
     @classmethod
-    def next_number(self, course_id):
-        if self.objects.count() == 0:
-            # 17 because this will be the next batch number when we launch Learn
-            return 17
-        return self.objects.filter(course__id=course_id).aggregate(models.Max('number'))['number__max'] + 1
+    def next_number(self, course_id, type):
+        course = Course.objects.get(pk=course_id)
+
+        if course.name == Course.CODING_BASICS:
+            if self.basics_objects.count() == 0:
+                # 17 because this will be the first batch number when we launch Learn
+                return 17
+            return self.basics_objects.aggregate(models.Max('number'))['number__max'] + 1
+        elif course.name == Course.CODING_BOOTCAMP:
+            if type == Batch.PART_TIME:
+                if self.bootcamp_objects.filter(type=Batch.PART_TIME).count() == 0:
+                    print('parttime')
+                    # 6 because this will be the first PTBC batch number when we launch bootcamp admin features
+                    return 6
+                return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
+            elif type == Batch.FULL_TIME:
+                if self.bootcamp_objects.filter(type=Batch.FULL_TIME).count() == 0:
+                    print('fulltime')
+                    # 10 because this will be the first FTBC batch number when we launch bootcamp admin features
+                    return 10
+                return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
 
     @staticmethod
     def html_formatted_batch_schedules(self):
