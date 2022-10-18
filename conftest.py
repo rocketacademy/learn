@@ -39,6 +39,14 @@ def existing_user():
 #########
 
 @pytest.fixture()
+def coding_basics_batch(batch_factory, section_factory, batch_schedule_factory):
+    coding_basics_batch = batch_factory()
+    section_factory(batch=coding_basics_batch)
+    batch_schedule_factory(batch=coding_basics_batch)
+
+    yield coding_basics_batch
+
+@pytest.fixture()
 def coding_bootcamp_batch(batch_factory, course_factory, section_factory, batch_schedule_factory):
     coding_bootcamp_batch = batch_factory(course=course_factory(coding_bootcamp=True))
     coding_bootcamp_batch.price = 7999

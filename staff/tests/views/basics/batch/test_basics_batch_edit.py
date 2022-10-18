@@ -1,8 +1,8 @@
+from django.conf import settings
 from datetime import date, time, timedelta
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from freezegun import freeze_time
 import pytest
@@ -15,63 +15,34 @@ from student.library.slack import Slack
 pytestmark = pytest.mark.django_db
 client = Client()
 
-@pytest.fixture()
-def existing_user():
-    User = get_user_model()
-    existing_user = User.objects.create_user(
-        email='user@domain.com',
-        first_name='FirstName',
-        last_name='LastName',
-        password='password1234!'
-    )
 
-    yield existing_user
-
-@pytest.fixture()
-def batch_with_section_and_batch_schedule(batch_factory):
-    batch = batch_factory(start_date=date(2022, 1, 7))
-    Section.objects.create(
-        batch=batch,
-        number=1,
-        capacity=18
-    )
-    BatchSchedule.objects.create(
-        batch=batch,
-        day='MON',
-        iso_week_day='1',
-        start_time='00:00:00',
-        end_time='02:00:00',
-    )
-
-    yield batch
-
-def test_anonymous_user_redirected_to_login(batch_with_section_and_batch_schedule):
-    request = RequestFactory().get(f"/basics/batches/{batch_with_section_and_batch_schedule.id}/edit/")
+def test_anonymous_user_redirected_to_login(coding_basics_batch):
+    request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/edit/")
     request.user = AnonymousUser()
 
-    response = EditView.as_view()(request, batch_with_section_and_batch_schedule.id)
+    response = EditView.as_view()(request, coding_basics_batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{batch_with_section_and_batch_schedule.id}/edit" in response.url
+    assert f"staff/login/?next=/basics/batches/{coding_basics_batch.id}/edit" in response.url
 
-def test_logged_in_user_can_access(batch_with_section_and_batch_schedule, existing_user):
-    request = RequestFactory().get(f"/basics/batches/{batch_with_section_and_batch_schedule.id}/edit/")
+def test_logged_in_user_can_access(coding_basics_batch, existing_user):
+    request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/edit/")
     request.user = existing_user
 
-    response = EditView.as_view()(request, batch_with_section_and_batch_schedule.id)
+    response = EditView.as_view()(request, coding_basics_batch.id)
 
     assert response.status_code == HttpResponse.status_code
 
-def test_template_rendered_if_batch_exists(batch_with_section_and_batch_schedule, existing_user):
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
+def test_template_rendered_if_batch_exists(coding_basics_batch, existing_user):
+    client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}))
+    response = client.get(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_template_rendered_again_if_sections_incorrectly_reduced(batch_with_section_and_batch_schedule, existing_user):
-    section = batch_with_section_and_batch_schedule.section_set.first()
+def test_template_rendered_again_if_sections_incorrectly_reduced(coding_basics_batch, existing_user):
+    section = coding_basics_batch.section_set.first()
     incorrectly_reduced_number_of_sections = 0
     payload = {
         'start_date': '2022-01-01',
@@ -88,19 +59,19 @@ def test_template_rendered_again_if_sections_incorrectly_reduced(batch_with_sect
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
-        'password': 'password1234!'}
+        'password': settings.PLACEHOLDER_PASSWORD}
     )
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch_with_section_and_batch_schedule, existing_user):
-    section = batch_with_section_and_batch_schedule.section_set.first()
+def test_template_rendered_again_if_section_capacity_incorrectly_reduced(coding_basics_batch, existing_user):
+    section = coding_basics_batch.section_set.first()
     incorrectly_reduced_section_capacity = section.capacity - 1
     payload = {
         'start_date': '2022-01-01',
@@ -117,25 +88,25 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(batch_w
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
-        'password': 'password1234!'}
+        'password': settings.PLACEHOLDER_PASSWORD}
     )
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_schedule, existing_user, mocker):
-    new_start_date = batch_with_section_and_batch_schedule.start_date + timedelta(1)
-    new_end_date = batch_with_section_and_batch_schedule.end_date + timedelta(1)
+def test_valid_form_updates_and_creates_records(coding_basics_batch, existing_user, mocker):
+    new_start_date = coding_basics_batch.start_date + timedelta(1)
+    new_end_date = coding_basics_batch.end_date + timedelta(1)
 
     new_sections_count = Section.objects.all().count() + 1
-    section = batch_with_section_and_batch_schedule.section_set.first()
+    section = coding_basics_batch.section_set.first()
     new_section_capacity = section.capacity + 1
-    new_price = batch_with_section_and_batch_schedule.price + 1
+    new_price = coding_basics_batch.price + 1
     new_type = Batch.FULL_TIME
 
     new_batch_schedules_count = BatchSchedule.objects.all().count() + 1
@@ -155,15 +126,15 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
         'batch-schedule-MIN_NUM_FORMS': ['0'],
         'batch-schedule-MAX_NUM_FORMS': ['7'],
         'batch-schedule-0-day': ['MON'],
-        'batch-schedule-0-start_time': ['00:00:00'],
-        'batch-schedule-0-end_time': ['02:00:00'],
+        'batch-schedule-0-start_time': ['10:00:00'],
+        'batch-schedule-0-end_time': ['18:00:00'],
         'batch-schedule-1-day': [new_batch_schedule_day],
         'batch-schedule-1-start_time': [new_batch_schedule_start_time],
         'batch-schedule-1-end_time': [new_batch_schedule_end_time]
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
-        'password': 'password1234!'}
+        'password': settings.PLACEHOLDER_PASSWORD}
     )
 
     mocker.patch(
@@ -171,13 +142,13 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
         return_value='C1234567Q'
     )
 
-    freezer = freeze_time('2022-1-2')
+    freezer = freeze_time(date.today())
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': batch_with_section_and_batch_schedule.id})
+    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': coding_basics_batch.id})
 
     batch = Batch.objects.first()
     assert batch.start_date == new_start_date
@@ -201,15 +172,15 @@ def test_valid_form_updates_and_creates_records(batch_with_section_and_batch_sch
     assert new_batch_schedule.start_time == new_batch_schedule_start_time
     assert new_batch_schedule.end_time == new_batch_schedule_end_time
 
-def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_starts(batch_with_section_and_batch_schedule, existing_user, mocker):
-    batch_with_section_and_batch_schedule.start_date = date(2022, 1, 7)
-    batch_with_section_and_batch_schedule.end_date = date(2022, 2, 1)
+def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_starts(coding_basics_batch, existing_user, mocker):
+    coding_basics_batch.start_date = date(2022, 1, 7)
+    coding_basics_batch.end_date = date(2022, 2, 1)
     new_sections_count = Section.objects.all().count() + 1
-    section = batch_with_section_and_batch_schedule.section_set.first()
+    section = coding_basics_batch.section_set.first()
 
     payload = {
-        'start_date': batch_with_section_and_batch_schedule.start_date,
-        'end_date': batch_with_section_and_batch_schedule.end_date,
+        'start_date': coding_basics_batch.start_date,
+        'end_date': coding_basics_batch.end_date,
         'sections': new_sections_count,
         'capacity': section.capacity,
         'batch-schedule-TOTAL_FORMS': ['1'],
@@ -222,7 +193,7 @@ def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_sta
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
-        'password': 'password1234!'}
+        'password': settings.PLACEHOLDER_PASSWORD}
     )
 
     mocker.patch(
@@ -232,7 +203,7 @@ def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_sta
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    client.post(reverse('basics_batch_edit', kwargs={'batch_id': batch_with_section_and_batch_schedule.id}), data=payload)
+    client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
     freezer.stop()
 
     Slack.create_channel.assert_not_called()
