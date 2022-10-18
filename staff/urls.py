@@ -1,6 +1,6 @@
 from django.urls import path
 
-from staff.views import coupon, coupon_effect, index, login
+from staff.views import batch, coupon, coupon_effect, index, login
 from staff.views.basics import basics_batch, basics_enrolment, basics_registration, basics_section
 from staff.views.bootcamp import bootcamp_batch
 
@@ -31,5 +31,7 @@ urlpatterns = [
     path('coupons/<int:coupon_id>/edit/', coupon.EditView.as_view(), name='coupon_edit'),
     path('coupon-effects/new/', coupon_effect.NewView.as_view(), name='coupon_effect_new'),
     path('coupon-effects/<int:coupon_effect_id>/', coupon_effect.DetailView.as_view(), name='coupon_effect_detail'),
+    path('courses/batches/', batch.ListView.as_view(), name='batch_list'),
+    path('courses/batches/<int:batch_id>/', batch.DetailView.as_view(), name='batch_detail'),
     path('login/', login.LoginView.as_view(), name='staff_login'),
 ]

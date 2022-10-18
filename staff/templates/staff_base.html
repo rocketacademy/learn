@@ -38,11 +38,12 @@
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">
               <a class="nav-link text-light dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Courses
+                Batches
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="/staff/basics/batches/">Coding Basics</a></li>
-                <li><a class="dropdown-item" href="/staff/bootcamp/batches/">Coding Bootcamp</a></li>
+                <li><a class="dropdown-item" href="{% url 'batch_list' %}">All</a></li>
+                <li><a class="dropdown-item" href="{% url 'basics_batch_list' %}">Coding Basics</a></li>
+                <li><a class="dropdown-item" href="{% url 'bootcamp_batch_list' %}">Coding Bootcamp</a></li>
               </ul>
             </li>
             <li class="nav-item">

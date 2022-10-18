@@ -133,3 +133,9 @@ class Batch(SafeDeleteModel):
     def weeks_to_start(self):
         days_to_start_date = self.start_date - datetime.date.today()
         return days_to_start_date.days // 7
+
+    def is_basics(self):
+        return self.course.name == Course.CODING_BASICS
+
+    def is_bootcamp(self):
+        return self.course.name == Course.CODING_BOOTCAMP
