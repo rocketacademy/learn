@@ -1,10 +1,18 @@
 {% extends 'staff_base.html' %}
 {% block content %}
 <div class="row py-2 border-bottom">
-    <h3>Batches</h3>
+    <h3>Batch overview</h3>
 </div>
 <div class="row">
     <div class="col-12 my-4">
+        <a type="link" href="{% url 'basics_batch_new' %}" role="button" class="btn btn-outline-primary btn-sm px-4">
+            + Coding Basics batch
+        </a>
+        <a type="link" href="{% url 'bootcamp_batch_new' %}" role="button" class="btn btn-outline-primary btn-sm px-4">
+            + Coding Bootcamp batch
+        </a>
+    </div>
+    <div class="col-12">
         <div class="table-responsive my-3">
             {% if batches %}
                 <table class="table table-hover">
