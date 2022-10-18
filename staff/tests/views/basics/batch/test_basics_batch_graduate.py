@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
 from django.urls import reverse
@@ -19,18 +18,6 @@ pytestmark = pytest.mark.django_db
 client = Client()
 
 
-@pytest.fixture()
-def existing_user():
-    User = get_user_model()
-    existing_user = User.objects.create_user(
-        email='user@domain.com',
-        first_name='FirstName',
-        last_name='LastName',
-        password='password1234!'
-    )
-
-    yield existing_user
-
 def test_get_anonymous_user_redirected_to_login(batch_factory):
     batch = batch_factory()
     request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate/")
@@ -40,14 +27,6 @@ def test_get_anonymous_user_redirected_to_login(batch_factory):
 
     assert response.status_code == HttpResponseRedirect.status_code
     assert f"staff/login/?next=/basics/batches/{batch.id}/graduate/" in response.url
-
-def test_get_logged_in_user_can_access(batch, existing_user):
-    request = RequestFactory().get(f"/basics/batches/{batch.id}/graduate")
-    request.user = existing_user
-
-    response = GraduateView.as_view()(request, batch.id)
-
-    assert response.status_code == HttpResponseRedirect.status_code
 
 def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_factory, existing_user):
     email = 'studentname@example.com'
@@ -83,8 +62,7 @@ def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_factory, e
         section=section,
         student_user=student_user
     )
-
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
+    client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
     response = client.get(reverse('basics_batch_graduate', kwargs={'batch_id': batch.id}))
 
@@ -93,7 +71,7 @@ def test_get_template_rendered_if_batch_is_ready_for_graduation(batch_factory, e
 
 def test_get_redirection_if_batch_is_not_ready_for_graduation(batch_factory, existing_user):
     batch = batch_factory()
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
+    client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
     response = client.get(reverse('basics_batch_graduate', kwargs={'batch_id': batch.id}))
 
@@ -164,7 +142,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch_factory,
         discount_type=CouponEffect.DOLLARS,
         discount_amount=200
     )
-    client.post('/staff/login/', {'email': existing_user.email, 'password': 'password1234!'})
+    client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
     mocker.patch('emails.library.sendgrid.Sendgrid.send_bulk')
 
     response = client.post(

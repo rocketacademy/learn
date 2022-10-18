@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client, RequestFactory
@@ -13,17 +13,6 @@ from staff.views.basics.basics_batch import NewView
 pytestmark = pytest.mark.django_db
 client = Client()
 
-@pytest.fixture()
-def existing_user():
-    User = get_user_model()
-    existing_user = User.objects.create_user(
-        email='user@domain.com',
-        first_name='FirstName',
-        last_name='LastName',
-        password='password1234!'
-    )
-
-    yield existing_user
 
 def test_anonymous_user_redirected_to_login():
     request = RequestFactory().get('/basics/batches/new/')
@@ -72,7 +61,7 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
     }
     client.post('/staff/login/', {
         'email': existing_user.email,
-        'password': 'password1234!'}
+        'password': settings.PLACEHOLDER_PASSWORD}
     )
 
     freezer = freeze_time('2021-12-31')

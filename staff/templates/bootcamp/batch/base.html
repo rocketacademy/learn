@@ -4,5 +4,7 @@
     <h3>{{ batch.course.get_name_display }}</h3>
     <h4>{{ batch.get_type_display }} Batch {{ batch.number }}</h4>
 </div>
-{% block batch_content %}{% endblock %}
+<div class="my-4 ps-2">
+    {% block batch_content %}{% endblock %}
+</div>
 {% endblock %}
