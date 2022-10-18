@@ -1,6 +1,8 @@
-from django.test import RequestFactory
+from http.client import HTTPResponse
 from django.contrib.auth.models import AnonymousUser
-from rest_framework import status
+from django.http import HttpResponseRedirect
+from django.test import RequestFactory
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from staff.views.index import IndexView
@@ -12,5 +14,5 @@ class TestIndexView(APITestCase):
 
         response = IndexView.as_view()(request)
 
-        self.assertTrue(status.is_redirect(response.status_code))
-        assert 'staff/basics/batches/' in response.url
+        assert response.status_code == HttpResponseRedirect.status_code
+        assert response['location'] == reverse('batch_list')
