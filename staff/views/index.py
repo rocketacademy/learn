@@ -1,7 +1,7 @@
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views import View
 
 
 class IndexView(View):
     def get(self, request):
-        return HttpResponseRedirect('/staff/basics/batches/')
+        return redirect('batch_list')
