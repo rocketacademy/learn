@@ -69,10 +69,10 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
     response = client.post(reverse('basics_batch_new'), data=payload)
     freezer.stop()
 
+    batch = Batch.basics_objects.first()
     assert response.status_code == HttpResponseRedirect.status_code
+    assert response['location'] == reverse('basics_batch_detail', kwargs={'batch_id': batch.id})
 
-    assert Batch.objects.count() == 1
-    batch = Batch.objects.first()
     assert batch.capacity == number_of_sections * section_capacity
     assert batch.course == Course.objects.get(name=Course.CODING_BASICS)
     assert batch.price == price

@@ -77,10 +77,10 @@ def test_valid_form_creates_records(course_factory):
     response = client.post(reverse('bootcamp_batch_new'), data=payload)
     freezer.stop()
 
-    assert response.status_code == HttpResponseRedirect.status_code
-    assert response['location'] == reverse('bootcamp_batch_list')
-
     batch = Batch.bootcamp_objects.first()
+    assert response.status_code == HttpResponseRedirect.status_code
+    assert response['location'] == reverse('bootcamp_batch_detail', kwargs={'batch_id': batch.id})
+
     assert str(batch.start_date) == payload['start_date']
     assert str(batch.end_date) == payload['end_date']
     assert batch.sections == payload['sections']

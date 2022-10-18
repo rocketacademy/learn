@@ -95,7 +95,7 @@ class NewView(LoginRequiredMixin, View):
                             start_time=batch_schedule['start_time'],
                             end_time=batch_schedule['end_time']
                         )
-                    return HttpResponseRedirect(reverse('bootcamp_batch_list'))
+                    return redirect('bootcamp_batch_detail', batch_id=batch.id)
             except IntegrityError:
                 return redirect('bootcamp_batch_new')
         return HttpResponse(status=200)

@@ -106,7 +106,7 @@ class NewView(LoginRequiredMixin, View):
                         )
                     create_batch_slack_channel(batch)
 
-                    return HttpResponseRedirect('/staff/basics/batches/')
+                    return redirect('basics_batch_detail', batch_id=batch.id)
             except IntegrityError:
                 return redirect('basics_batch_new')
         return render(
