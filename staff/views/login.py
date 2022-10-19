@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 
 from staff.forms import LoginForm
@@ -31,4 +30,4 @@ class LoginView(View):
             return render(request, 'login.html', {'form': form})
 
         login(request, user)
-        return HttpResponseRedirect('/staff/basics/batches/')
+        return redirect('batch_list')

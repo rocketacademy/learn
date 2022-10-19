@@ -1,5 +1,6 @@
 from django.test import Client, RequestFactory
 from django.contrib.auth.models import AnonymousUser
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
@@ -24,7 +25,7 @@ class TestLoginView(APITestCase):
         response = Client().post('/staff/login/', {'email': user_email, 'password': user_password})
 
         self.assertTrue(status.is_redirect(response.status_code))
-        assert 'staff/basics/' in response.url
+        assert response['location'] == reverse('batch_list')
 
     def test_form_rendered_again_if_password_incorrect(self):
         user_email = 'user@domain.com'
