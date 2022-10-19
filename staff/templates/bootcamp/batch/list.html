@@ -1,5 +1,6 @@
 {% extends 'bootcamp/base.html' %}
 {% block overview_content %}
+{% load humanize %}
 {% load crispy_forms_tags %}
 <div class="row">
     <div class="col-10 my-2">
@@ -42,7 +43,7 @@
                     </td>
                     <td>{{ batch.sections }}</td>
                     <td>{{ batch.capacity }}</td>
-                    <td>{{ batch.price }}</td>
+                    <td>{{ batch.price|intcomma }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
