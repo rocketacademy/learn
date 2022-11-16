@@ -13,13 +13,13 @@ class StudentUser(User):
     slack_user_id = models.CharField(max_length=20, null=True, blank=True)
 
     def current_enrolled_basics_batches(self):
-        enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id)
+        enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id, status=student.models.enrolment.Enrolment.ENROLLED)
         current_enrolled_basics_batches = Batch.basics_objects.filter(end_date__gte=datetime.date.today()).filter(enrolment__in=enrolments)
 
         return current_enrolled_basics_batches
 
     def current_enrolled_sections(self):
-        enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id)
+        enrolments = student.models.enrolment.Enrolment.objects.filter(student_user_id=self.id, status=student.models.enrolment.Enrolment.ENROLLED)
         section_ids = enrolments.values_list('section_id', flat=True)
         sections = Section.objects.filter(pk__in=section_ids).filter(batch__end_date__gte=datetime.date.today())
 
