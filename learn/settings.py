@@ -224,7 +224,7 @@ BASICS_ENROLLED_FUNNEL_STATUS = 'basics_enrolled'
 # ------------------------------------------------------------------------------
 
 SLACK_USER_OAUTH_TOKEN = env('SLACK_USER_OAUTH_TOKEN')
-SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK = env('SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK')
+SLACK_SWE_FUNDAMENTALS_WORKSPACE_INVITE_LINK = env('SLACK_SWE_FUNDAMENTALS_WORKSPACE_INVITE_LINK')
 
 # SENTRY
 # ------------------------------------------------------------------------------

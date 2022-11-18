@@ -118,6 +118,6 @@ class ConfirmationView(View):
             'registration/confirmation.html',
             {
                 'registration': registration,
-                'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK
+                'slack_invite_link': settings.SLACK_SWE_FUNDAMENTALS_WORKSPACE_INVITE_LINK
             }
         )
