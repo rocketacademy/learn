@@ -234,7 +234,7 @@ def test_early_bird_method_returns_first_tier_discounted_price_at_three_weeks(ba
 
     early_bird_discount = batch.early_bird_discount()
 
-    assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
+    assert early_bird_discount == settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_PER_WEEK
 
 def test_early_bird_method_returns_capped_discounted_price(batch_factory):
     start_date = date.today() + timedelta(weeks=8)
@@ -243,7 +243,7 @@ def test_early_bird_method_returns_capped_discounted_price(batch_factory):
 
     early_bird_discount = batch.early_bird_discount()
 
-    assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+    assert early_bird_discount == settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP
 
 def test_html_formatted_batch_price_returns_base_price_formatting_under_three_weeks(batch_factory):
     start_date = date.today() + timedelta(days=20)

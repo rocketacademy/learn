@@ -133,9 +133,9 @@ class Batch(SafeDeleteModel):
     def early_bird_discount(self):
         discount = 0
         if self.weeks_to_start() >= 3:
-            discount = (self.weeks_to_start() - 2) * settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
-            if discount > settings.CODING_BASICS_TIERED_DISCOUNT_CAP:
-                discount = settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+            discount = (self.weeks_to_start() - 2) * settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_PER_WEEK
+            if discount > settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP:
+                discount = settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP
 
         return discount
 
