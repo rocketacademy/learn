@@ -36,6 +36,26 @@ def test_number_not_reassigned_if_existing_basics_batch_record_saved(batch_facto
 
     assert first_batch.number == 17
 
+def test_number_assigned_if_new_swe_fundamentals_batch_record(batch_factory, course_factory):
+    swe_fundamentals_course = course_factory(swe_fundamentals=True)
+
+    first_batch = batch_factory(course=swe_fundamentals_course)
+    second_batch = batch_factory(course=swe_fundamentals_course)
+
+    assert first_batch.number == 21
+    assert second_batch.number == 22
+
+def test_number_not_reassigned_if_existing_swe_fundamentals_batch_record_saved(batch_factory, course_factory):
+    swe_fundamentals_course = course_factory(swe_fundamentals=True)
+    first_batch = batch_factory(course=swe_fundamentals_course)
+    second_batch = batch_factory(course=swe_fundamentals_course)
+    new_capacity = 100
+
+    first_batch.capacity = new_capacity
+    first_batch.save()
+
+    assert first_batch.number == 21
+
 def test_number_assigned_if_new_fulltime_bootcamp_batch_record(batch_factory, course_factory):
     coding_bootcamp_course = course_factory(coding_bootcamp=True)
 

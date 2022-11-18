@@ -54,3 +54,11 @@ def coding_bootcamp_batch(batch_factory, course_factory, section_factory, batch_
     batch_schedule_factory(batch=coding_bootcamp_batch)
 
     yield coding_bootcamp_batch
+
+@pytest.fixture()
+def swe_fundamentals_batch(batch_factory, course_factory, section_factory, batch_schedule_factory):
+    swe_fundamentals_batch = batch_factory(course=course_factory(swe_fundamentals=True))
+    section_factory(batch=swe_fundamentals_batch)
+    batch_schedule_factory(batch=swe_fundamentals_batch)
+
+    yield swe_fundamentals_batch
