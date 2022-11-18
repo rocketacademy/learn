@@ -31,11 +31,11 @@ ul {
     width: 0;
 }
 
-.basics-registration-form input[type="radio"] {
+.swe-fundamentals-registration-form input[type="radio"] {
     display: none;
 }
 
-.basics-registration-form #id_batch_selection-batch label {
+.swe-fundamentals-registration-form #id_batch_selection-batch label {
     width: 100%;
     padding: 20px 25px;
     border: 1px solid lightgrey;
@@ -43,16 +43,16 @@ ul {
     margin: 10px 0px 10px 0px;
 }
 
-.basics-registration-form #original-price {
+.swe-fundamentals-registration-form #original-price {
     color: grey;
 }
 
-.basics-registration-form input[type="radio"]:checked + label {
+.swe-fundamentals-registration-form input[type="radio"]:checked + label {
     color: white;
     background-color: #00567E;
     border-color: #00567E;
 }
 
-.basics-registration-form input[type="radio"]:checked + label #original-price {
+.swe-fundamentals-registration-form input[type="radio"]:checked + label #original-price {
     color: lightgrey;
 }
