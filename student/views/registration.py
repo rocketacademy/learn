@@ -8,6 +8,7 @@ from formtools.wizard.views import SessionWizardView
 from authentication.models import StudentUser
 from payment.library.stripe import Stripe
 from payment.models.coupon import Coupon
+from staff.models import Course
 from student.models.registration import Registration
 
 User = get_user_model()
@@ -97,7 +98,8 @@ class PaymentPreviewView(View):
             {
                 'payable_type': Registration.__name__,
                 'payable_id': registration_id,
-                'payable_line_item_name': 'Registration for Coding Basics',
+                'registration': registration,
+                'payable_line_item_name': registration.batch.course.get_name_display(),
                 'payable_line_item_amount_in_cents': original_payable_amount * settings.CENTS_PER_DOLLAR,
                 'original_payable_amount': original_payable_amount,
                 'stripe_coupon_id': stripe_coupon_id,

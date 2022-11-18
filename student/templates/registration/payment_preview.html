@@ -39,7 +39,7 @@
 <input type="hidden" id="stripe-coupon-id" name="stripe-coupon-id" value="{{ stripe_coupon_id }}">
 <input type="hidden" id="payment-success-path" name="payment-success-path" value="{{ payment_success_path }}">
 <input type="hidden" id="payment-cancel-path" name="payment-cancel-path" value="{{ payment_cancel_path }}">
-<p>To confirm your place in Coding Basics, please proceed to make a payment of S${{ final_payable_amount }}. You will be redirected to Stripe, our payment handler, once you click the button below.</p>
+<p>To confirm your place in {{ registration.batch.course.get_name_display }}, please proceed to make a payment of S${{ final_payable_amount }}. You will be redirected to Stripe, our payment handler, once you click the button below.</p>
 <p>Please note that this amount is non-refundable.</p>
 <i>(But imagine how much you can learn with the equivalent of just ~30 cups of coffee!)</i></p>
 <button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Make payment</button>

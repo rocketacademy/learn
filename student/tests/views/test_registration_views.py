@@ -253,6 +253,7 @@ def test_payment_preview_get_renders_early_bird_price_with_valid_referral_code(e
     )
 
     assert response.status_code == 200
+    assert response.context['registration'] == early_bird_registration
     assert response.context['original_payable_amount'] == 199
     assert response.context['stripe_coupon_id'] == stripe_coupon_id
     assert response.context['final_payable_amount'] == 179
