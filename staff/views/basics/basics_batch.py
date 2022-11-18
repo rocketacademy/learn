@@ -282,7 +282,7 @@ class GraduateView(LoginRequiredMixin, View):
                         personalizations.append(personalization)
                     sendgrid_client = Sendgrid()
                     sendgrid_client.send_bulk(
-                        settings.ROCKET_CODING_BASICS_EMAIL,
+                        settings.ROCKET_EDUCATION_EMAIL,
                         personalizations,
                         settings.CODING_BASICS_GRADUATION_NOTIFICATION_TEMPLATE_ID
                     )
