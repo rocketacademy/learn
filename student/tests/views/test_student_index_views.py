@@ -13,4 +13,4 @@ class TestIndexView(APITestCase):
         response = IndexView.as_view()(request)
 
         self.assertTrue(status.is_redirect(response.status_code))
-        assert 'student/basics/register/' in response.url
+        assert 'student/courses/swe-fundamentals/register/' in response.url

@@ -21,9 +21,9 @@ class BatchSelectionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        active_batches = Batch.basics_objects.filter(start_date__gte=datetime.date.today())
+        active_batches = Batch.swe_fundamentals_objects.filter(start_date__gte=datetime.date.today())
         enrollable_batches_ids = [batch.id for batch in active_batches if not batch.fully_enrolled()]
-        enrollable_batches = Batch.basics_objects.filter(id__in=enrollable_batches_ids).order_by('start_date')
+        enrollable_batches = Batch.swe_fundamentals_objects.filter(id__in=enrollable_batches_ids).order_by('start_date')
 
         self.fields['batch'].queryset = enrollable_batches
         self.fields['batch'].initial = enrollable_batches.first()

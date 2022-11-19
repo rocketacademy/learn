@@ -8,7 +8,6 @@ from formtools.wizard.views import SessionWizardView
 from authentication.models import StudentUser
 from payment.library.stripe import Stripe
 from payment.models.coupon import Coupon
-from staff.models import Course
 from student.models.registration import Registration
 
 User = get_user_model()
@@ -69,11 +68,11 @@ class RegistrationWizard(SessionWizardView):
                     )
 
                 return redirect(
-                    'basics_register_payment_preview',
+                    'swe_fundamentals_register_payment_preview',
                     registration_id=registration.id,
                 )
         except IntegrityError:
-            return redirect('basics_register')
+            return redirect('swe_fundamentals_register')
 
 
 class PaymentPreviewView(View):
@@ -104,8 +103,8 @@ class PaymentPreviewView(View):
                 'original_payable_amount': original_payable_amount,
                 'stripe_coupon_id': stripe_coupon_id,
                 'final_payable_amount': original_payable_amount - total_discount,
-                'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
-                'payment_cancel_path': '/student/basics/register/',
+                'payment_success_path': f"/student/courses/swe-fundamentals/register/{registration_id}/confirmation/",
+                'payment_cancel_path': '/student/courses/swe-fundamentals/register/',
             }
         )
 
