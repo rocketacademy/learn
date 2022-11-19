@@ -114,7 +114,7 @@ class Registration(SafeDeleteModel):
     def send_confirmation_email(self):
         from_email = settings.ROCKET_EDUCATION_EMAIL
         to_email = self.email
-        template_id = settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
+        template_id = settings.SWE_FUNDAMENTALS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
         dynamic_template_data = {
             'first_name': self.first_name.capitalize(),
             'email': to_email,
