@@ -5,6 +5,7 @@ from django.test import Client
 import pytest
 from pytest_factoryboy import register
 
+from authentication.tests.factories.student_user_factory import StudentUserFactory
 from authentication.tests.factories.user_factory import UserFactory
 from staff.tests.factories.batch_factory import BatchFactory
 from staff.tests.factories.batch_schedule_factory import BatchScheduleFactory
@@ -17,6 +18,7 @@ register(BatchScheduleFactory)
 register(CourseFactory)
 register(RegistrationFactory)
 register(SectionFactory)
+register(StudentUserFactory)
 register(UserFactory)
 
 client = Client
