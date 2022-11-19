@@ -238,7 +238,7 @@ def test_payment_returns_payment_object_if_exists(swe_fundamentals_registration)
         intent='pi_3L65dXHQt5htmvv4176vtmCj',
         customer='cus_Lnh1zdmxckmUUU',
         customer_email='customer_email@example.com',
-        amount=settings.CODING_BASICS_REGISTRATION_FEE_SGD * settings.CENTS_PER_DOLLAR,
+        amount=settings.SWE_FUNDAMENTALS_REGISTRATION_FEE_SGD * settings.CENTS_PER_DOLLAR,
         currency=settings.SINGAPORE_DOLLAR_CURRENCY,
         status='paid'
     )

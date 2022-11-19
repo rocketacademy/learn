@@ -106,7 +106,7 @@ def test_biggest_discount_for_coding_basics(course_factory):
     coupon = Coupon.objects.create(start_date=make_aware(datetime.datetime.now()))
     coupon.effects.set([discount_for_coding_basics_1, discount_for_coding_basics_2, biggest_discount_for_coding_basics])
 
-    result = coupon.biggest_discount_for(coding_basics_course, settings.CODING_BASICS_REGISTRATION_FEE_SGD)
+    result = coupon.biggest_discount_for(coding_basics_course, settings.SWE_FUNDAMENTALS_REGISTRATION_FEE_SGD)
 
-    biggest_discount = round((biggest_discount_for_coding_basics.discount_amount / 100 * settings.CODING_BASICS_REGISTRATION_FEE_SGD), 2)
+    biggest_discount = round((biggest_discount_for_coding_basics.discount_amount / 100 * settings.SWE_FUNDAMENTALS_REGISTRATION_FEE_SGD), 2)
     assert result == biggest_discount
