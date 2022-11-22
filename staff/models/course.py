@@ -7,10 +7,12 @@ class Course(SafeDeleteModel):
 
     CODING_BASICS = 'CODING_BASICS'
     CODING_BOOTCAMP = 'CODING_BOOTCAMP'
+    SWE_FUNDAMENTALS = 'SOFTWARE_ENGINEERING_FUNDAMENTALS'
 
     NAME_CHOICES = [
         (CODING_BASICS, 'Coding Basics'),
-        (CODING_BOOTCAMP, 'Coding Bootcamp')
+        (CODING_BOOTCAMP, 'Coding Bootcamp'),
+        (SWE_FUNDAMENTALS, 'Software Engineering Fundamentals')
     ]
 
     name = models.CharField(max_length=255, choices=NAME_CHOICES)

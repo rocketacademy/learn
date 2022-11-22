@@ -173,7 +173,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(mocker, batch_factory,
     assert second_referral_coupon.referrer.email == second_enrolment.student_user.email
     assert list(second_referral_coupon.effects.all()) == [basics_coupon_effect, bootcamp_coupon_effect]
     Sendgrid.send_bulk.assert_called_once_with(
-        settings.ROCKET_CODING_BASICS_EMAIL,
+        settings.ROCKET_EDUCATION_EMAIL,
         [
             mocker.ANY,
             mocker.ANY,

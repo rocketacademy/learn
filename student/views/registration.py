@@ -68,11 +68,11 @@ class RegistrationWizard(SessionWizardView):
                     )
 
                 return redirect(
-                    'basics_register_payment_preview',
+                    'swe_fundamentals_register_payment_preview',
                     registration_id=registration.id,
                 )
         except IntegrityError:
-            return redirect('basics_register')
+            return redirect('swe_fundamentals_register')
 
 
 class PaymentPreviewView(View):
@@ -97,13 +97,14 @@ class PaymentPreviewView(View):
             {
                 'payable_type': Registration.__name__,
                 'payable_id': registration_id,
-                'payable_line_item_name': 'Registration for Coding Basics',
+                'registration': registration,
+                'payable_line_item_name': registration.batch.course.get_name_display(),
                 'payable_line_item_amount_in_cents': original_payable_amount * settings.CENTS_PER_DOLLAR,
                 'original_payable_amount': original_payable_amount,
                 'stripe_coupon_id': stripe_coupon_id,
                 'final_payable_amount': original_payable_amount - total_discount,
-                'payment_success_path': f"/student/basics/register/{registration_id}/confirmation/",
-                'payment_cancel_path': '/student/basics/register/',
+                'payment_success_path': f"/student/courses/swe-fundamentals/register/{registration_id}/confirmation/",
+                'payment_cancel_path': '/student/courses/swe-fundamentals/register/',
             }
         )
 
@@ -116,6 +117,6 @@ class ConfirmationView(View):
             'registration/confirmation.html',
             {
                 'registration': registration,
-                'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK
+                'slack_invite_link': settings.SLACK_SWE_FUNDAMENTALS_WORKSPACE_INVITE_LINK
             }
         )

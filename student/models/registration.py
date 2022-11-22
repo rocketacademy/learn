@@ -112,14 +112,14 @@ class Registration(SafeDeleteModel):
             student_user.save()
 
     def send_confirmation_email(self):
-        from_email = settings.ROCKET_CODING_BASICS_EMAIL
+        from_email = settings.ROCKET_EDUCATION_EMAIL
         to_email = self.email
-        template_id = settings.CODING_BASICS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
+        template_id = settings.SWE_FUNDAMENTALS_REGISTRATION_CONFIRMATION_TEMPLATE_ID
         dynamic_template_data = {
             'first_name': self.first_name.capitalize(),
             'email': to_email,
             'start_date': self.batch.start_date.strftime('%A, %d %b %Y'),
-            'slack_invite_link': settings.SLACK_CODING_BASICS_WORKSPACE_INVITE_LINK,
+            'slack_invite_link': settings.SLACK_SWE_FUNDAMENTALS_WORKSPACE_INVITE_LINK,
             'batch_number': self.batch.number
         }
 

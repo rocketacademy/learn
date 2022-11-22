@@ -16,3 +16,7 @@ class CourseFactory(factory.django.DjangoModelFactory):
         coding_bootcamp = factory.Trait(
             name=Course.CODING_BOOTCAMP
         )
+
+        swe_fundamentals = factory.Trait(
+            name=Course.SWE_FUNDAMENTALS
+        )

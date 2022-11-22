@@ -36,6 +36,26 @@ def test_number_not_reassigned_if_existing_basics_batch_record_saved(batch_facto
 
     assert first_batch.number == 17
 
+def test_number_assigned_if_new_swe_fundamentals_batch_record(batch_factory, course_factory):
+    swe_fundamentals_course = course_factory(swe_fundamentals=True)
+
+    first_batch = batch_factory(course=swe_fundamentals_course)
+    second_batch = batch_factory(course=swe_fundamentals_course)
+
+    assert first_batch.number == 21
+    assert second_batch.number == 22
+
+def test_number_not_reassigned_if_existing_swe_fundamentals_batch_record_saved(batch_factory, course_factory):
+    swe_fundamentals_course = course_factory(swe_fundamentals=True)
+    first_batch = batch_factory(course=swe_fundamentals_course)
+    second_batch = batch_factory(course=swe_fundamentals_course)
+    new_capacity = 100
+
+    first_batch.capacity = new_capacity
+    first_batch.save()
+
+    assert first_batch.number == 21
+
 def test_number_assigned_if_new_fulltime_bootcamp_batch_record(batch_factory, course_factory):
     coding_bootcamp_course = course_factory(coding_bootcamp=True)
 
@@ -214,7 +234,7 @@ def test_early_bird_method_returns_first_tier_discounted_price_at_three_weeks(ba
 
     early_bird_discount = batch.early_bird_discount()
 
-    assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
+    assert early_bird_discount == settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_PER_WEEK
 
 def test_early_bird_method_returns_capped_discounted_price(batch_factory):
     start_date = date.today() + timedelta(weeks=8)
@@ -223,7 +243,7 @@ def test_early_bird_method_returns_capped_discounted_price(batch_factory):
 
     early_bird_discount = batch.early_bird_discount()
 
-    assert early_bird_discount == settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+    assert early_bird_discount == settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP
 
 def test_html_formatted_batch_price_returns_base_price_formatting_under_three_weeks(batch_factory):
     start_date = date.today() + timedelta(days=20)

@@ -16,6 +16,10 @@ class BasicsBatchManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted_at__isnull=True, course=Course.objects.get(name=Course.CODING_BASICS))
 
+class SWEFundamentalsBatchManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted_at__isnull=True, course=Course.objects.get(name=Course.SWE_FUNDAMENTALS))
+
 class BootcampBatchManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted_at__isnull=True, course=Course.objects.get(name=Course.CODING_BOOTCAMP))
@@ -46,6 +50,7 @@ class Batch(SafeDeleteModel):
     objects = BatchManager()
     basics_objects = BasicsBatchManager()
     bootcamp_objects = BootcampBatchManager()
+    swe_fundamentals_objects = SWEFundamentalsBatchManager()
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -63,24 +68,28 @@ class Batch(SafeDeleteModel):
     def next_number(self, course_id, type):
         course = Course.objects.get(pk=course_id)
 
-        if course.name == Course.CODING_BASICS:
-            if self.basics_objects.count() == 0:
-                # 17 because this will be the first batch number when we launch Learn
-                return 17
-            return self.basics_objects.aggregate(models.Max('number'))['number__max'] + 1
-        elif course.name == Course.CODING_BOOTCAMP:
-            if type == Batch.PART_TIME:
-                if self.bootcamp_objects.filter(type=Batch.PART_TIME).count() == 0:
-                    print('parttime')
-                    # 6 because this will be the first PTBC batch number when we launch bootcamp admin features
-                    return 6
-                return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
-            elif type == Batch.FULL_TIME:
-                if self.bootcamp_objects.filter(type=Batch.FULL_TIME).count() == 0:
-                    print('fulltime')
-                    # 10 because this will be the first FTBC batch number when we launch bootcamp admin features
-                    return 10
-                return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
+        match course.name:
+            case Course.CODING_BASICS:
+                if self.basics_objects.count() == 0:
+                    # 17 because this will be the first batch number when we launch Learn
+                    return 17
+                return self.basics_objects.aggregate(models.Max('number'))['number__max'] + 1
+            case Course.SWE_FUNDAMENTALS:
+                if self.swe_fundamentals_objects.count() == 0:
+                    # 21 because this will be the next batch number when we transition from Coding Basics to SWE Fundamentals
+                    return 21
+                return self.swe_fundamentals_objects.aggregate(models.Max('number'))['number__max'] + 1
+            case Course.CODING_BOOTCAMP:
+                if type == Batch.PART_TIME:
+                    if self.bootcamp_objects.filter(type=Batch.PART_TIME).count() == 0:
+                        # 6 because this will be the first PTBC batch number when we launch bootcamp admin features
+                        return 6
+                    return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
+                elif type == Batch.FULL_TIME:
+                    if self.bootcamp_objects.filter(type=Batch.FULL_TIME).count() == 0:
+                        # 10 because this will be the first FTBC batch number when we launch bootcamp admin features
+                        return 10
+                    return self.bootcamp_objects.aggregate(models.Max('number'))['number__max'] + 1
 
     @staticmethod
     def html_formatted_batch_schedules(self):
@@ -124,9 +133,9 @@ class Batch(SafeDeleteModel):
     def early_bird_discount(self):
         discount = 0
         if self.weeks_to_start() >= 3:
-            discount = (self.weeks_to_start() - 2) * settings.CODING_BASICS_TIERED_DISCOUNT_PER_WEEK
-            if discount > settings.CODING_BASICS_TIERED_DISCOUNT_CAP:
-                discount = settings.CODING_BASICS_TIERED_DISCOUNT_CAP
+            discount = (self.weeks_to_start() - 2) * settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_PER_WEEK
+            if discount > settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP:
+                discount = settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP
 
         return discount
 
