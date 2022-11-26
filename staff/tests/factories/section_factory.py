@@ -12,4 +12,9 @@ class SectionFactory(factory.django.DjangoModelFactory):
     batch = factory.SubFactory(BatchFactory)
     number = 1
     capacity = 12
-    slack_channel_id = get_random_string(length=6)
+    slack_channel_id = None
+
+    class Params:
+        slack_channel_id_exists = factory.Trait(
+            slack_channel_id=get_random_string(length=6)
+        )
