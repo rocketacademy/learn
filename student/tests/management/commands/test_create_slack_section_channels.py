@@ -14,7 +14,8 @@ def test_slack_section_channels_created_if_slack_channel_id_null(mocker, batch_f
     course_duration_in_days = 35
     batch = batch_factory.create(
         start_date=start_date,
-        end_date=start_date + timedelta(days=course_duration_in_days)
+        end_date=start_date + timedelta(days=course_duration_in_days),
+        swe_fundamentals=True
     )
     section = Section.objects.create(
         batch=batch,
@@ -33,7 +34,7 @@ def test_slack_section_channels_created_if_slack_channel_id_null(mocker, batch_f
     Slack.create_channel.assert_called_once_with(slack_channel_name)
 
 def test_slack_section_channels_not_created_if_slack_channel_id_exists(mocker, batch_factory):
-    batch = batch_factory.create()
+    batch = batch_factory.create(swe_fundamentals=True)
     section = Section.objects.create(
         batch=batch,
         number=1,
