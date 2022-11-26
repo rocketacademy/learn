@@ -108,7 +108,8 @@ def test_create_enrolment_record(mocker, student_user_factory, swe_fundamentals_
     assert enrolment.student_user.last_name == student_user.last_name
 
 def test_update_hubspot_contact_when_hubspot_contact_id_exists_in_learn(mocker, student_user_factory, swe_fundamentals_registration):
-    student_user = student_user_factory()
+    hubspot_contact_id = 1234
+    student_user = student_user_factory.create(hubspot_contact_id=hubspot_contact_id)
     swe_fundamentals_registration.first_name = student_user.first_name
     swe_fundamentals_registration.last_name = student_user.last_name
     swe_fundamentals_registration.email = student_user.email
@@ -139,7 +140,7 @@ def test_update_hubspot_contact_when_hubspot_contact_id_exists_in_learn(mocker, 
     swe_fundamentals_registration.create_or_update_hubspot_contact(student_user)
 
     Hubspot.update_contact.assert_called_once_with(
-        str(student_user.hubspot_contact_id),
+        hubspot_contact_id,
         {
             'email': student_user.email,
             'firstname': student_user.first_name,
