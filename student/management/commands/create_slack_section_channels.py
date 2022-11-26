@@ -13,7 +13,7 @@ class Command(BaseCommand):
         batch_start_date = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_CREATING_SECTION_CHANNELS)
         slack_client = Slack()
 
-        batches_about_to_begin = Batch.basics_objects.filter(start_date=batch_start_date)
+        batches_about_to_begin = Batch.swe_fundamentals_objects.filter(start_date=batch_start_date)
         for batch in batches_about_to_begin:
             section_queryset = Section.objects.filter(batch__id=batch.id).filter(slack_channel_id__isnull=True)
 

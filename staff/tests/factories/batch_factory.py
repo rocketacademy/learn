@@ -5,8 +5,6 @@ import factory
 from staff.models import Batch
 from staff.tests.factories.course_factory import CourseFactory
 
-COURSE_DURATION_IN_DAYS = 35
-
 class BatchFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Batch
@@ -14,7 +12,7 @@ class BatchFactory(factory.django.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
     number = 1
     start_date = date.today()
-    end_date = date.today() + timedelta(days=COURSE_DURATION_IN_DAYS)
+    end_date = date.today() + timedelta(days=settings.SWE_COURSE_DURATION_IN_DAYS)
     capacity = 32
     sections = 2
     slack_channel_id = None
