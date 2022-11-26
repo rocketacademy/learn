@@ -17,6 +17,9 @@ class EnrolmentFactory(factory.django.DjangoModelFactory):
     status = Enrolment.ENROLLED
 
     class Params:
+        coding_basics = factory.Trait(
+            batch=factory.SubFactory(BatchFactory, coding_basics=True)
+        )
         swe_fundamentals = factory.Trait(
             batch=factory.SubFactory(BatchFactory, swe_fundamentals=True),
         )

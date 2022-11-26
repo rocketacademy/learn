@@ -22,6 +22,10 @@ class BatchFactory(factory.django.DjangoModelFactory):
     type = Batch.PART_TIME
 
     class Params:
+        coding_basics = factory.Trait(
+            course=factory.SubFactory(CourseFactory, coding_basics=True)
+        )
+
         swe_fundamentals = factory.Trait(
             course=factory.SubFactory(CourseFactory, swe_fundamentals=True)
         )
