@@ -2,84 +2,42 @@ from datetime import date, timedelta
 from django.conf import settings
 import pytest
 
-from authentication.models import StudentUser
-from staff.models import Section
 from student.management.commands.add_students_to_slack_section_channels import Command
 from student.library.slack import Slack
-from student.models.enrolment import Enrolment
-from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
 COURSE_DURATION_IN_DAYS = 35
 
 
-def test_only_picks_up_batches_starting_in_7_days(mocker, batch_factory):
+def test_only_picks_up_batches_starting_in_7_days(mocker, enrolment_factory):
+    first_swe_fundamentals_enrolment = enrolment_factory.create(swe_fundamentals=True, enrolled=True)
     start_date_7_days_from_now = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS)
-    batch_starting_in_7_days = batch_factory.create(
-        start_date=start_date_7_days_from_now,
-        end_date=start_date_7_days_from_now + timedelta(COURSE_DURATION_IN_DAYS)
-    )
-    course = batch_starting_in_7_days.course
-    section = Section.objects.create(
-        batch=batch_starting_in_7_days,
-        number=1,
-        capacity=18,
-        slack_channel_id='C1234B'
-    )
+    batch_starting_in_7_days = first_swe_fundamentals_enrolment.batch
+    batch_starting_in_7_days.start_date = start_date_7_days_from_now
+    batch_starting_in_7_days.end_date = start_date_7_days_from_now + timedelta(COURSE_DURATION_IN_DAYS)
+    batch_starting_in_7_days.save()
+    first_swe_fundamentals_enrolment.section.slack_channel_id = 'C1234B'
+    first_swe_fundamentals_enrolment.section.save()
+    first_swe_fundamentals_enrolment.student_user.slack_user_id = 'U1234A'
+    first_swe_fundamentals_enrolment.student_user.save()
+    first_swe_fundamentals_enrolment.save()
+
+    second_swe_fundamentals_enrolment = enrolment_factory.create(swe_fundamentals=True, enrolled=True)
     start_date_8_days_from_now = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_ADDING_STUDENTS_TO_SECTION_CHANNELS + 1)
-    batch_starting_in_8_days = batch_factory.create(
-        course=course,
-        start_date=start_date_8_days_from_now,
-        end_date=start_date_8_days_from_now + timedelta(COURSE_DURATION_IN_DAYS)
-    )
-    registration = Registration.objects.create(
-        course=course,
-        batch=batch_starting_in_7_days,
-        first_name='Student',
-        last_name='No Slack ID',
-        email='student@noslackid.com',
-        country_of_residence='SG',
-        referral_channel='word_of_mouth',
-    )
-    student_user_without_slack_user_id = StudentUser.objects.create_user(
-        email='student@noslackid.com',
-        first_name='Student',
-        last_name='No Slack ID',
-        password=settings.PLACEHOLDER_PASSWORD,
-    )
-    enrolment = Enrolment.objects.create(
-        registration=registration,
-        batch=batch_starting_in_7_days,
-        section=section,
-        student_user=student_user_without_slack_user_id,
-    )
-    registration = Registration.objects.create(
-        course=course,
-        batch=batch_starting_in_7_days,
-        first_name='Student',
-        last_name='With Slack ID',
-        email='student@withslackid.com',
-        country_of_residence='SG',
-        referral_channel='word_of_mouth',
-    )
-    student_user_with_slack_user_id = StudentUser.objects.create_user(
-        email='student@withslackid.com',
-        first_name='Student',
-        last_name='With Slack ID',
-        password=settings.PLACEHOLDER_PASSWORD,
-    )
-    student_user_with_slack_user_id.slack_user_id = 'U1234A'
-    student_user_with_slack_user_id.save()
-    enrolment = Enrolment.objects.create(
-        registration=registration,
-        batch=batch_starting_in_7_days,
-        section=section,
-        student_user=student_user_with_slack_user_id,
-    )
+    batch_starting_in_8_days = second_swe_fundamentals_enrolment.batch
+    batch_starting_in_8_days.start_date = start_date_8_days_from_now
+    batch_starting_in_8_days.end_date = start_date_8_days_from_now + timedelta(COURSE_DURATION_IN_DAYS)
+    batch_starting_in_8_days.save()
+
     mocker.patch(
         'student.library.slack.Slack.add_users_to_channel'
     )
 
     Command().handle()
 
-    Slack.add_users_to_channel.assert_called_once_with([student_user_with_slack_user_id.slack_user_id], section.slack_channel_id)
+    Slack.add_users_to_channel.assert_called_once_with(
+        [
+            first_swe_fundamentals_enrolment.student_user.slack_user_id
+        ],
+        first_swe_fundamentals_enrolment.section.slack_channel_id
+    )
