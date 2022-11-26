@@ -5,6 +5,7 @@ from staff.models import Course
 class CourseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Course
+        django_get_or_create = ('name',)
 
     name = Course.CODING_BASICS
 

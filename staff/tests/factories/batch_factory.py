@@ -20,3 +20,16 @@ class BatchFactory(factory.django.DjangoModelFactory):
     slack_channel_id = None
     price = settings.SWE_FUNDAMENTALS_REGISTRATION_FEE_SGD
     type = Batch.PART_TIME
+
+    class Params:
+        coding_basics = factory.Trait(
+            course=factory.SubFactory(CourseFactory, coding_basics=True)
+        )
+
+        swe_fundamentals = factory.Trait(
+            course=factory.SubFactory(CourseFactory, swe_fundamentals=True)
+        )
+
+        coding_bootcamp = factory.Trait(
+            course=factory.SubFactory(CourseFactory, coding_bootcamp=True)
+        )
