@@ -21,19 +21,22 @@ from student.models.enrolment import Enrolment
 
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
-        batch_queryset = Batch.basics_objects.all().order_by('-number')
+        swe_fundamentals_batch_queryset = Batch.swe_fundamentals_objects.all()
+        # Add Coding Basics batches from before our course name transition to SWE fundamentals
+        basics_batch_queryset = Batch.basics_objects.all()
+        batches = (swe_fundamentals_batch_queryset | basics_batch_queryset).order_by('-number')
 
         return render(
             request,
             'basics/batch/list.html',
             {
-                'batches': batch_queryset,
+                'batches': batches,
             }
         )
 
 class DetailView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
-        batch = Batch.basics_objects.get(pk=batch_id)
+        batch = Batch.objects.get(pk=batch_id)
         section_capacity = Section.objects.filter(batch__id=batch_id).first().capacity
         batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
 
