@@ -2,7 +2,6 @@ from datetime import date, timedelta
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError, transaction
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -53,7 +52,7 @@ class DetailView(LoginRequiredMixin, View):
 
 class NewView(LoginRequiredMixin, View):
     def get(self, request):
-        course_id = Course.objects.get(name=Course.CODING_BASICS).id
+        course_id = Course.objects.get(name=Course.SWE_FUNDAMENTALS).id
         next_batch_number = Batch.next_number(course_id, Batch.PART_TIME)
         batch_form = BatchForm(None)
         section_form = SectionForm(None)
@@ -71,7 +70,7 @@ class NewView(LoginRequiredMixin, View):
         )
 
     def post(self, request):
-        course = Course.objects.get(name=Course.CODING_BASICS)
+        course = Course.objects.get(name=Course.SWE_FUNDAMENTALS)
         batch_form = BatchForm(request.POST)
         section_form = SectionForm(request.POST)
         batch_schedule_formset = BatchScheduleFormSet(request.POST, prefix='batch-schedule')

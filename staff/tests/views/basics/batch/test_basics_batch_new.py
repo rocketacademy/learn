@@ -24,7 +24,7 @@ def test_anonymous_user_redirected_to_login():
     assert 'staff/login/?next=/basics/batches/' in response.url
 
 def test_logged_in_user_can_access(course_factory, existing_user):
-    course_factory()
+    course_factory(swe_fundamentals=True)
     request = RequestFactory().get('/basics/batches/new/')
     request.user = existing_user
 
@@ -34,7 +34,7 @@ def test_logged_in_user_can_access(course_factory, existing_user):
 
 @patch('staff.views.basics.basics_batch.create_batch_slack_channel')
 def test_valid_form_creates_records(mock_create_batch_slack_channel, course_factory, existing_user):
-    course_factory()
+    course_factory(swe_fundamentals=True)
     number_of_sections = 6
     section_capacity = 18
     number_of_batch_schedules = 2
@@ -69,12 +69,12 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
     response = client.post(reverse('basics_batch_new'), data=payload)
     freezer.stop()
 
-    batch = Batch.basics_objects.first()
+    batch = Batch.swe_fundamentals_objects.first()
     assert response.status_code == HttpResponseRedirect.status_code
     assert response['location'] == reverse('basics_batch_detail', kwargs={'batch_id': batch.id})
 
     assert batch.capacity == number_of_sections * section_capacity
-    assert batch.course == Course.objects.get(name=Course.CODING_BASICS)
+    assert batch.course == Course.objects.get(name=Course.SWE_FUNDAMENTALS)
     assert batch.price == price
     assert batch.type == type
 
