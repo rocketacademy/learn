@@ -8,7 +8,7 @@ from student.management.commands.create_slack_section_channels import Command
 pytestmark = pytest.mark.django_db
 
 start_date = date.today() + timedelta(days=settings.DAYS_BEFORE_BATCH_FOR_CREATING_SECTION_CHANNELS)
-end_date = start_date + timedelta(days=settings.SWE_COURSE_DURATION_IN_DAYS)
+end_date = start_date + timedelta(days=settings.SWE_FUNDAMENTALS_COURSE_DURATION_IN_DAYS)
 
 
 def test_slack_section_channels_created_if_slack_channel_id_null(mocker, batch_factory, section_factory):

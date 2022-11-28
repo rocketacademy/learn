@@ -12,7 +12,7 @@ class BatchFactory(factory.django.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
     number = 1
     start_date = date.today()
-    end_date = date.today() + timedelta(days=settings.SWE_COURSE_DURATION_IN_DAYS)
+    end_date = date.today() + timedelta(days=settings.SWE_FUNDAMENTALS_COURSE_DURATION_IN_DAYS)
     capacity = 32
     sections = 2
     slack_channel_id = None
