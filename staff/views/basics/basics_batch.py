@@ -124,7 +124,7 @@ class NewView(LoginRequiredMixin, View):
 
 class EditView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
-        batch = Batch.basics_objects.get(pk=batch_id)
+        batch = Batch.swe_fundamentals_objects.get(pk=batch_id)
         section_queryset = Section.objects.filter(batch__id=batch.id)
         batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch.id)
 
@@ -152,7 +152,7 @@ class EditView(LoginRequiredMixin, View):
         )
 
     def post(self, request, batch_id):
-        batch = Batch.basics_objects.get(pk=batch_id)
+        batch = Batch.swe_fundamentals_objects.get(pk=batch_id)
         section_queryset = Section.objects.filter(batch__id=batch.id)
 
         batch_form = BatchForm(request.POST)

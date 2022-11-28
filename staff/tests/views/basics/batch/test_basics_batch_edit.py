@@ -16,33 +16,33 @@ pytestmark = pytest.mark.django_db
 client = Client()
 
 
-def test_anonymous_user_redirected_to_login(coding_basics_batch):
-    request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/edit/")
+def test_anonymous_user_redirected_to_login(swe_fundamentals_batch):
+    request = RequestFactory().get(f"/basics/batches/{swe_fundamentals_batch.id}/edit/")
     request.user = AnonymousUser()
 
-    response = EditView.as_view()(request, coding_basics_batch.id)
+    response = EditView.as_view()(request, swe_fundamentals_batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{coding_basics_batch.id}/edit" in response.url
+    assert f"staff/login/?next=/basics/batches/{swe_fundamentals_batch.id}/edit" in response.url
 
-def test_logged_in_user_can_access(coding_basics_batch, existing_user):
-    request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/edit/")
+def test_logged_in_user_can_access(swe_fundamentals_batch, existing_user):
+    request = RequestFactory().get(f"/basics/batches/{swe_fundamentals_batch.id}/edit/")
     request.user = existing_user
 
-    response = EditView.as_view()(request, coding_basics_batch.id)
+    response = EditView.as_view()(request, swe_fundamentals_batch.id)
 
     assert response.status_code == HttpResponse.status_code
 
-def test_template_rendered_if_batch_exists(coding_basics_batch, existing_user):
+def test_template_rendered_if_batch_exists(swe_fundamentals_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}))
+    response = client.get(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_template_rendered_again_if_sections_incorrectly_reduced(coding_basics_batch, existing_user):
-    section = coding_basics_batch.section_set.first()
+def test_template_rendered_again_if_sections_incorrectly_reduced(swe_fundamentals_batch, existing_user):
+    section = swe_fundamentals_batch.section_set.first()
     incorrectly_reduced_number_of_sections = 0
     payload = {
         'start_date': '2022-01-01',
@@ -64,14 +64,14 @@ def test_template_rendered_again_if_sections_incorrectly_reduced(coding_basics_b
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_template_rendered_again_if_section_capacity_incorrectly_reduced(coding_basics_batch, existing_user):
-    section = coding_basics_batch.section_set.first()
+def test_template_rendered_again_if_section_capacity_incorrectly_reduced(swe_fundamentals_batch, existing_user):
+    section = swe_fundamentals_batch.section_set.first()
     incorrectly_reduced_section_capacity = section.capacity - 1
     payload = {
         'start_date': '2022-01-01',
@@ -93,20 +93,20 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(coding_
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
 
-def test_valid_form_updates_and_creates_records(coding_basics_batch, existing_user, mocker):
-    new_start_date = coding_basics_batch.start_date + timedelta(1)
-    new_end_date = coding_basics_batch.end_date + timedelta(1)
+def test_valid_form_updates_and_creates_records(swe_fundamentals_batch, existing_user, mocker):
+    new_start_date = swe_fundamentals_batch.start_date + timedelta(1)
+    new_end_date = swe_fundamentals_batch.end_date + timedelta(1)
 
     new_sections_count = Section.objects.all().count() + 1
-    section = coding_basics_batch.section_set.first()
+    section = swe_fundamentals_batch.section_set.first()
     new_section_capacity = section.capacity + 1
-    new_price = coding_basics_batch.price + 1
+    new_price = swe_fundamentals_batch.price + 1
     new_type = Batch.FULL_TIME
 
     new_batch_schedules_count = BatchSchedule.objects.all().count() + 1
@@ -144,11 +144,11 @@ def test_valid_form_updates_and_creates_records(coding_basics_batch, existing_us
 
     freezer = freeze_time(date.today())
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
+    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': coding_basics_batch.id})
+    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': swe_fundamentals_batch.id})
 
     batch = Batch.objects.first()
     assert batch.start_date == new_start_date
@@ -172,15 +172,15 @@ def test_valid_form_updates_and_creates_records(coding_basics_batch, existing_us
     assert new_batch_schedule.start_time == new_batch_schedule_start_time
     assert new_batch_schedule.end_time == new_batch_schedule_end_time
 
-def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_starts(coding_basics_batch, existing_user, mocker):
-    coding_basics_batch.start_date = date(2022, 1, 7)
-    coding_basics_batch.end_date = date(2022, 2, 1)
+def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_starts(swe_fundamentals_batch, existing_user, mocker):
+    swe_fundamentals_batch.start_date = date(2022, 1, 7)
+    swe_fundamentals_batch.end_date = date(2022, 2, 1)
     new_sections_count = Section.objects.all().count() + 1
-    section = coding_basics_batch.section_set.first()
+    section = swe_fundamentals_batch.section_set.first()
 
     payload = {
-        'start_date': coding_basics_batch.start_date,
-        'end_date': coding_basics_batch.end_date,
+        'start_date': swe_fundamentals_batch.start_date,
+        'end_date': swe_fundamentals_batch.end_date,
         'sections': new_sections_count,
         'capacity': section.capacity,
         'batch-schedule-TOTAL_FORMS': ['1'],
@@ -203,7 +203,7 @@ def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_sta
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
+    client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     Slack.create_channel.assert_not_called()
