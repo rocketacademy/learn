@@ -16,9 +16,9 @@ urlpatterns = [
         name='swe_fundamentals_batch_enrolment_list'
     ),
     path(
-        'basics/batches/<int:batch_id>/enrolments/create-zoom-breakout-csv/',
+        'swe-fundamentals/batches/<int:batch_id>/enrolments/create-zoom-breakout-csv/',
         basics_enrolment.create_zoom_breakout_csv,
-        name='basics_batch_create_zoom_breakout_csv'
+        name='swe_fundamentals_batch_create_zoom_breakout_csv'
     ),
     path('basics/batches/<int:batch_id>/graduate/', basics_batch.GraduateView.as_view(), name='basics_batch_graduate'),
     path('basics/batches/<int:batch_id>/registrations/', basics_registration.ListView.as_view(), name='basics_batch_registration_list'),
