@@ -15,17 +15,17 @@ client = Client()
 
 
 def test_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/basics/batches/new/')
+    request = RequestFactory().get('/swe-fundamentals/batches/new/')
     request.user = AnonymousUser()
 
     response = NewView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/basics/batches/new/' in response.url
+    assert 'staff/login/?next=/swe-fundamentals/batches/new/' in response.url
 
 def test_logged_in_user_can_access(course_factory, existing_user):
     course_factory(swe_fundamentals=True)
-    request = RequestFactory().get('/basics/batches/new/')
+    request = RequestFactory().get(reverse('swe_fundamentals_batch_new'))
     request.user = existing_user
 
     response = NewView.as_view()(request)
@@ -66,7 +66,7 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_new'), data=payload)
+    response = client.post(reverse('swe_fundamentals_batch_new'), data=payload)
     freezer.stop()
 
     batch = Batch.swe_fundamentals_objects.first()

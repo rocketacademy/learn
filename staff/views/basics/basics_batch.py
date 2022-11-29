@@ -110,7 +110,7 @@ class NewView(LoginRequiredMixin, View):
 
                     return redirect('basics_batch_detail', batch_id=batch.id)
             except IntegrityError:
-                return redirect('basics_batch_new')
+                return redirect('swe_fundamentals_batch_new')
         return render(
             request,
             'basics/batch/new.html',
