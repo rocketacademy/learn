@@ -11,13 +11,13 @@ client = Client()
 pytestmark = pytest.mark.django_db
 
 def test_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/bootcamp/batches/')
+    request = RequestFactory().get('/courses/bootcamp/batches/')
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/bootcamp/batches/' in response.url
+    assert 'staff/login/?next=/courses/bootcamp/batches/' in response.url
 
 def test_bootcamp_batches_displayed_to_logged_in_user(existing_user, coding_bootcamp_batch):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})

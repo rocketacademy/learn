@@ -12,13 +12,13 @@ client = Client()
 
 
 def test_anonymous_user_redirected_to_login(coding_basics_batch):
-    request = RequestFactory().get(f"/courses/batches/{coding_basics_batch.id}/")
+    request = RequestFactory().get(f"/batches/{coding_basics_batch.id}/")
     request.user = AnonymousUser()
 
     response = DetailView.as_view()(request, coding_basics_batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/courses/batches/{coding_basics_batch.id}/" in response.url
+    assert f"staff/login/?next=/batches/{coding_basics_batch.id}/" in response.url
 
 def test_redirect_to_coding_basics_batch_detail(coding_basics_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})

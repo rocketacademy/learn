@@ -18,18 +18,18 @@ client = Client()
 
 def test_anonymous_user_redirected_to_login(course_factory):
     course_factory(coding_bootcamp=True)
-    request = RequestFactory().get('/bootcamp/batches/new/')
+    request = RequestFactory().get('/courses/bootcamp/batches/new/')
     request.user = AnonymousUser()
 
     response = NewView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/bootcamp/batches/' in response.url
+    assert 'staff/login/?next=/courses/bootcamp/batches/' in response.url
 
 def test_logged_in_user_can_access(course_factory, user_factory):
     course_factory(coding_bootcamp=True)
     existing_user = user_factory()
-    request = RequestFactory().get('/bootcamp/batches/new/')
+    request = RequestFactory().get('/courses/bootcamp/batches/new/')
     request.user = existing_user
     form_id = 'create-batch-form'
 

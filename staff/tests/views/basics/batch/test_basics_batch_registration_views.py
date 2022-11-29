@@ -12,13 +12,13 @@ client = Client()
 
 
 def test_batch_registration_list_anonymous_user_redirected_to_login(coding_basics_batch):
-    request = RequestFactory().get(f"/swe-fundamentals/batches/{coding_basics_batch.id}/registrations/")
+    request = RequestFactory().get(f"/courses/swe-fundamentals/batches/{coding_basics_batch.id}/registrations/")
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/swe-fundamentals/batches/{coding_basics_batch.id}/registrations/" in response.url
+    assert f"staff/login/?next=/courses/swe-fundamentals/batches/{coding_basics_batch.id}/registrations/" in response.url
 
 def test_coding_basics_batch_registration_list_contains_registrations(coding_basics_registration, existing_user):
     batch = coding_basics_registration.batch

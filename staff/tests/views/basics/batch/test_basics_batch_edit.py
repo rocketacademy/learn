@@ -17,13 +17,13 @@ client = Client()
 
 
 def test_anonymous_user_redirected_to_login(swe_fundamentals_batch):
-    request = RequestFactory().get(f"/swe-fundamentals/batches/{swe_fundamentals_batch.id}/edit/")
+    request = RequestFactory().get(f"/courses/swe-fundamentals/batches/{swe_fundamentals_batch.id}/edit/")
     request.user = AnonymousUser()
 
     response = EditView.as_view()(request, swe_fundamentals_batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/swe-fundamentals/batches/{swe_fundamentals_batch.id}/edit" in response.url
+    assert f"staff/login/?next=/courses/swe-fundamentals/batches/{swe_fundamentals_batch.id}/edit" in response.url
 
 def test_template_rendered_if_batch_exists(swe_fundamentals_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})

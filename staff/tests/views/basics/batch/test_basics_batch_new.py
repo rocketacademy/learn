@@ -15,13 +15,13 @@ client = Client()
 
 
 def test_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/swe-fundamentals/batches/new/')
+    request = RequestFactory().get('/courses/swe-fundamentals/batches/new/')
     request.user = AnonymousUser()
 
     response = NewView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/swe-fundamentals/batches/new/' in response.url
+    assert 'staff/login/?next=/courses/swe-fundamentals/batches/new/' in response.url
 
 def test_logged_in_user_can_access(course_factory, existing_user):
     course_factory(swe_fundamentals=True)

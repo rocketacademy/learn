@@ -16,13 +16,13 @@ client = Client()
 
 
 def test_swe_fundamentals_batch_enrolment_list_anonymous_user_redirected_to_login(swe_fundamentals_batch):
-    request = RequestFactory().get(f"/swe-fundamentals/batches/{swe_fundamentals_batch.id}/enrolments/")
+    request = RequestFactory().get(f"/courses/swe-fundamentals/batches/{swe_fundamentals_batch.id}/enrolments/")
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/swe-fundamentals/batches/{swe_fundamentals_batch.id}/enrolments/" in response.url
+    assert f"staff/login/?next=/courses/swe-fundamentals/batches/{swe_fundamentals_batch.id}/enrolments/" in response.url
 
 def test_swe_fundamentals_batch_enrolment_list_contains_enrolments(enrolment_factory, existing_user):
     swe_fundamentals_enrolment = enrolment_factory(swe_fundamentals=True)

@@ -12,13 +12,13 @@ pytestmark = pytest.mark.django_db
 
 
 def test_anonymous_user_redirected_to_login():
-    request = RequestFactory().get('/swe-fundamentals/batches/')
+    request = RequestFactory().get('/courses/swe-fundamentals/batches/')
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert 'staff/login/?next=/swe-fundamentals/batches/' in response.url
+    assert 'staff/login/?next=/courses/swe-fundamentals/batches/' in response.url
 
 def test_swe_fundamentals_and_coding_batches_displayed(existing_user, batch_factory):
     swe_fundamentals_batch = batch_factory(swe_fundamentals=True)

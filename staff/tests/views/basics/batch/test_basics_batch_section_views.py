@@ -12,13 +12,13 @@ client = Client()
 
 
 def test_basics_batch_section_list_anonymous_user_redirected_to_login(coding_basics_batch):
-    request = RequestFactory().get(f"/swe-fundamentals/batches/{coding_basics_batch.id}/sections/")
+    request = RequestFactory().get(f"/courses/swe-fundamentals/batches/{coding_basics_batch.id}/sections/")
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/swe-fundamentals/batches/{coding_basics_batch.id}/sections/" in response.url
+    assert f"staff/login/?next=/courses/swe-fundamentals/batches/{coding_basics_batch.id}/sections/" in response.url
 
 def test_swe_fundamentals_batch_section_list_logged_in_user_can_access(swe_fundamentals_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})

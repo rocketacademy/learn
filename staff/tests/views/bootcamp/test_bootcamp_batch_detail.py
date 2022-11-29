@@ -12,16 +12,16 @@ client = Client()
 
 
 def test_anonymous_user_redirected_to_login(coding_bootcamp_batch):
-    request = RequestFactory().get(f"/bootcamp/batches/{coding_bootcamp_batch.id}/")
+    request = RequestFactory().get(f"/courses/bootcamp/batches/{coding_bootcamp_batch.id}/")
     request.user = AnonymousUser()
 
     response = DetailView.as_view()(request, coding_bootcamp_batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/bootcamp/batches/{coding_bootcamp_batch.id}/" in response.url
+    assert f"staff/login/?next=/courses/bootcamp/batches/{coding_bootcamp_batch.id}/" in response.url
 
 def test_logged_in_user_can_access(coding_bootcamp_batch, existing_user):
-    request = RequestFactory().get(f"/bootcamp/batches/{coding_bootcamp_batch.id}/")
+    request = RequestFactory().get(f"/courses/bootcamp/batches/{coding_bootcamp_batch.id}/")
     request.user = existing_user
 
     response = DetailView.as_view()(request, coding_bootcamp_batch.id)
