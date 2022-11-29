@@ -12,19 +12,19 @@ client = Client()
 
 
 def test_batch_registration_list_anonymous_user_redirected_to_login(coding_basics_batch):
-    request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/registrations/")
+    request = RequestFactory().get(f"/swe-fundamentals/batches/{coding_basics_batch.id}/registrations/")
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{coding_basics_batch.id}/registrations/" in response.url
+    assert f"staff/login/?next=/swe-fundamentals/batches/{coding_basics_batch.id}/registrations/" in response.url
 
 def test_coding_basics_batch_registration_list_contains_registrations(coding_basics_registration, existing_user):
     batch = coding_basics_registration.batch
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_registration_list', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('swe_fundamentals_batch_registration_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert list(response.context['registrations']) == [coding_basics_registration]
@@ -34,7 +34,7 @@ def test_swe_fundamentals_batch_registration_list_contains_registrations(swe_fun
     batch = swe_fundamentals_registration.batch
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_registration_list', kwargs={'batch_id': batch.id}))
+    response = client.get(reverse('swe_fundamentals_batch_registration_list', kwargs={'batch_id': batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert list(response.context['registrations']) == [swe_fundamentals_registration]

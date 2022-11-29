@@ -12,18 +12,18 @@ client = Client()
 
 
 def test_basics_batch_section_list_anonymous_user_redirected_to_login(coding_basics_batch):
-    request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/sections/")
+    request = RequestFactory().get(f"/swe-fundamentals/batches/{coding_basics_batch.id}/sections/")
     request.user = AnonymousUser()
 
     response = ListView.as_view()(request)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{coding_basics_batch.id}/sections/" in response.url
+    assert f"staff/login/?next=/swe-fundamentals/batches/{coding_basics_batch.id}/sections/" in response.url
 
 def test_swe_fundamentals_batch_section_list_logged_in_user_can_access(swe_fundamentals_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_section_list', kwargs={'batch_id': swe_fundamentals_batch.id}))
+    response = client.get(reverse('swe_fundamentals_batch_section_list', kwargs={'batch_id': swe_fundamentals_batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert list(response.context['sections']) == list(swe_fundamentals_batch.section_set.all())
@@ -32,7 +32,7 @@ def test_swe_fundamentals_batch_section_list_logged_in_user_can_access(swe_funda
 def test_basics_batch_section_list_logged_in_user_can_access(coding_basics_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_section_list', kwargs={'batch_id': coding_basics_batch.id}))
+    response = client.get(reverse('swe_fundamentals_batch_section_list', kwargs={'batch_id': coding_basics_batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert list(response.context['sections']) == list(coding_basics_batch.section_set.all())
