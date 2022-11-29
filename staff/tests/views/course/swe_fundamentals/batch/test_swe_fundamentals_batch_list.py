@@ -5,7 +5,7 @@ from django.test import Client, RequestFactory
 from django.urls import reverse
 import pytest
 
-from staff.views.course.swe_fundamentals.basics_batch import ListView
+from staff.views.course.swe_fundamentals.swe_fundamentals_batch import ListView
 
 client = Client()
 pytestmark = pytest.mark.django_db

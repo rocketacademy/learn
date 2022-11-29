@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 import pytest
 
-from staff.views.course.swe_fundamentals.basics_registration import ListView
+from staff.views.course.swe_fundamentals.swe_fundamentals_registration import ListView
 
 pytestmark = pytest.mark.django_db
 client = Client()

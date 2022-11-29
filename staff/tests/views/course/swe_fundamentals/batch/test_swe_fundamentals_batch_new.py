@@ -8,7 +8,7 @@ import pytest
 from unittest.mock import patch
 
 from staff.models import Batch, BatchSchedule, Course, Section
-from staff.views.course.swe_fundamentals.basics_batch import NewView
+from staff.views.course.swe_fundamentals.swe_fundamentals_batch import NewView
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -32,7 +32,7 @@ def test_logged_in_user_can_access(course_factory, existing_user):
 
     assert response.status_code == HttpResponse.status_code
 
-@patch('staff.views.course.swe_fundamentals.basics_batch.create_batch_slack_channel')
+@patch('staff.views.course.swe_fundamentals.swe_fundamentals_batch.create_batch_slack_channel')
 def test_valid_form_creates_records(mock_create_batch_slack_channel, course_factory, existing_user):
     course_factory(swe_fundamentals=True)
     number_of_sections = 6

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-from staff.views.course.swe_fundamentals.basics_batch import create_batch_slack_channel
+from staff.views.course.swe_fundamentals.swe_fundamentals_batch import create_batch_slack_channel
 
 pytestmark = pytest.mark.django_db
 

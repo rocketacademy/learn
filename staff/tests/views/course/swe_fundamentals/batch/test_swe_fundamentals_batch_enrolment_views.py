@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 import pytest
 
-from staff.views.course.swe_fundamentals.basics_enrolment import create_zoom_breakout_csv, ListView, prepare_zoom_breakout_csv_data
+from staff.views.course.swe_fundamentals.swe_fundamentals_enrolment import create_zoom_breakout_csv, ListView, prepare_zoom_breakout_csv_data
 
 pytestmark = pytest.mark.django_db
 client = Client()
@@ -44,7 +44,7 @@ def test_create_zoom_breakout_csv_outputs_csv_file_for_basics(mocker, coding_bas
     student_email = 'bryan@test.com'
     room_name = 'room1'
     assert_value = [[room_name, student_email]]
-    mocker.patch('staff.views.course.swe_fundamentals.basics_enrolment.prepare_zoom_breakout_csv_data', return_value=assert_value)
+    mocker.patch('staff.views.course.swe_fundamentals.swe_fundamentals_enrolment.prepare_zoom_breakout_csv_data', return_value=assert_value)
     request = RequestFactory().get(f"/basics/batches/{coding_basics_batch.id}/enrolments/")
 
     response = create_zoom_breakout_csv(request, coding_basics_batch.id)
@@ -58,7 +58,7 @@ def test_create_zoom_breakout_csv_outputs_csv_file_for_swe_fundamentals(mocker, 
     student_email = 'name@example.com'
     room_name = 'room1'
     mocker.patch(
-        'staff.views.course.swe_fundamentals.basics_enrolment.prepare_zoom_breakout_csv_data',
+        'staff.views.course.swe_fundamentals.swe_fundamentals_enrolment.prepare_zoom_breakout_csv_data',
         return_value=[
             [
                 room_name,

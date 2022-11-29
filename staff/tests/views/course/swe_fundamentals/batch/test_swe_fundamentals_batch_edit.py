@@ -9,7 +9,7 @@ import pytest
 
 from staff.models import Batch, Section
 from staff.models.batch_schedule import BatchSchedule
-from staff.views.course.swe_fundamentals.basics_batch import EditView
+from staff.views.course.swe_fundamentals.swe_fundamentals_batch import EditView
 from student.library.slack import Slack
 
 pytestmark = pytest.mark.django_db

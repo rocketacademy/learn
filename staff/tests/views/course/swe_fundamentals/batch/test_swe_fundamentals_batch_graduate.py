@@ -10,7 +10,7 @@ from authentication.models import StudentUser
 from emails.library.sendgrid import Sendgrid
 from payment.models import CouponEffect, ReferralCoupon
 from staff.models import Certificate, Course, Section
-from staff.views.course.swe_fundamentals.basics_batch import GraduateView
+from staff.views.course.swe_fundamentals.swe_fundamentals_batch import GraduateView
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
 
