@@ -17,26 +17,18 @@ client = Client()
 
 
 def test_anonymous_user_redirected_to_login(swe_fundamentals_batch):
-    request = RequestFactory().get(f"/basics/batches/{swe_fundamentals_batch.id}/edit/")
+    request = RequestFactory().get(f"/swe-fundamentals/batches/{swe_fundamentals_batch.id}/edit/")
     request.user = AnonymousUser()
 
     response = EditView.as_view()(request, swe_fundamentals_batch.id)
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert f"staff/login/?next=/basics/batches/{swe_fundamentals_batch.id}/edit" in response.url
-
-def test_logged_in_user_can_access(swe_fundamentals_batch, existing_user):
-    request = RequestFactory().get(f"/basics/batches/{swe_fundamentals_batch.id}/edit/")
-    request.user = existing_user
-
-    response = EditView.as_view()(request, swe_fundamentals_batch.id)
-
-    assert response.status_code == HttpResponse.status_code
+    assert f"staff/login/?next=/swe-fundamentals/batches/{swe_fundamentals_batch.id}/edit" in response.url
 
 def test_template_rendered_if_batch_exists(swe_fundamentals_batch, existing_user):
     client.post('/staff/login/', {'email': existing_user.email, 'password': settings.PLACEHOLDER_PASSWORD})
 
-    response = client.get(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}))
+    response = client.get(reverse('swe_fundamentals_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}))
 
     assert response.status_code == HttpResponse.status_code
     assert 'basics/batch/edit.html' in (template.name for template in response.templates)
@@ -64,7 +56,7 @@ def test_template_rendered_again_if_sections_incorrectly_reduced(swe_fundamental
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
+    response = client.post(reverse('swe_fundamentals_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
@@ -93,7 +85,7 @@ def test_template_rendered_again_if_section_capacity_incorrectly_reduced(swe_fun
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
+    response = client.post(reverse('swe_fundamentals_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponse.status_code
@@ -144,7 +136,7 @@ def test_valid_form_updates_and_creates_records(swe_fundamentals_batch, existing
 
     freezer = freeze_time(date.today())
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
+    response = client.post(reverse('swe_fundamentals_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
@@ -217,7 +209,7 @@ def test_valid_form_updates_and_creates_records_for_coding_basics(coding_basics_
 
     freezer = freeze_time(date.today())
     freezer.start()
-    response = client.post(reverse('basics_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
+    response = client.post(reverse('swe_fundamentals_batch_edit', kwargs={'batch_id': coding_basics_batch.id}), data=payload)
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
@@ -276,7 +268,7 @@ def test_section_slack_channels_not_created_if_more_than_7_days_before_batch_sta
 
     freezer = freeze_time('2021-12-31')
     freezer.start()
-    client.post(reverse('basics_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
+    client.post(reverse('swe_fundamentals_batch_edit', kwargs={'batch_id': swe_fundamentals_batch.id}), data=payload)
     freezer.stop()
 
     Slack.create_channel.assert_not_called()

@@ -200,7 +200,7 @@ class EditView(LoginRequiredMixin, View):
 
                     return redirect('swe_fundamentals_batch_detail', batch_id=batch.id)
             except IntegrityError:
-                return redirect('basics_batch_edit', batch_id=batch.id)
+                return redirect('swe_fundamentals_batch_edit', batch_id=batch.id)
         return render(
             request,
             'basics/batch/edit.html',

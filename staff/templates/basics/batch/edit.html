@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block batch_content %}
-<form id="edit-batch-form" action="{% url 'basics_batch_edit' batch_id=batch.id %}" method="post">
+<form id="edit-batch-form" action="{% url 'swe_fundamentals_batch_edit' batch_id=batch.id %}" method="post">
     {% csrf_token %}
     <div class="row">
         <div class="col-9">
