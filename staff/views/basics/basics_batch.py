@@ -36,8 +36,8 @@ class ListView(LoginRequiredMixin, View):
 class DetailView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         batch = Batch.objects.get(pk=batch_id)
-        section_capacity = Section.objects.filter(batch__id=batch_id).first().capacity
-        batchschedule_queryset = BatchSchedule.objects.filter(batch__id=batch_id)
+        section_capacity = batch.section_set.first().capacity
+        batchschedule_queryset = batch.batchschedule_set.all()
 
         return render(
             request,
