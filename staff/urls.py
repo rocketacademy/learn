@@ -1,8 +1,8 @@
 from django.urls import path
 
 from staff.views import batch, coupon, coupon_effect, index, login
-from staff.views.basics import basics_batch, basics_enrolment, basics_registration, basics_section
-from staff.views.bootcamp import bootcamp_batch
+from staff.views.course.swe_fundamentals import basics_batch, basics_enrolment, basics_registration, basics_section
+from staff.views.course.bootcamp import bootcamp_batch
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='staff_index'),
