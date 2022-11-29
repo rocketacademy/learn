@@ -10,7 +10,11 @@ urlpatterns = [
     path('swe-fundamentals/batches/new/', basics_batch.NewView.as_view(), name='swe_fundamentals_batch_new'),
     path('swe-fundamentals/batches/<int:batch_id>/', basics_batch.DetailView.as_view(), name='swe_fundamentals_batch_detail'),
     path('swe-fundamentals/batches/<int:batch_id>/edit/', basics_batch.EditView.as_view(), name='swe_fundamentals_batch_edit'),
-    path('basics/batches/<int:batch_id>/enrolments/', basics_enrolment.ListView.as_view(), name='basics_batch_enrolment_list'),
+    path(
+        'swe-fundamentals/batches/<int:batch_id>/enrolments/',
+        basics_enrolment.ListView.as_view(),
+        name='swe_fundamentals_batch_enrolment_list'
+    ),
     path(
         'basics/batches/<int:batch_id>/enrolments/create-zoom-breakout-csv/',
         basics_enrolment.create_zoom_breakout_csv,

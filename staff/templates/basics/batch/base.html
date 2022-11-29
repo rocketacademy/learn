@@ -13,7 +13,7 @@
             <a href="{% url 'basics_batch_registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}topbar-link-active border-bottom border-primary{% endif %}">Registrations</a>
         </li>
         <li>
-            <a href="{% url 'basics_batch_enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}topbar-link-active border-bottom border-primary{% endif %}">Enrolments</a>
+            <a href="{% url 'swe_fundamentals_batch_enrolment_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'enrolments'%}topbar-link-active border-bottom border-primary{% endif %}">Enrolments</a>
         </li>
         <li>
             <a href="{% url 'basics_batch_section_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'sections'%}topbar-link-active border-bottom border-primary{% endif %}">Sections</a>
