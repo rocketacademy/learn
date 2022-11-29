@@ -46,7 +46,7 @@ def test_swe_fundamentals_batch_section_detail_template_rendered_if_batch_and_se
 
     response = client.get(
         reverse(
-            'basics_batch_section_detail',
+            'swe_fundamentals_batch_section_detail',
             kwargs={
                 'batch_id': swe_fundamentals_batch.id,
                 'section_id': first_section.id
@@ -71,7 +71,7 @@ def test_basics_batch_section_detail_template_rendered_if_batch_and_sections_exi
 
     response = client.get(
         reverse(
-            'basics_batch_section_detail',
+            'swe_fundamentals_batch_section_detail',
             kwargs={
                 'batch_id': coding_basics_batch.id,
                 'section_id': first_section.id
