@@ -6,7 +6,7 @@ from staff.views.bootcamp import bootcamp_batch
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='staff_index'),
-    path('basics/batches/', basics_batch.ListView.as_view(), name='basics_batch_list'),
+    path('swe-fundamentals/batches/', basics_batch.ListView.as_view(), name='swe_fundamentals_batch_list'),
     path('basics/batches/new/', basics_batch.NewView.as_view(), name='basics_batch_new'),
     path('basics/batches/<int:batch_id>/', basics_batch.DetailView.as_view(), name='basics_batch_detail'),
     path('basics/batches/<int:batch_id>/edit/', basics_batch.EditView.as_view(), name='basics_batch_edit'),
