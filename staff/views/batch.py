@@ -23,6 +23,6 @@ class DetailView(LoginRequiredMixin, View):
 
         match batch.course.name:
             case Course.CODING_BASICS | Course.SWE_FUNDAMENTALS:
-                return redirect('basics_batch_detail', batch_id=batch.id)
+                return redirect('swe_fundamentals_batch_detail', batch_id=batch.id)
             case Course.CODING_BOOTCAMP:
                 return redirect('bootcamp_batch_detail', batch_id=batch.id)

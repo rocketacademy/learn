@@ -7,7 +7,7 @@
 <nav class="my-1">
     <ul class="list-group list-group-horizontal navbar-nav topbar">
         <li>
-            <a href="{% url 'basics_batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}topbar-link-active border-bottom border-primary{% endif %}">Overview</a>
+            <a href="{% url 'swe_fundamentals_batch_detail' batch_id=batch.id %}" class="nav-link {% if current_tab == 'overview'%}topbar-link-active border-bottom border-primary{% endif %}">Overview</a>
         </li>
         <li>
             <a href="{% url 'basics_batch_registration_list' batch_id=batch.id %}" class="nav-link {% if current_tab == 'registrations'%}topbar-link-active border-bottom border-primary{% endif %}">Registrations</a>

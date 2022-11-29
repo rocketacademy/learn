@@ -148,7 +148,7 @@ def test_valid_form_updates_and_creates_records(swe_fundamentals_batch, existing
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': swe_fundamentals_batch.id})
+    assert response['Location'] == reverse('swe_fundamentals_batch_detail', kwargs={'batch_id': swe_fundamentals_batch.id})
 
     batch = Batch.objects.first()
     assert batch.start_date == new_start_date
@@ -221,7 +221,7 @@ def test_valid_form_updates_and_creates_records_for_coding_basics(coding_basics_
     freezer.stop()
 
     assert response.status_code == HttpResponseRedirect.status_code
-    assert response['Location'] == reverse('basics_batch_detail', kwargs={'batch_id': coding_basics_batch.id})
+    assert response['Location'] == reverse('swe_fundamentals_batch_detail', kwargs={'batch_id': coding_basics_batch.id})
 
     batch = Batch.objects.first()
     assert batch.start_date == new_start_date

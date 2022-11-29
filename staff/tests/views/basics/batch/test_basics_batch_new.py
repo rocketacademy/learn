@@ -71,7 +71,7 @@ def test_valid_form_creates_records(mock_create_batch_slack_channel, course_fact
 
     batch = Batch.swe_fundamentals_objects.first()
     assert response.status_code == HttpResponseRedirect.status_code
-    assert response['location'] == reverse('basics_batch_detail', kwargs={'batch_id': batch.id})
+    assert response['location'] == reverse('swe_fundamentals_batch_detail', kwargs={'batch_id': batch.id})
 
     assert batch.capacity == number_of_sections * section_capacity
     assert batch.course == Course.objects.get(name=Course.SWE_FUNDAMENTALS)

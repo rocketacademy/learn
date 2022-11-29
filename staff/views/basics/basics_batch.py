@@ -108,7 +108,7 @@ class NewView(LoginRequiredMixin, View):
                         )
                     create_batch_slack_channel(batch)
 
-                    return redirect('basics_batch_detail', batch_id=batch.id)
+                    return redirect('swe_fundamentals_batch_detail', batch_id=batch.id)
             except IntegrityError:
                 return redirect('swe_fundamentals_batch_new')
         return render(
@@ -198,7 +198,7 @@ class EditView(LoginRequiredMixin, View):
                     BatchSchedule.objects.filter(batch__id=batch.id).delete()
                     BatchSchedule.objects.bulk_create(new_batch_schedules(batch, batch_schedule_formset))
 
-                    return redirect('basics_batch_detail', batch_id=batch.id)
+                    return redirect('swe_fundamentals_batch_detail', batch_id=batch.id)
             except IntegrityError:
                 return redirect('basics_batch_edit', batch_id=batch.id)
         return render(
@@ -228,7 +228,7 @@ class GraduateView(LoginRequiredMixin, View):
                 }
             )
 
-        return redirect('basics_batch_detail', batch_id=batch_id)
+        return redirect('swe_fundamentals_batch_detail', batch_id=batch_id)
 
     def post(self, request, batch_id):
         basics_graduation_form = BasicsGraduationForm(request.POST, batch_id=batch_id)
