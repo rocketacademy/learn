@@ -28,7 +28,7 @@
   <body class="bg-light">
     <nav class="navbar navbar-expand-md navbar-dark bg-primary">
       <div class="container">
-        <a class="navbar-brand" href="/staff/">
+        <a class="navbar-brand" href="{% url 'staff_index' %}">
           <img class="w-75" src="{% static 'staff/images/rocket_academy_logo_inverse.svg' %}" alt="rocket_academy_logo_inverse">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -43,17 +43,17 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="{% url 'batch_list' %}">All</a></li>
-                <li><a class="dropdown-item" href="{% url 'basics_batch_list' %}">Coding Basics</a></li>
+                <li><a class="dropdown-item" href="{% url 'basics_batch_list' %}">SWE Fundamentals</a></li>
                 <li><a class="dropdown-item" href="{% url 'bootcamp_batch_list' %}">Coding Bootcamp</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-light" href="/staff/coupons/">Coupons</a>
+              <a class="nav-link text-light" href="{% url 'coupon_list' %}">Coupons</a>
             </li>
             {% endif %}
             <li class="nav-item">
               {% if not request.user.is_authenticated %}
-              <a class="nav-link text-light" href="/staff/login/">Log in</a>
+              <a class="nav-link text-light" href="{% url 'staff_login' %}">Log in</a>
               {% endif %}
             </li>
           </ul>
