@@ -1,22 +1,21 @@
-import datetime
 from django.conf import settings
 import pytest
 from authentication.models.student_user import StudentUser
 
-from staff.forms import BasicsGraduationForm
-from staff.models import Batch, Course, Section
+from staff.forms import GraduationForm
+from staff.models import Section
 from student.models.enrolment import Enrolment
 from student.models.registration import Registration
 
 pytestmark = pytest.mark.django_db
 
 
-class TestBasicsGraduationForm:
+class TestGraduationForm:
     def test_empty_form_is_valid(self, batch_factory):
         batch = batch_factory()
-        basics_graduation_form = BasicsGraduationForm(data={}, batch_id=batch.id)
+        graduation_form = GraduationForm(data={}, batch_id=batch.id)
 
-        outcome = basics_graduation_form.is_valid()
+        outcome = graduation_form.is_valid()
 
         assert outcome is True
 
@@ -70,9 +69,9 @@ class TestBasicsGraduationForm:
             student_user=second_student_user
         )
 
-        basics_graduation_form = BasicsGraduationForm(batch_id=batch.id)
+        graduation_form = GraduationForm(batch_id=batch.id)
 
-        assert basics_graduation_form.fields['enrolment'].choices == [
+        assert graduation_form.fields['enrolment'].choices == [
             (first_student_user.id, first_student_user),
             (second_student_user.id, second_student_user)
         ]

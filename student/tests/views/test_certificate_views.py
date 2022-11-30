@@ -1,69 +1,40 @@
-from datetime import date
-from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.test import Client
 from django.urls import reverse
 import pytest
-
-from authentication.models import StudentUser
-from staff.models import Section
-from staff.models.certificate import Certificate
-from student.models.enrolment import Enrolment
-from student.models.registration import Registration
 
 client = Client()
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture()
-def certificate(batch_factory):
-    email = 'studentname@example.com'
-    first_name = 'Student'
-    last_name = 'Name'
-    batch = batch_factory()
-    section = Section.objects.create(
-        batch=batch,
-        number=1,
-        capacity=1
-    )
-    registration = Registration.objects.create(
-        course=batch.course,
-        batch=batch,
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        country_of_residence='SG',
-        referral_channel='word_of_mouth'
-    )
-    student_user = StudentUser.objects.create_user(
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-        password=settings.PLACEHOLDER_PASSWORD
-    )
-    enrolment = Enrolment.objects.create(
-        registration=registration,
-        batch=batch,
-        section=section,
-        student_user=student_user
-    )
-    certificate = Certificate.objects.create(
-        enrolment=enrolment,
-        graduation_date=date.today()
-    )
+def test_get_basics_certificate_detail_redirects_to_certificate_detail(certificate_factory):
+    swe_fundamentals_certificate = certificate_factory(swe_fundamentals=True)
 
-    yield certificate
-
-def test_get_detail_renders_certificate_if_exists(certificate):
     response = client.get(
         reverse(
-            'basics_certificate',
-            kwargs={'certificate_credential': certificate.credential}
+            'basics_certificate_detail',
+            kwargs={'certificate_credential': swe_fundamentals_certificate.credential}
+        )
+    )
+
+    assert response.status_code == HttpResponseRedirect.status_code
+    assert response['location'] == reverse(
+        'certificate_detail',
+        kwargs={'certificate_credential': swe_fundamentals_certificate.credential}
+    )
+
+def test_get_detail_renders_certificate_if_exists(certificate_factory):
+    swe_fundamentals_certificate = certificate_factory(swe_fundamentals=True)
+
+    response = client.get(
+        reverse(
+            'certificate_detail',
+            kwargs={'certificate_credential': swe_fundamentals_certificate.credential}
         )
     )
 
     assert response.status_code == HttpResponse.status_code
-    assert response.context['certificate'] == certificate
+    assert response.context['certificate'] == swe_fundamentals_certificate
     assert 'certificate/detail.html' in (template.name for template in response.templates)
 
 def test_get_detail_renders_error_if_certificate_does_not_exist():
@@ -71,7 +42,7 @@ def test_get_detail_renders_error_if_certificate_does_not_exist():
 
     response = client.get(
         reverse(
-            'basics_certificate',
+            'certificate_detail',
             kwargs={'certificate_credential': incorrect_credential}
         )
     )

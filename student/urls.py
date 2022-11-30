@@ -13,8 +13,12 @@ FORMS = [
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='index'),
-    path('basics/certificates/<str:certificate_credential>/', certificate.DetailView.as_view(), name='basics_certificate'),
-    path('slack/event/hook/', slack.event_hook, name='slack_event_hook'),
+    path(
+        'basics/certificates/<str:certificate_credential>/',
+        certificate.BasicsCertificateDetailView.as_view(),
+        name='basics_certificate_detail'
+    ),
+    path('certificates/<str:certificate_credential>/', certificate.DetailView.as_view(), name='certificate_detail'),
     path('courses/swe-fundamentals/register/', registration.RegistrationWizard.as_view(FORMS), name='swe_fundamentals_register'),
     path('courses/swe-fundamentals/register/<int:registration_id>/payment/',
          registration.PaymentPreviewView.as_view(),
@@ -22,4 +26,5 @@ urlpatterns = [
     path('courses/swe-fundamentals/register/<int:registration_id>/confirmation/',
          registration.ConfirmationView.as_view(),
          name='swe_fundamentals_register_confirmation'),
+    path('slack/event/hook/', slack.event_hook, name='slack_event_hook')
 ]

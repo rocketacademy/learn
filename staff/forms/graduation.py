@@ -2,7 +2,7 @@ from django import forms
 
 from student.models.enrolment import Enrolment
 
-class BasicsGraduationForm(forms.Form):
+class GraduationForm(forms.Form):
     enrolment = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(attrs={'checked': ''}),
         required=False,
@@ -12,7 +12,7 @@ class BasicsGraduationForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         batch_id = kwargs.pop('batch_id')
-        super(BasicsGraduationForm, self).__init__(*args, **kwargs)
+        super(GraduationForm, self).__init__(*args, **kwargs)
 
         self.fields['enrolment'].choices = [
             (enrolment.id, enrolment.student_user) for enrolment in Enrolment.objects.filter(batch__pk=batch_id, status=Enrolment.ENROLLED)

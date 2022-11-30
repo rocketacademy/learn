@@ -1,6 +1,5 @@
 import factory
 
-from staff.models import Course
 from student.models.registration import Registration
 from staff.tests.factories.batch_factory import BatchFactory
 from staff.tests.factories.course_factory import CourseFactory
