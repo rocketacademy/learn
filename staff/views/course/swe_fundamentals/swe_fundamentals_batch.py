@@ -215,7 +215,7 @@ class EditView(LoginRequiredMixin, View):
 
 class GraduateView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
-        batch = Batch.basics_objects.get(pk=batch_id)
+        batch = Batch.objects.get(pk=batch_id)
         basics_graduation_form = BasicsGraduationForm(batch_id=batch_id)
 
         if batch.ready_for_graduation():
@@ -235,10 +235,10 @@ class GraduateView(LoginRequiredMixin, View):
 
         if basics_graduation_form.is_valid():
             enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
-            coding_basics_course = Course.objects.get(name=Course.CODING_BASICS)
-            coding_basics_coupon_effect = CouponEffect.objects.get(
-                couponable_type=type(coding_basics_course).__name__,
-                couponable_id=coding_basics_course.id,
+            swe_fundamentals_course = Course.objects.get(name=Course.SWE_FUNDAMENTALS)
+            swe_fundamentals_coupon_effect = CouponEffect.objects.get(
+                couponable_type=type(swe_fundamentals_course).__name__,
+                couponable_id=swe_fundamentals_course.id,
                 discount_type=CouponEffect.DOLLARS,
                 discount_amount=20
             )
@@ -264,7 +264,7 @@ class GraduateView(LoginRequiredMixin, View):
                             start_date=timezone.now(),
                             referrer=enrolment.student_user
                         )
-                        referral_coupon.effects.set([coding_basics_coupon_effect, coding_bootcamp_coupon_effect])
+                        referral_coupon.effects.set([swe_fundamentals_coupon_effect, coding_bootcamp_coupon_effect])
                         referral_coupon.save()
                         certificate_url = request.build_absolute_uri(reverse(
                             'basics_certificate',

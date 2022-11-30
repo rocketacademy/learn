@@ -6,7 +6,6 @@ from staff.views.course.bootcamp import bootcamp_batch
 
 urlpatterns = [
     path('', index.IndexView.as_view(), name='staff_index'),
-    path('basics/batches/<int:batch_id>/graduate/', swe_fundamentals_batch.GraduateView.as_view(), name='basics_batch_graduate'),
     path('batches/', batch.ListView.as_view(), name='batch_list'),
     path('batches/<int:batch_id>/', batch.DetailView.as_view(), name='batch_detail'),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
@@ -41,6 +40,11 @@ urlpatterns = [
         'courses/swe-fundamentals/batches/<int:batch_id>/enrolments/create-zoom-breakout-csv/',
         swe_fundamentals_enrolment.create_zoom_breakout_csv,
         name='swe_fundamentals_batch_create_zoom_breakout_csv'
+    ),
+    path(
+        'courses/swe-fundamentals/batches/<int:batch_id>/graduate/',
+        swe_fundamentals_batch.GraduateView.as_view(),
+        name='swe_fundamentals_batch_graduate'
     ),
     path(
         'courses/swe-fundamentals/batches/<int:batch_id>/registrations/',

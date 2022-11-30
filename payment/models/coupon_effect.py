@@ -14,6 +14,7 @@ class CouponEffect(SafeDeleteModel):
         (PERCENTAGE, 'Percent off'),
         (DOLLARS, 'Dollars off'),
     ]
+
     couponable_type = models.CharField(max_length=50, null=True, blank=True)
     couponable_id = models.PositiveIntegerField(null=True, blank=True)
     discount_type = models.CharField(max_length=7, choices=DISCOUNT_TYPE_CHOICES)
