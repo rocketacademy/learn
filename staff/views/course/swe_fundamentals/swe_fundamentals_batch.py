@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from emails.library.sendgrid import Sendgrid
 from payment.models import CouponEffect, ReferralCoupon
 from staff.forms import BatchForm, SectionForm, BatchScheduleFormSet
-from staff.forms.basics_graduation import BasicsGraduationForm
+from staff.forms.graduation import GraduationForm
 from staff.models import Batch, BatchSchedule, Certificate, Course, Section
 from student.library.slack import Slack
 from student.models.enrolment import Enrolment
@@ -216,7 +216,7 @@ class EditView(LoginRequiredMixin, View):
 class GraduateView(LoginRequiredMixin, View):
     def get(self, request, batch_id):
         batch = Batch.objects.get(pk=batch_id)
-        basics_graduation_form = BasicsGraduationForm(batch_id=batch_id)
+        graduation_form = GraduationForm(batch_id=batch_id)
 
         if batch.ready_for_graduation():
             return render(
@@ -224,17 +224,17 @@ class GraduateView(LoginRequiredMixin, View):
                 'course/swe_fundamentals/batch/graduate.html',
                 {
                     'batch': batch,
-                    'basics_graduation_form': basics_graduation_form
+                    'graduation_form': graduation_form
                 }
             )
 
         return redirect('swe_fundamentals_batch_detail', batch_id=batch_id)
 
     def post(self, request, batch_id):
-        basics_graduation_form = BasicsGraduationForm(request.POST, batch_id=batch_id)
+        graduation_form = GraduationForm(request.POST, batch_id=batch_id)
 
-        if basics_graduation_form.is_valid():
-            enrolment_queryset = Enrolment.objects.filter(id__in=basics_graduation_form.cleaned_data.get('enrolment'))
+        if graduation_form.is_valid():
+            enrolment_queryset = Enrolment.objects.filter(id__in=graduation_form.cleaned_data.get('enrolment'))
             swe_fundamentals_course = Course.objects.get(name=Course.SWE_FUNDAMENTALS)
             swe_fundamentals_coupon_effect = CouponEffect.objects.get(
                 couponable_type=type(swe_fundamentals_course).__name__,
