@@ -156,10 +156,10 @@ class NewBatchView(LoginRequiredMixin, View):
 
         csv_file = form.cleaned_data.get('csv_file')
         csvreader = csv.DictReader(codecs.iterdecode(csv_file, 'utf-8'))
-        coding_basics_course = Course.objects.get(name=Course.CODING_BASICS)
-        coding_basics_coupon_effect = CouponEffect.objects.get(
-            couponable_type=type(coding_basics_course).__name__,
-            couponable_id=coding_basics_course.id,
+        swe_fundamentals_course = Course.objects.get(name=Course.SWE_FUNDAMENTALS)
+        swe_fundamentals_coupon_effect = CouponEffect.objects.get(
+            couponable_type=type(swe_fundamentals_course).__name__,
+            couponable_id=swe_fundamentals_course.id,
             discount_type=CouponEffect.DOLLARS,
             discount_amount=20
         )
@@ -181,7 +181,7 @@ class NewBatchView(LoginRequiredMixin, View):
                 end_date=None,
                 description=to_email
             )
-            coupon.effects.set([coding_basics_coupon_effect, coding_bootcamp_coupon_effect])
+            coupon.effects.set([swe_fundamentals_coupon_effect, coding_bootcamp_coupon_effect])
             coupon.save()
 
             personalization = Personalization()
