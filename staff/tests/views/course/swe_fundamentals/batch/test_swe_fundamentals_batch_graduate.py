@@ -81,9 +81,7 @@ def test_post_updates_enrolment_statuses_and_sends_emails(
     assert list(referral_coupon.effects.all()) == [swe_fundamentals_coupon_effect, coding_bootcamp_coupon_effect]
     Sendgrid.send_bulk.assert_called_once_with(
         settings.ROCKET_EDUCATION_EMAIL,
-        [
-            mocker.ANY,
-        ],
-        settings.CODING_BASICS_GRADUATION_NOTIFICATION_TEMPLATE_ID
+        [mocker.ANY],
+        settings.SWE_FUNDAMENTALS_GRADUATION_NOTIFICATION_TEMPLATE_ID
     )
     assert response.status_code == HttpResponseRedirect.status_code

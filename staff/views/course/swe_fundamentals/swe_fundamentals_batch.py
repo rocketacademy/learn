@@ -267,7 +267,7 @@ class GraduateView(LoginRequiredMixin, View):
                         referral_coupon.effects.set([swe_fundamentals_coupon_effect, coding_bootcamp_coupon_effect])
                         referral_coupon.save()
                         certificate_url = request.build_absolute_uri(reverse(
-                            'basics_certificate',
+                            'certificate_detail',
                             kwargs={'certificate_credential': certificate.credential}
                         ))
 
@@ -286,7 +286,7 @@ class GraduateView(LoginRequiredMixin, View):
                     sendgrid_client.send_bulk(
                         settings.ROCKET_EDUCATION_EMAIL,
                         personalizations,
-                        settings.CODING_BASICS_GRADUATION_NOTIFICATION_TEMPLATE_ID
+                        settings.SWE_FUNDAMENTALS_GRADUATION_NOTIFICATION_TEMPLATE_ID
                     )
             except Exception as error:
                 capture_message(f"Exception when processing graduation for Batch {batch_id}")

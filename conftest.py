@@ -13,11 +13,13 @@ from staff.tests.factories.batch_factory import BatchFactory
 from staff.tests.factories.batch_schedule_factory import BatchScheduleFactory
 from staff.tests.factories.course_factory import CourseFactory
 from staff.tests.factories.section_factory import SectionFactory
+from student.tests.factories.certificate_factory import CertificateFactory
 from student.tests.factories.enrolment_factory import EnrolmentFactory
 from student.tests.factories.registration_factory import RegistrationFactory
 
 register(BatchFactory)
 register(BatchScheduleFactory)
+register(CertificateFactory)
 register(CouponEffectFactory)
 register(CourseFactory)
 register(EnrolmentFactory)
