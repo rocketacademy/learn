@@ -7,8 +7,8 @@
 <div class="row">
     <div class="col-12 my-4">
         <h5>Create new batch</h5>
-        <a type="link" href="{% url 'basics_batch_new' %}" role="button" class="btn btn-outline-primary btn-sm px-4">
-            + Coding Basics
+        <a type="link" href="{% url 'swe_fundamentals_batch_new' %}" role="button" class="btn btn-outline-primary btn-sm px-4">
+            + SWE Fundamentals
         </a>
         <a type="link" href="{% url 'bootcamp_batch_new' %}" role="button" class="btn btn-outline-primary btn-sm px-4">
             + Coding Bootcamp
@@ -61,7 +61,7 @@
                     </tbody>
                 </table>
             {% else %}
-                <div>There aren't any bootcamp batches yet</div>
+                <div>There aren't any batches yet</div>
             {% endif %}
         </div>
     </div>

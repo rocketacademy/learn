@@ -1,0 +1,94 @@
+{% extends 'course/bootcamp/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block overview_content %}
+<div class="d-flex flex-row px-4">
+    <h4>Create new batch</h4>
+</div>
+<div class="p-4">
+    <form id="create-batch-form" action="/staff/courses/bootcamp/batches/new/" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.start_date|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.end_date|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.sections|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ section_form.capacity|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.type|as_crispy_field }}
+            </div>
+            <div class="col-md-6 col-lg-3 my-2">
+                {{ batch_form.price|as_crispy_field }}
+            </div>
+        </div>
+        <div class="mt-4"><h5>Schedule</h5></div>
+        <div class="row py-2">
+            <div class="col-md-3 col-lg-3">
+                Day*
+            </div>
+            <div class="col-md-3 col-lg-3">
+                Start time*
+            </div>
+            <div class="col-md-3 col-lg-3">
+                End time*
+            </div>
+        </div>
+        {{ batch_schedule_formset.management_form }}
+        <div class="batch-schedule-formset-container">
+            {% for batch_schedule_form in batch_schedule_formset %}
+            <div class="batch-schedule-formset">
+                <div class="row my-3">
+                    <div class="col-md-3 col-lg-3">
+                        {{ batch_schedule_form.day|as_crispy_field }}
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        {{ batch_schedule_form.start_time|as_crispy_field }}
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                        {{ batch_schedule_form.end_time|as_crispy_field }}
+                    </div>
+                    <div class="remove-row-container col-md-3 col-lg-3">
+                        {% if batch_schedule_form.instance.pk %}
+                            {{ batch_schedule_form.DELETE }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="d-flex flex-row py-5">
+            <a type="link" href="{% url 'bootcamp_batch_list' %}" role="button" class="btn btn-outline-secondary px-4">Cancel</a>
+            <button class="btn btn-primary mx-2 px-4" type="submit">Create batch</button>
+        </div>
+    </form>
+</div>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $(function() {
+        $('.batch-schedule-formset').formset({
+            prefix: '{{ batch_schedule_formset.prefix }}',
+            addText: '+',
+            deleteText: 'Remove',
+            deleteContainerClass: 'remove-row-container',
+        });
+
+        const firstDeleteRowLink = document.querySelectorAll('.batch-schedule-formset-container .batch-schedule-formset.dynamic-form .remove-row-container')[0];
+        const addRowButton = $('.add-row');
+
+        firstDeleteRowLink.style.display = "none";
+        addRowButton.addClass('btn btn-primary btn-small my-3');
+    })
+</script>
+{% endblock %}

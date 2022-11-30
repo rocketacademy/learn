@@ -1,65 +1,25 @@
-from django.conf import settings
 import pytest
 
-from authentication.models import StudentUser
-from staff.models import Section
 from student.library.slack import Slack
-from student.models.enrolment import Enrolment
-from student.models.registration import Registration
 from student.views.slack import team_join_event
 
 pytestmark = pytest.mark.django_db
 
-email = 'email@example.com'
-first_name = 'Student'
-last_name = 'Name'
 
-
-@pytest.fixture()
-def student_user():
-    student_user = StudentUser.objects.create_user(
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-        password=settings.PLACEHOLDER_PASSWORD,
-    )
-
-    yield student_user
-
-@pytest.fixture()
-def enrolment(batch_factory):
-    batch = batch_factory(slack_channel_id='C987654A')
-    section = Section.objects.create(
-        batch=batch,
-        number=1,
-        capacity=1,
-        slack_channel_id='C123456B',
-    )
-    registration = Registration.objects.create(
-        course=batch.course,
-        batch=batch,
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        country_of_residence='SG',
-        referral_channel='word_of_mouth'
-    )
-    student_user = StudentUser.objects.get(email=registration.email)
-    enrolment = Enrolment.objects.create(
-        registration=registration,
-        batch=batch,
-        section=section,
-        student_user=student_user
-    )
-
-    yield enrolment
-
-def test_team_join_event_calls_slack_methods_to_add_users_to_slack_channels_if_user_currently_enrolled(mocker, student_user, enrolment):
+def test_team_join_event_calls_slack_methods_to_add_users_to_slack_channels_if_user_currently_enrolled(mocker, enrolment_factory):
+    swe_fundamentals_enrolment = enrolment_factory(swe_fundamentals=True)
+    swe_fundamentals_batch = swe_fundamentals_enrolment.batch
+    swe_fundamentals_batch.slack_channel_id = 'C987654A'
+    swe_fundamentals_batch.save()
+    swe_fundamentals_section = swe_fundamentals_enrolment.section
+    swe_fundamentals_section.slack_channel_id = 'C123456B'
+    swe_fundamentals_section.save()
+    student_user = swe_fundamentals_enrolment.student_user
     event = {
         'type': 'team_join',
         'user': {
             'profile': {
-                'email': email
+                'email': student_user.email
             },
             'id': 'U12345B'
         }
@@ -71,7 +31,7 @@ def test_team_join_event_calls_slack_methods_to_add_users_to_slack_channels_if_u
 
     Slack.add_users_to_channel.assert_has_calls(
         [
-            mocker.call([student_slack_user_id], enrolment.batch.slack_channel_id),
-            mocker.call([student_slack_user_id], enrolment.section.slack_channel_id)
+            mocker.call([student_slack_user_id], swe_fundamentals_batch.slack_channel_id),
+            mocker.call([student_slack_user_id], swe_fundamentals_section.slack_channel_id)
         ]
     )

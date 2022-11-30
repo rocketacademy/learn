@@ -1,0 +1,48 @@
+{% extends 'course/swe_fundamentals/base.html' %}
+{% block overview_content %}
+{% load crispy_forms_tags %}
+<div class="row">
+    <div class="col-10 my-2">
+        <a type="link" href="{% url 'swe_fundamentals_batch_new' %}" role="button" class="btn btn-outline-primary btn-sm px-4">
+            + Batch
+        </a>
+    </div>
+</div>
+<div class="table-responsive my-3">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Batch</th>
+                <th scope="col">Start date</th>
+                <th scope="col">End date</th>
+                <th scope="col">Course days</th>
+                <th scope="col">No. of sections</th>
+                <th scope="col">Capacity</th>
+                <th scope="col">No. of enrollments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for batch in batches %}
+            <tr class="clickable-row" data-url="{% url 'swe_fundamentals_batch_detail' batch_id=batch.id %}" role="button">
+                <td>{{ batch.number }}</td>
+                <td>{{ batch.start_date }}</td>
+                <td>{{ batch.end_date }}</td>
+                <td>
+                    {% for batch_schedule in batch.batchschedule_set.all %}
+                    <div>
+                        {{ batch_schedule.get_day_display }},
+                        {{ batch_schedule.start_time|time:"h:i A" }}
+                        - 
+                        {{ batch_schedule.end_time|time:"h:i A" }}
+                    </div>
+                    {% endfor %}
+                </td>
+                <td>{{ batch.sections }}</td>
+                <td>{{ batch.capacity }}</td>
+                <td>{{ batch.enrolment_set.count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

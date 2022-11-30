@@ -75,6 +75,15 @@ def swe_fundamentals_batch(batch_factory, course_factory, section_factory, batch
 ################
 
 @pytest.fixture()
+def coding_basics_registration(coding_basics_batch, registration_factory):
+    coding_basics_registration = registration_factory(
+        batch=coding_basics_batch,
+        course=coding_basics_batch.course
+    )
+
+    yield coding_basics_registration
+
+@pytest.fixture()
 def swe_fundamentals_registration(swe_fundamentals_batch, registration_factory):
     swe_fundamentals_registration = registration_factory(
         batch=swe_fundamentals_batch,
