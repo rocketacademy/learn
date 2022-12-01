@@ -218,7 +218,7 @@ SENDGRID_EVENT_WEBHOOK_VERIFICATION_KEY = env('SENDGRID_EVENT_WEBHOOK_VERIFICATI
 # ------------------------------------------------------------------------------
 
 HUBSPOT_PRIVATE_APP_ACCESS_TOKEN = env('HUBSPOT_PRIVATE_APP_ACCESS_TOKEN')
-BASICS_ENROLLED_FUNNEL_STATUS = 'basics_enrolled'
+SWE_FUNDAMENTALS_ENROLLED_FUNNEL_STATUS = 'swe_fundamentals_enrolled'
 
 # SLACK
 # ------------------------------------------------------------------------------

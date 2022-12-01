@@ -145,8 +145,8 @@ def test_update_hubspot_contact_when_hubspot_contact_id_exists_in_learn(mocker, 
             'email': student_user.email,
             'firstname': student_user.first_name,
             'lastname': student_user.last_name,
-            'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
-            'basics_batch_number': swe_fundamentals_registration.batch.number,
+            'funnel_status': settings.SWE_FUNDAMENTALS_ENROLLED_FUNNEL_STATUS,
+            'swe_fundamentals_batch_number': swe_fundamentals_registration.batch.number,
             'contact_source': settings.PROJECT_NAME,
             'referral_code': swe_fundamentals_registration.referral_code
         }
@@ -218,8 +218,8 @@ def test_update_hubspot_contact_when_contact_created_separately_in_hubspot(mocke
             'email': student_user.email,
             'firstname': student_user.first_name,
             'lastname': student_user.last_name,
-            'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
-            'basics_batch_number': swe_fundamentals_registration.batch.number,
+            'funnel_status': settings.SWE_FUNDAMENTALS_ENROLLED_FUNNEL_STATUS,
+            'swe_fundamentals_batch_number': swe_fundamentals_registration.batch.number,
             'contact_source': settings.PROJECT_NAME,
             'referral_code': swe_fundamentals_registration.referral_code
         }
