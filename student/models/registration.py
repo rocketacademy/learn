@@ -87,8 +87,8 @@ class Registration(SafeDeleteModel):
             'email': student_user.email,
             'firstname': student_user.first_name,
             'lastname': student_user.last_name,
-            'funnel_status': settings.BASICS_ENROLLED_FUNNEL_STATUS,
-            'basics_batch_number': self.batch.number,
+            'funnel_status': settings.SWE_FUNDAMENTALS_ENROLLED_FUNNEL_STATUS,
+            'swe_fundamentals_batch_number': self.batch.number,
             'contact_source': settings.PROJECT_NAME,
             'referral_code': self.referral_code
         }
