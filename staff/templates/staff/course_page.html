@@ -1,0 +1,20 @@
+{% extends "staff_base.html" %}
+
+{% load wagtailcore_tags %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-6">
+            <h1>{{ page.title }}</h1>
+
+            <div class="intro my-5">{{ page.intro|richtext }}</div>
+        
+            {% for post in page.get_children %}
+                <h4><a href="{% pageurl post %}">{{ post.title }}</a></h4>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

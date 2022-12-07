@@ -18,3 +18,6 @@ class Course(SafeDeleteModel):
     name = models.CharField(max_length=255, choices=NAME_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.get_name_display()

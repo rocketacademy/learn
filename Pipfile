@@ -24,6 +24,8 @@ gunicorn = "*"
 dj-database-url = "*"
 slack-sdk = "*"
 sentry-sdk = "*"
+wagtail = "*"
+wagtail-factories = "*"
 
 [dev-packages]
 pytest = "*"

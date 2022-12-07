@@ -9,12 +9,10 @@ from student.models.enrolment import Enrolment
 pytestmark = pytest.mark.django_db
 
 
-def test_string_representation(batch_factory):
-    batch = batch_factory()
+def test_string_representation(swe_fundamentals_batch):
+    string_representation = swe_fundamentals_batch.__str__()
 
-    string_representation = batch.__str__()
-
-    assert string_representation == 'Batch 17'
+    assert string_representation == 'Software Engineering Fundamentals Batch 21'
 
 def test_number_assigned_if_new_basics_batch_record(batch_factory, course_factory):
     coding_basics_course = course_factory(coding_basics=True)

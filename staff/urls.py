@@ -1,4 +1,6 @@
-from django.urls import path
+from django.urls import path, include
+from wagtail.admin import urls as wagtailadmin_urls
+
 
 from staff.views import batch, coupon, coupon_effect, index, login
 from staff.views.course.swe_fundamentals import swe_fundamentals_batch, swe_fundamentals_enrolment, swe_fundamentals_registration, swe_fundamentals_section
@@ -8,6 +10,7 @@ urlpatterns = [
     path('', index.IndexView.as_view(), name='staff_index'),
     path('batches/', batch.ListView.as_view(), name='batch_list'),
     path('batches/<int:batch_id>/', batch.DetailView.as_view(), name='batch_detail'),
+    path('cms/', include(wagtailadmin_urls)),
     path('coupons/', coupon.ListView.as_view(), name='coupon_list'),
     path('coupons/new/', coupon.NewView.as_view(), name='coupon_new'),
     path('coupons/new/batch/', coupon.NewBatchView.as_view(), name='coupon_new_batch'),
