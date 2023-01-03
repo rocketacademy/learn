@@ -15,6 +15,7 @@ from staff.tests.factories.batch_page_factory import BatchPageFactory
 from staff.tests.factories.batch_schedule_factory import BatchScheduleFactory
 from staff.tests.factories.course_factory import CourseFactory
 from staff.tests.factories.course_page_factory import CoursePageFactory
+from staff.tests.factories.day_page_factory import DayPageFactory
 from staff.tests.factories.section_factory import SectionFactory
 from student.tests.factories.certificate_factory import CertificateFactory
 from student.tests.factories.enrolment_factory import EnrolmentFactory
@@ -27,6 +28,7 @@ register(CertificateFactory)
 register(CouponEffectFactory)
 register(CourseFactory)
 register(CoursePageFactory)
+register(DayPageFactory)
 register(EnrolmentFactory)
 register(ReferralCouponFactory)
 register(RegistrationFactory)
