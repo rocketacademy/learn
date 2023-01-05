@@ -4,24 +4,31 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 import pytest
 from pytest_factoryboy import register
+from wagtail.models import Locale, Site
 
 from authentication.tests.factories.student_user_factory import StudentUserFactory
 from authentication.tests.factories.user_factory import UserFactory
 from payment.tests.factories.referral_coupon_factory import ReferralCouponFactory
 from payment.tests.factories.coupon_effect_factory import CouponEffectFactory
 from staff.tests.factories.batch_factory import BatchFactory
+from staff.tests.factories.batch_page_factory import BatchPageFactory
 from staff.tests.factories.batch_schedule_factory import BatchScheduleFactory
 from staff.tests.factories.course_factory import CourseFactory
+from staff.tests.factories.course_page_factory import CoursePageFactory
+from staff.tests.factories.day_page_factory import DayPageFactory
 from staff.tests.factories.section_factory import SectionFactory
 from student.tests.factories.certificate_factory import CertificateFactory
 from student.tests.factories.enrolment_factory import EnrolmentFactory
 from student.tests.factories.registration_factory import RegistrationFactory
 
 register(BatchFactory)
+register(BatchPageFactory)
 register(BatchScheduleFactory)
 register(CertificateFactory)
 register(CouponEffectFactory)
 register(CourseFactory)
+register(CoursePageFactory)
+register(DayPageFactory)
 register(EnrolmentFactory)
 register(ReferralCouponFactory)
 register(RegistrationFactory)
@@ -147,3 +154,14 @@ def swe_fundamentals_registration_early_bird(swe_fundamentals_batch, registratio
     )
 
     yield swe_fundamentals_registration_early_bird
+
+###########
+# WAGTAIL #
+###########
+
+@pytest.fixture()
+def wagtail_site():
+    Locale.objects.create(language_code='en')
+    wagtail_site = Site(is_default_site=True)
+
+    yield wagtail_site

@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, include
+from wagtail import urls as wagtail_urls
 
 from student.forms import BatchSelectionForm, StudentInfoForm
 from student.views import certificate
@@ -26,5 +27,6 @@ urlpatterns = [
     path('courses/swe-fundamentals/register/<int:registration_id>/confirmation/',
          registration.ConfirmationView.as_view(),
          name='swe_fundamentals_register_confirmation'),
+    path('pages/', include(wagtail_urls)),
     path('slack/event/hook/', slack.event_hook, name='slack_event_hook')
 ]

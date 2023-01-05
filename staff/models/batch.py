@@ -62,7 +62,7 @@ class Batch(SafeDeleteModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Batch {self.number}"
+        return f"{self.course.get_name_display()} Batch {self.number}"
 
     @classmethod
     def next_number(self, course_id, type):

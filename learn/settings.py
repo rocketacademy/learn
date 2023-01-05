@@ -83,6 +83,19 @@ INSTALLED_APPS = [
     'student',
     'payment',
     'emails',
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail',
+    'modelcluster',
+    'taggit'
 ]
 
 # AUTHENTICATION
@@ -120,6 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -282,3 +296,8 @@ ROCKET_EDUCATION_EMAIL = 'education@rocketacademy.co'
 COUPON_CODE_NOTIFICATION_TEMPLATE_ID = env('COUPON_CODE_NOTIFICATION_TEMPLATE_ID')
 SWE_FUNDAMENTALS_GRADUATION_NOTIFICATION_TEMPLATE_ID = env('SWE_FUNDAMENTALS_GRADUATION_NOTIFICATION_TEMPLATE_ID')
 SWE_FUNDAMENTALS_REGISTRATION_CONFIRMATION_TEMPLATE_ID = env('SWE_FUNDAMENTALS_REGISTRATION_CONFIRMATION_TEMPLATE_ID')
+
+# WAGTAIL #
+WAGTAIL_SITE_NAME = ROCKET_ACADEMY
+WAGTAILADMIN_RECENT_EDITS_LIMIT = 5
+WAGTAILEMBEDS_RESPONSIVE_HTML = True
