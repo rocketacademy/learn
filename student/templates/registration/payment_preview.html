@@ -21,9 +21,9 @@
 {% block form_subheader %}
 <h3>You're almost there!</h3>
 {% if final_payable_amount == original_payable_amount %}
-<h3>${{ final_payable_amount }} SGD</h3>
+<h3>S${{ final_payable_amount }} / HK${{ final_payable_amount_hk }}</h3>
 {% else %}
-<h3>S${{ final_payable_amount }} <s class="text-secondary">S${{ original_payable_amount }}</s></h3>
+<h3>S${{ final_payable_amount }} <s class="text-secondary">S${{ original_payable_amount }}</s> / HK${{ final_payable_amount_hk }} <s class="text-secondary">HK${{ original_payable_amount_hk }}</s></h3>
 {% endif %}
 {% endblock %}
 
@@ -32,13 +32,16 @@
 <input type="hidden" id="payable-id" name="payable-id" value="{{ payable_id }}">
 <input type="hidden" id="payable-line-item-name" name="payable-line-item-name" value="{{ payable_line_item_name }}">
 <input type="hidden" id="payable-line-item-amount-in-cents" name="payable-line-item-amount-in-cents" value="{{ payable_line_item_amount_in_cents }}">
+<input type="hidden" id="payable-line-item-amount-in-cents-hk" name="payable-line-item-amount-in-cents-hk" value="{{ payable_line_item_amount_in_cents_hk }}">
 <input type="hidden" id="stripe-coupon-id" name="stripe-coupon-id" value="{{ stripe_coupon_id }}">
+<input type="hidden" id="stripe-coupon-id-hk" name="stripe-coupon-id-hk" value="{{ stripe_coupon_id_hk }}">
 <input type="hidden" id="payment-success-path" name="payment-success-path" value="{{ payment_success_path }}">
 <input type="hidden" id="payment-cancel-path" name="payment-cancel-path" value="{{ payment_cancel_path }}">
-<p>To confirm your place in {{ registration.batch.course.get_name_display }}, please proceed to make a payment of S${{ final_payable_amount }}. You will be redirected to Stripe, our payment handler, once you click the button below.</p>
+<p>To confirm your place in {{ registration.batch.course.get_name_display }}, please proceed to make a payment of S${{ final_payable_amount }} or HK${{ final_payable_amount_hk }}. You will be redirected to Stripe, our payment handler, once you click one of the buttons below.</p>
 <p>Please note that this amount is non-refundable.</p>
 <i>(But imagine how much you can learn with the equivalent of just ~30 cups of coffee!)</i></p>
-<button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Make payment</button>
+<button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button" type="submit" value="submit">Pay with SGD</button>
+<button class="btn btn-sm btn-primary mt-5 px-4" id="make-payment-button-hk" type="submit" value="submit">Pay with HKD</button>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="/static/student/js/payment_preview.js" ></script>
 {% endblock %}

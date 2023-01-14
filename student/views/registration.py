@@ -80,16 +80,25 @@ class PaymentPreviewView(View):
         registration = Registration.objects.get(pk=registration_id)
         original_payable_amount = registration.batch.price
         early_bird_discount = registration.batch.early_bird_discount()
+        original_payable_amount_hk = registration.batch.price_hk
+        early_bird_discount_hk = registration.batch.early_bird_discount_hk()
+
         coupon_discount = 0
         if registration.referral_code:
             coupon = Coupon.objects.get(code=registration.referral_code)
             coupon_discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
         total_discount = coupon_discount + early_bird_discount
+        total_discount_hk = coupon_discount + early_bird_discount_hk
 
         stripe_coupon_id = None
+        stripe_coupon_id_hk = None
         if total_discount > 0:
-            stripe_coupon = Stripe().create_coupon(total_discount)
+            # SG coupon
+            stripe_coupon = Stripe().create_coupon(total_discount, 'sgd')
             stripe_coupon_id = stripe_coupon['id']
+            # HK coupon
+            stripe_coupon_hk = Stripe().create_coupon(total_discount_hk, 'hkd')
+            stripe_coupon_id_hk = stripe_coupon_hk['id']
 
         return render(
             request,
@@ -100,9 +109,13 @@ class PaymentPreviewView(View):
                 'registration': registration,
                 'payable_line_item_name': registration.batch.course.get_name_display(),
                 'payable_line_item_amount_in_cents': original_payable_amount * settings.CENTS_PER_DOLLAR,
+                'payable_line_item_amount_in_cents_hk': original_payable_amount_hk * settings.CENTS_PER_DOLLAR,
                 'original_payable_amount': original_payable_amount,
+                'original_payable_amount_hk': original_payable_amount_hk,
                 'stripe_coupon_id': stripe_coupon_id,
+                'stripe_coupon_id_hk': stripe_coupon_id_hk,
                 'final_payable_amount': original_payable_amount - total_discount,
+                'final_payable_amount_hk': original_payable_amount_hk - total_discount_hk,
                 'payment_success_path': f"/student/courses/swe-fundamentals/register/{registration_id}/confirmation/",
                 'payment_cancel_path': '/student/courses/swe-fundamentals/register/',
             }

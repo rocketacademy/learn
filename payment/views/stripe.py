@@ -33,7 +33,7 @@ def create_checkout_session(request):
                     {
                         'name': request_body['payable_line_item_name'],
                         'quantity': 1,
-                        'currency': settings.SINGAPORE_DOLLAR_CURRENCY,
+                        'currency': request_body['currency'],
                         'amount': request_body['payable_line_item_amount_in_cents'],
                     }
                 ],

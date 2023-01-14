@@ -43,6 +43,7 @@ class Batch(SafeDeleteModel):
     sections = models.PositiveIntegerField(blank=False)
     slack_channel_id = models.CharField(max_length=20, null=True, blank=True)
     price = models.PositiveIntegerField(null=True)
+    price_hk = models.PositiveIntegerField(null=True)
     type = models.CharField(max_length=9, choices=TYPE_CHOICES, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -97,7 +98,7 @@ class Batch(SafeDeleteModel):
         html_formatted_batch_schedules = ""
 
         for batch_schedule in batchschedule_queryset:
-            html_formatted_batch_schedules += f"<small>{batch_schedule}</small><br>"
+            html_formatted_batch_schedules += f"{batch_schedule}<br>"
 
         return format_html(html_formatted_batch_schedules)
 
@@ -121,13 +122,15 @@ class Batch(SafeDeleteModel):
 
     def html_formatted_batch_price(self):
         original_price = self.price
-        html_formatted_price = f"<span class='float-end d-none d-xl-block'>S${original_price}</span>"
-        html_formatted_price += f"<div class='lh-lg d-xl-none my-10'>S${original_price}<div>"
+        original_price_hk = self.price_hk
+        html_formatted_price = f"<span class='d-none d-xl-block'>S${original_price} / HK${original_price_hk}</span>"
+        html_formatted_price += f"<div class='lh-lg d-xl-none my-10'>S${original_price} / HK${original_price_hk}</div>"
 
         early_bird_discounted_price = original_price - self.early_bird_discount()
+        early_bird_discounted_price_hk = original_price_hk - self.early_bird_discount_hk()
         if early_bird_discounted_price < original_price:
-            html_formatted_price = f"<span class='float-end d-none d-xl-block'>S${early_bird_discounted_price}  <span id='original-price'><s>S${original_price}</s></span></span>"
-            html_formatted_price += f"<div class='lh-lg d-xl-none'>S${early_bird_discounted_price}  <span id='original-price'><s>S${original_price}</s></span></div>"
+            html_formatted_price = f"<span class='d-none d-xl-block'>S${early_bird_discounted_price} <span id='original-price'><s>S${original_price}</s></span> / HK${early_bird_discounted_price_hk} <span id='original-price'><s>HK${original_price_hk}</s></span></span>"
+            html_formatted_price += f"<div class='lh-lg d-xl-none'>S${early_bird_discounted_price} <span id='original-price'><s>S${original_price}</s></span> / HK${early_bird_discounted_price_hk} <span id='original-price'><s>HK${original_price_hk}</s></span></div>"
         return format_html(html_formatted_price)
 
     def early_bird_discount(self):
@@ -136,6 +139,15 @@ class Batch(SafeDeleteModel):
             discount = (self.weeks_to_start() - 2) * settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_PER_WEEK
             if discount > settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP:
                 discount = settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP
+
+        return discount
+
+    def early_bird_discount_hk(self):
+        discount = 0
+        if self.weeks_to_start() >= 3:
+            discount = (self.weeks_to_start() - 2) * settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_PER_WEEK_HK
+            if discount > settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP_HK:
+                discount = settings.SWE_FUNDAMENTALS_TIERED_DISCOUNT_CAP_HK
 
         return discount
 
