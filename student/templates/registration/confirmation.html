@@ -1,31 +1,37 @@
-{% extends './base.html' %}
-
-{% block progress_bar %}
+{% extends './base.html' %} {% block progress_bar %}
 <div class="progress-bar-item">
-    <li class="my-2">Course dates</li>
+  <li class="my-2">Course dates</li>
 </div>
-<br>
+<br />
 <div class="progress-bar-item">
-    <li class="my-2">About you</li>
+  <li class="my-2">About you</li>
 </div>
-<br>
+<br />
 <div class="progress-bar-item">
-    <li class="my-2">Payment</li>
+  <li class="my-2">Payment</li>
 </div>
-<br>
+<br />
 <div class="progress-bar-item">
-    <li class="my-2 text-primary fw-bold">Confirmation</li>
+  <li class="my-2 text-primary fw-bold">Confirmation</li>
 </div>
-{% endblock %}
-
-{% block form_subheader %}
-<h3>Thanks for registering for {{ registration.batch.course.get_name_display }}!</h3>
-{% endblock %}
-
-{% block form_content %}
-<p>Make sure to <a href="{{ slack_invite_link }}">join us on Slack</a> and log in with <b>{{ registration.email }}</b>!</p>
-<p>The Slack invitation link will also be sent in your confirmation email, so be on the lookout.</p>
-<p>Further instructions will be shared, via Slack and email, before the course starts.</p>
-<p>See you in class on {{ registration.batch.start_date }}. We can't wait to meet you!</p>
+{% endblock %} {% block form_subheader %}
+<h3>Thanks for registering for Coding Fundamentals!</h3>
+{% endblock %} {% block form_content %}
+<p>
+  Make sure to <a href="{{ slack_invite_link }}">join us on Slack</a> and log in
+  with <b>{{ registration.email }}</b>!
+</p>
+<p>
+  The Slack invitation link will also be sent in your confirmation email, so be
+  on the lookout.
+</p>
+<p>
+  Further instructions will be shared, via Slack and email, before the course
+  starts.
+</p>
+<p>
+  See you in class on {{ registration.batch.start_date }}. We can't wait to meet
+  you!
+</p>
 <p>You can close this window now :)</p>
 {% endblock %}
