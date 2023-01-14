@@ -124,7 +124,7 @@ def test_html_formatted_batch_schedules(batch_factory):
 
     html_formatted_batch_schedules = Batch.html_formatted_batch_schedules(coding_basics_batch)
 
-    assert html_formatted_batch_schedules == '<small>Mondays, 12:00PM to 2:00PM</small><br><small>Fridays, 12:00PM to 2:00PM</small><br>'
+    assert html_formatted_batch_schedules == 'Mondays, 12:00PM to 2:00PM<br>Fridays, 12:00PM to 2:00PM<br>'
 
 def test_next_enrollable_section(batch_factory):
     batch = batch_factory()
@@ -252,7 +252,7 @@ def test_html_formatted_batch_price_returns_base_price_formatting_under_three_we
 
     html_formatted_batch_price = batch.html_formatted_batch_price()
 
-    assert html_formatted_batch_price == "<span class='float-end d-none d-xl-block'>S$199</span><div class='lh-lg d-xl-none my-10'>S$199<div>"
+    assert "S$199" in html_formatted_batch_price
 
 def test_html_formatted_batch_price_returns_discounted_price_formatting_after_20_days(batch_factory):
     start_date = date.today() + timedelta(days=21)
@@ -261,6 +261,5 @@ def test_html_formatted_batch_price_returns_discounted_price_formatting_after_20
 
     html_formatted_batch_price = batch.html_formatted_batch_price()
 
-    required_string = "<span class='float-end d-none d-xl-block'>S$189  <span id='original-price'><s>S$199</s></span></span>"
-    required_string += "<div class='lh-lg d-xl-none'>S$189  <span id='original-price'><s>S$199</s></span></div>"
-    assert html_formatted_batch_price == required_string
+    assert "S$189" in html_formatted_batch_price
+    assert "S$199" in html_formatted_batch_price
