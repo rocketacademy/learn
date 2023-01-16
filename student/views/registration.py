@@ -88,15 +88,18 @@ class PaymentPreviewView(View):
             coupon = Coupon.objects.get(code=registration.referral_code)
             coupon_discount = coupon.biggest_discount_for(registration.course, original_payable_amount)
         total_discount = coupon_discount + early_bird_discount
-        total_discount_hk = coupon_discount + early_bird_discount_hk
+        # Discount codes do not apply to HKD yet
+        total_discount_hk = early_bird_discount_hk
 
+        # SG coupon
         stripe_coupon_id = None
-        stripe_coupon_id_hk = None
         if total_discount > 0:
-            # SG coupon
             stripe_coupon = Stripe().create_coupon(total_discount, 'sgd')
             stripe_coupon_id = stripe_coupon['id']
-            # HK coupon
+
+        # HK coupon. Because referral codes don't apply to HKD yet, sometimes SGD can have discount but HKD not.
+        stripe_coupon_id_hk = None
+        if total_discount_hk > 0:
             stripe_coupon_hk = Stripe().create_coupon(total_discount_hk, 'hkd')
             stripe_coupon_id_hk = stripe_coupon_hk['id']
 
