@@ -22,8 +22,8 @@ class BatchSelectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         active_batches = Batch.swe_fundamentals_objects.filter(start_date__gte=datetime.date.today())
-        # Kai: 9 is the batch ID for Fundamentals 21. Hard-coding this to hard-close F21 signups early.
-        enrollable_batches_ids = [batch.id for batch in active_batches if not batch.fully_enrolled() and batch.id != 9]
+        # Kai: 13 is the batch ID for Fundamentals 25. Hard-coding this to keep F25 private for May '23 Bootcampers.
+        enrollable_batches_ids = [batch.id for batch in active_batches if not batch.fully_enrolled() and batch.id != 13]
         enrollable_batches = Batch.swe_fundamentals_objects.filter(id__in=enrollable_batches_ids).order_by('start_date')
 
         self.fields['batch'].queryset = enrollable_batches
