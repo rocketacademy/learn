@@ -90,6 +90,8 @@ class NewView(LoginRequiredMixin, View):
                         end_date=batch_form.cleaned_data.get('end_date'),
                         sections=sections,
                         price=price,
+                        # TODO(kai): Allow customisation of HK price
+                        price_hk=settings.SWE_FUNDAMENTALS_REGISTRATION_FEE_HKD,
                         type=type
                     )
                     for section_number in range(1, sections + 1):
